@@ -51,97 +51,15 @@
             </div>
           </div>
           <el-col>
-            <div id="mail-content" v-loading="containerLoading" class="w-100 d-flex flex-column rounded shadow-sm leading-7 pl-5 w-50 overflow-y-auto text-left" contenteditable="true" :style="{ height: 945 + 'px', border: 'solid 1px lightgray' }">
-              <div style="display: none"><a :href="getMailToSystemUrl">바로가기</a><br /></div>
-              <div class="text-xl font-bold"><h2>장애 상세내역 및 조치 요청서</h2></div>
-              <div>
-                <span class="sub-title font-semibold"><h4>&middot;발신</h4></span>
-                <span style="margin-left: 20px">{{ sendItem.sender }}</span>
-              </div>
-              <div>
-                <div v-if="isLoadAiDetectionInfo">
-                  <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
-                  <span class="font-italic font-semibold" style="margin-left: 20px"> {{ getAlarmtxt }} </span>
-                  <div v-if="sendItem.ticket_type === 'ATT2'">
-                    &emsp;<span>IN</span><br />
-                    <span style="margin-left: 20px">- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br /></span>
-                    <span style="margin-left: 20px">- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br /></span>
-                    <span style="margin-left: 20px">- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br /></span>
-                    <span style="margin-left: 20px">- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br /></span>
-                    - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br />
-                    &emsp;<span>OUT</span><br />
-                    <span style="margin-left: 20px">- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br /></span>
-                    <span style="margin-left: 20px">- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br /></span>
-                    <span style="margin-left: 20px">- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br /></span>
-                    <span style="margin-left: 20px">- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br /></span>
-                    <span style="margin-left: 20px">- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br /></span>
-                  </div>
-                </div>
-
-                <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
-                  <span class="font-semibold"><span style="margin-left: 20px">&middot;장애 유무 판단 확률</span><br /></span>
-                  <span style="margin-left: 20px">&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br /></span>
-                  <span style="margin-left: 20px">&nbsp;- 무효 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}</span>
-                </div>
-
-                <div v-if="sendItem.ticket_type === 'FTT'">
-                  <span style="margin-left: 20px">- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br /></span>
-                  <span style="margin-left: 20px">- 비장애 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}</span>
-                </div>
-
-                <div v-if="sendItem.ticket_type === 'NFTT'">
-                  <span style="margin-left: 20px">- Measured Time : {{ sendItem.measured_datetime }} <br /></span>
-                  <span style="margin-left: 20px">- CPU 예측값 : {{ sendItem.cpu_predicted }} <br /></span>
-                  <span style="margin-left: 20px">- Mem 예측값 : {{ sendItem.mem_predicted }} <br /></span>
-                </div>
-              </div>
-              <div>
-                <span class="sub-title font-semibold"><h4>&middot;수신</h4></span>
-                <span v-for="user in selectedUser" :key="user.email">
-                  <span v-if="selectedUser.length > 0" style="margin-left : 20px">
-                    {{ user.name }}
-                  </span>
-                  <span v-else style="margin-left : 20px">수신자 없음</span>
-                </span>
-              </div>
-              <div>
-                <span class="sub-title font-semibold"><h4>&middot;작업 요청 내용</h4></span>
-                <div v-if="isSyslog">
-                  <span style="margin-left: 20px">- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br /></span>
-                  <span style="margin-left: 20px">- 알람 번호 : {{ syslogInfo.alarmno }} <br /></span>
-                  <span style="margin-left: 20px">- 장비명 : {{ syslogInfo.node_nm }}<br /></span>
-                  <span style="margin-left: 20px">- 장비 번호 : {{ syslogInfo.node_num }}<br /></span>
-                  <span style="margin-left: 20px">- 인터페이스 : {{ syslogInfo.alarmloc }}<br /></span>
-                  <span style="margin-left: 20px">- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br /></span>
-                  <span style="margin-left: 20px">- 원본 메시지 : {{ syslogInfo.etc }}<br /></span>
-                  <span style="margin-left: 20px">- 상세 내용 :</span>
-                </div>
-                <div v-else>
-                  <span v-if="!['NTT_AI'].includes(sendItem.ticket_type)" style="margin-left: 20px">- 작업 요청 구간 : {{ (trafficInfo.root_cause_sysnamea || '') + '(' + (trafficInfo.root_cause_porta || '') + ')' }} → {{ (trafficInfo.root_cause_sysnamez || '') + '(' + (trafficInfo.root_cause_portz || '') + ')' }}<br /></span>
-                  <span style="margin-left: 20px">- 티켓 번호 : {{ sendItem.ticket_id }}<br /></span>
-                  <span style="margin-left: 20px">- 티켓 타입 : {{ sendItem.ticket_type }}<br /></span>
-                  <span style="margin-left: 20px">- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br /></span>
-                  <span style="margin-left: 20px">- 발생 시간 : {{ formatterTimeStamp(sendItem.fault_time) }}<br /></span>
-                  <span style="margin-left: 20px">- 상세 내용 :</span>
-                </div>
-              </div>
-              <div v-if="isSyslog">
-                <span class="sub-title font-semibold"><h4>&middot;장애 구역</h4></span>
-                <div><span style="margin-left: 20px">- 장애 구역:{{ sendItem.node_nm + '(' + sendItem.alarmloc + ')' }}</span></div>
-              </div>
-              <div v-if="['NTT', 'ATT2'].includes(sendItem.ticket_type)">
-                <span class="sub-title font-semibold"><h4>&middot;장애 구간</h4></span>
-                <div>{{ trafficInfo.root_cause_sysnamea + '(' + trafficInfo.root_cause_porta + ')' }} → {{ trafficInfo.root_cause_sysnamez + '(' + trafficInfo.root_cause_portz + ')' }}</div>
-              </div>
-              <div>
-                <span class="sub-title font-semibold"><h4>&middot;연관 SOP</h4></span>
-                <div>
-                  <span style="margin-left: 20px">- 장애 구분: {{ sendItem.fault_classify || '' }}<br /></span>
-                  <span style="margin-left: 20px">- 장애 유형: {{ sendItem.fault_type || '' }}<br /></span>
-                  <span style="margin-left: 20px">- 조치 내용: {{ sendItem.fault_detail_content || '' }}</span>
-                </div>
-              </div>
-            </div>
+            <div
+              id="mail-content"
+              v-loading="containerLoading"
+              contenteditable="true"
+              class="w-100 d-flex flex-column rounded shadow-sm leading-7 pl-5 w-50 overflow-y-auto text-left"
+              :style="{ height: 945 + 'px', border: 'solid 1px lightgray' }"
+              @input="onMailContentChange"
+              v-html="mailContentHtml"
+            ></div>
           </el-col>
         </el-card>
       </el-col>
@@ -170,7 +88,7 @@
 import { Base } from '@/min/Base'
 // import elDragDialog from '@/directive/el-drag-dialog'
 import { formatterTime, getAlarmType } from '@/views-nia/js/commonFormat'
-import { apiSendMQ, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSelectSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
+import { apiSendMQ, apiSelectUserList } from '@/api/nia'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 import { mapState } from 'vuex'
@@ -180,6 +98,11 @@ import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, g
 import _ from 'lodash'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
+import {
+  collectRequestContentData,
+  generateRequestContentHtml,
+  handleSendEmail,
+} from './logic/requestForActionLogic'
 
 const routeName = constants.nia.chatbotKeyMap.requestForAction.parameterKey
 
@@ -211,6 +134,7 @@ export default {
       userList: [],
       mailToSystemUrl: null,
       isLoadAiDetectionInfo: false,
+      mailContentHtml: '',
       aiDetection: {
         in_threshold_upper: '',
         out_predict: '',
@@ -404,21 +328,37 @@ export default {
         this.$emit('update:wdataParams', chatbotData)
       }
 
-      const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
-      this.$set(this.sendItem, 'sender', `${agencyName} ${name}`)
-      this._merge(this.sendItem, this.selectedRow)
-
       try {
         this.containerLoading = true
-        if (!['SYSLOG', 'RT'].includes(this.selectedRow.ticket_type)) {
-          await this.onLoadTrafficInfo()
-        }
-        if (this.isSyslog) {
-          await this.onLoadSyslogInfo()
-        }
-        await this.onLoadSopHistList()
-        await this.onLoadAiDetectionInfo()
-        this.setTemplateContent()
+
+        // 로직 함수를 사용하여 데이터 수집
+        const userInfo = this.$store.state.user.info
+        const collectedData = await collectRequestContentData({
+          selectedRow: this.selectedRow,
+          userInfo,
+          options: {
+            loadTrafficInfo: !['SYSLOG', 'RT'].includes(this.selectedRow.ticket_type),
+            loadSyslogInfo: this.isSyslog,
+            loadSopHist: true,
+            loadAiDetection: true,
+          },
+        })
+
+        // 수집된 데이터를 컴포넌트 데이터에 할당
+        this.sendItem = collectedData.sendItem
+        this.trafficInfo = collectedData.trafficInfo
+        this.syslogInfo = collectedData.syslogInfo
+        this.relatedSopList = collectedData.relatedSopList
+        this.aiDetection = collectedData.aiDetection
+        this.isLoadAiDetectionInfo = collectedData.isLoadAiDetectionInfo
+
+        // HTML 생성
+        this.mailContentHtml = generateRequestContentHtml({
+          data: collectedData,
+          selectedUsers: this.selectedUser,
+          mailToSystemUrl: this.getMailToSystemUrl,
+          formatterTimeStamp: (time, formatStr) => this.formatterTimeStamp(time, formatStr),
+        })
       } catch (error) {
         this.error(error)
       } finally {
@@ -448,59 +388,15 @@ export default {
         })
       }
     },
-    setTemplateContent() {
-      const { ticket_type, status } = this.selectedRow
-
-      if (ticket_type === 'RT' && status !== 'INIT') return
-
-      // AI 분석 결과 정보
-      if (ticket_type === 'ATT2' && this.aiDetection) {
-        const { in_bps, in_predict, in_threshold_upper, in_threshold_lower, in_anomaly, out_bps, out_predict, out_threshold_upper, out_threshold_lower, out_anomaly } = this.aiDetection
-        // IN
-        this.sendItem['in_bps'] = in_bps.toLocaleString()
-        this.sendItem['in_predict'] = in_predict.toLocaleString()
-        this.sendItem['in_threshold_upper'] = in_threshold_upper.toLocaleString()
-        this.sendItem['in_threshold_lower'] = in_threshold_lower.toLocaleString()
-        this.sendItem['in_anomaly'] = in_anomaly
-        // OUT
-        this.sendItem['out_bps'] = out_bps.toLocaleString()
-        this.sendItem['out_predict'] = out_predict.toLocaleString()
-        this.sendItem['out_threshold_upper'] = out_threshold_upper.toLocaleString()
-        this.sendItem['out_threshold_lower'] = out_threshold_lower.toLocaleString()
-        this.sendItem['out_anomaly'] = out_anomaly
-      }
-      if (['FTT', 'ATT2', 'NTT'].includes(ticket_type)) {
-        this.sendItem['zero1_entropy'] = this.selectedRow.zero1_entropy
-      }
-      if (ticket_type === 'NFTT') {
-        // SELECT_NODEFACTOR_ONE
-        // const { measured_datetime, cpu_predicted, mem_predicted } = this.nodeFactor
-        // this.sendItem['measured_datetime'] = measured_datetime
-        // this.sendItem['cpu_predicted'] = cpu_predicted
-        // this.sendItem['mem_predicted'] = mem_predicted
-      }
-      // 작업 요청 내용
-
-      // 연관 SOP
-      this.sendItem['fault_classify'] = this.relatedSopList.length !== 0 ? this.relatedSopList[0].fault_classify : ''
-      this.sendItem['fault_type'] = this.relatedSopList.length !== 0 ? this.relatedSopList[0].fault_type : ''
-      this.sendItem['fault_detail_content'] = this.relatedSopList.length !== 0 ? this.relatedSopList[0].fault_detail_content : ''
-    },
-    async onLoadTrafficInfo() {
-      if (!this.selectedRow.ticket_id) return
-      try {
-        const res = await apiSelfProcessTrafficInfo({ TICKET_ID: this.selectedRow.ticket_id })
-        this.trafficInfo = res?.result[0] ?? {}
-      } catch (error) {
-        this.error(error)
-      }
-    },
-    async onLoadSyslogInfo() {
-      try {
-        const res = await apiSelfProcessSyslogInfo({ ALARMNO: this.selectedRow.alarmno })
-        this.syslogInfo = res?.result[0] ?? []
-      } catch (error) {
-        this.error(error)
+    onMailContentChange(event) {
+      // contenteditable에서 변경사항이 발생하면 mailContentHtml 업데이트
+      if (event && event.target) {
+        this.mailContentHtml = event.target.innerHTML
+      } else {
+        const contentEl = document?.querySelector('#mail-content')
+        if (contentEl) {
+          this.mailContentHtml = contentEl.innerHTML
+        }
       }
     },
     async onLoadUserList() {
@@ -511,62 +407,28 @@ export default {
         this.error(error)
       }
     },
-    async onLoadSopHistList() {
-      let param
-      let res
-      try {
-        switch (this.selectedRow.ticket_type) {
-          case 'SYSLOG':
-            {
-              const { node_nm: NODE_NM, alarmloc: ALARMLOC } = this.syslogInfo
-              param = { NODE_NM, ALARMLOC }
-              if (!NODE_NM && !ALARMLOC) return
-              res = await apiSopSyslogHistList(param)
-            }
-            break
-          case 'NTT_AI':
-            res = await apiSelectSopHistList({ TICKET_TYPE: this.selectedRow.ticket_type, NTT_TRAFFIC_TYPE: this.selectedRow.alarmmsg })
-            break
-          default:
-            {
-              const ticket = this.selectedRow
-              console.log(ticket)
-              const { ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-              if (!TICKET_TYPE || !ROOT_CAUSE_SYSNAMEA) return
-              param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
-              res = await apiSelectSopHistList(param)
-            }
-            break
-        }
-
-        this.relatedSopList = res?.result ?? []
-      } catch (error) {
-        console.error(error)
-      }
-    },
     onChangeRowSelected(rows) {
       this.selectedUser = rows
+      // 수신자 변경 시 HTML 업데이트
+      this.updateMailContentHtml()
     },
-    async onLoadAiDetectionInfo() {
-      const { fault_time: FAULT_TIME, ticket_id: TICKET_ID, ticket_type } = this.selectedRow
-      const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
-
-      if (!TICKET_ID) {
-        this.isLoadAiDetectionInfo = false
-        return
-      } else {
-        this.isLoadAiDetectionInfo = true
+    updateMailContentHtml() {
+      // 수신자 변경 시 HTML 재생성
+      const collectedData = {
+        sendItem: this.sendItem,
+        trafficInfo: this.trafficInfo,
+        syslogInfo: this.syslogInfo,
+        relatedSopList: this.relatedSopList,
+        aiDetection: this.aiDetection,
+        isLoadAiDetectionInfo: this.isLoadAiDetectionInfo,
       }
 
-      try {
-        const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
-        const res = await apiSelectAiDetectionInfo(param)
-        this.aiDetection = res?.result[0] ?? null
-      } catch (error) {
-        this.error(error)
-      } finally {
-        this.chartLoading = false
-      }
+      this.mailContentHtml = generateRequestContentHtml({
+        data: collectedData,
+        selectedUsers: this.selectedUser,
+        mailToSystemUrl: this.getMailToSystemUrl,
+        formatterTimeStamp: (time, formatStr) => this.formatterTimeStamp(time, formatStr),
+      })
     },
     onClickFin() {
       const addInfo = this.selectedRow.ticket_type === 'SYSLOG' ? this.syslogInfo : this.sendItem
@@ -574,47 +436,40 @@ export default {
       this.fn_openWindow('processFin', row)
     },
     async onClickEmailSender() {
-      const { uid, name } = this.$store.state.user.info
       const receiverUser = this.$refs.employeeTable.selection
-      if (receiverUser.length === 0) {
-        this.$alert('담당 직원을 선택해주세요.', '알림', {
-          confirmButtonText: '확인',
-          customClass: 'nia-message-box',
-        })
-        return
-      }
       const contentEl = document?.querySelector('#mail-content')
-      const param = {
-        mail: {
-          subject: this.moment(new Date()).format('YYYY년 MM월 DD일 HH시mm분ss초') + ' 장비 조치 요청서',
-          content: contentEl.innerHTML.replace('display: none;'),
-          receiverUser: receiverUser
-            .map((v) => v.email)
-            .join(', ')
-            .replace(/\s{0,}[\r\n]/gi, '\r\n'),
+      const htmlContent = contentEl ? contentEl.innerHTML : this.mailContentHtml
+
+      // 공통 메일 전송 함수 사용
+      await handleSendEmail({
+        htmlContent,
+        receiverUsers: receiverUser,
+        ticketInfo: this.sendItem,
+        userInfo: this.$store.state.user.info,
+        isBase64Encoded: false,
+        apiSendMQ,
+        onLoading: () => {
+          this.requestForActionLoading = true
         },
-        ticketInfo: this._merge({}, this.sendItem, {
-          eventType: 'REQUEST_CHANGE_TICKET_STATUS',
-          status: 'ACK',
-          user_ids: uid,
-          detail: 'DETAIL',
-          mail_content: contentEl.innerHTML.replace('display: none;'),
-          handling_ack_user: name,
-          ticket_result: this.selectedRow.ticket_result || this.selectedRow.ticket_rca_result_code,
-        }),
-      }
-      try {
-        this.requestForActionLoading = true
-        const res = await apiSendMQ('sendMail', param)
-        this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
-          confirmButtonText: '확인',
-          customClass: 'nia-message-box',
-        })
-      } catch (error) {
-        this.error(error)
-      } finally {
+        onSuccess: (res) => {
+          this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
+            confirmButtonText: '확인',
+            customClass: 'nia-message-box',
+          })
+        },
+        onError: (error) => {
+          if (error.message === '담당 직원을 선택해주세요.') {
+            this.$alert(error.message, '알림', {
+              confirmButtonText: '확인',
+              customClass: 'nia-message-box',
+            })
+          } else {
+            this.error(error)
+          }
+        },
+      }).finally(() => {
         this.requestForActionLoading = false
-      }
+      })
     },
     onClose() {
       this.selectedUser = []

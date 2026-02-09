@@ -43,36 +43,15 @@
           <DoughnutChart v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart2" class="chatbot-donut-chart" :chart-data="nttChartData" :options="nttChartOptions" />
         </div>
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
-          <!-- <div v-if="index === 0">
-            <div v-loading="donutChartLoading" class="message-content sopAnalysisBody">
-              <div v-if="alarmFocusSopDataList.length - sopEmptyDataCount > 0">
-                <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">
-                  <span v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'">장애유형 {{ alarmFocusNTTAIDetailInfo.traffic_type }}에 대한 SOP 조치내용 통계</span>
-                  <span v-else>{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</span>
-                </div>
-                <table class="sop-stats-table">
-                  <tbody>
-                    <tr>
-                      <td>전체SOP</td>
-                      <td>{{ alarmFocusSopDataList.length - sopEmptyDataCount }}개</td>
-                    </tr>
-                    <tr v-for="(label, index2) in chartData.labels" :key="label">
-                      <td>{{ label }}</td>
-                      <td>{{ chartData.datasets[0].data[index2] }}개</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div v-else>
-                <div style="background-color: #ee6666; font-weight: 600; text-align: center; color: white">{{ warningSignText }} {{ alarmFocusTicketData.node_nm }} SOP 통계 미보유 {{ warningSignText }}</div>
-                <br />
-                SOP이력이 없어서 통계 데이터가 제공되지 않습니다.
-              </div>
-            </div>
-          </div> -->
-
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
-            <div ref="messageContent" class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+            <div
+              ref="messageContent"
+              v-loading="mailSendingLoading && message.content.includes('chatbot-mail-send-btn')"
+              class="message-content"
+              :class="{ 'mail-content-loading': mailSendingLoading && message.content.includes('chatbot-mail-send-btn') }"
+              @click="handlePathClick($event, message.content)"
+              v-html="formatMessage(message.content)"
+            ></div>
             <!-- <div class="message-time">
               {{ message.time }}
             </div> -->
@@ -85,10 +64,7 @@
         <button :disabled="recognizing || isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="showWindowList">창목록</button>
-        <!-- <button :disabled="isQuestionMode" class="utility-button voice-btn" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb', color: recognizing ? 'white' : '#4b5563' }" @click="switchVoiceRecording">
-          <i class="el-icon-mic" style="margin-right: 5px; font-weight: bold"></i>
-          ({{ recognizing ? 'ON' : 'OFF' }})
-        </button> -->
+        <button :disabled="isQuestionMode" class="utility-button" @click="isTest">간편 상황전파</button>
       </div>
 
       <div class="chat-input">
@@ -112,6 +88,14 @@ import constants from '@/min/constants'
 import hotkeys from 'hotkeys-js'
 import _ from 'lodash'
 import html2canvas from 'html2canvas'
+import {
+  collectRequestContentData,
+  generateRequestContentHtml,
+  handleSendEmail,
+  decodeBase64Html,
+  encodeBase64Html,
+} from './logic/requestForActionLogic'
+import { apiSendMQ, apiSelectUserList } from '@/api/nia'
 
 const routeName = 'chatbot'
 
@@ -230,6 +214,13 @@ export default {
           },
         },
       },
+      userList: [],
+      selectedUsers: null, // 단일 선택이므로 객체 또는 null
+      mailContentHtml: '',
+      mailContentData: null,
+      mailSendingLoading: false,
+      mailContentBodyHtml: '', // 메일 본문 HTML (button/select 제외)
+      mailButtonContainerHtml: '', // button과 select 컨테이너 HTML (재사용용)
     }
   },
   computed: {
@@ -366,6 +357,158 @@ export default {
   },
 
   methods: {
+    async isTest() {
+      try {
+        // 사용자 목록이 없으면 로드
+        if (!this.userList || this.userList.length === 0) {
+          await this.onLoadUserList()
+        }
+
+        // 테스트용 데이터 생성 (현재 선택된 티켓 데이터 사용 또는 기본값)
+        const selectedRow = this.alarmFocusTicketData || {
+          ticket_id: 'TEST_TICKET_001',
+          ticket_type: 'ATT2',
+          fault_time: new Date().toISOString(),
+          ticket_result: '테스트 장애',
+          sender: '테스트 사용자',
+        }
+
+        const userInfo = this.$store.state.user.info || {
+          uid: 'test_user',
+          name: '테스트 사용자',
+          agencyName: '테스트 기관',
+        }
+
+        // 데이터 수집
+        const collectedData = await collectRequestContentData({
+          selectedRow,
+          userInfo,
+          options: {
+            loadTrafficInfo: !['SYSLOG', 'RT'].includes(selectedRow.ticket_type),
+            loadSyslogInfo: selectedRow.ticket_type === 'SYSLOG',
+            loadSopHist: true,
+            loadAiDetection: true,
+          },
+        })
+
+        // 시스템 URL 생성 (간단한 테스트용)
+        const mailToSystemUrl = '#'
+
+        // HTML 생성 (버튼 포함 - select 박스는 템플릿에서 직접 표시)
+        const contentWithButton = generateRequestContentHtml({
+          data: collectedData,
+          selectedUsers: this.selectedUsers ? [this.selectedUsers] : [], // 단일 값을 배열로 변환
+          mailToSystemUrl,
+          formatterTimeStamp: (time, formatStr = 'YYYY-MM-DD HH:mm:ss') => {
+            if (!time) return ''
+            // Modal을 extends하므로 moment 사용 가능
+            return this.moment(time).format(formatStr)
+          },
+          includeButton: true,
+          buttonOptions: {
+            className: 'chatbot-mail-send-btn',
+            wrapperClass: 'chatbot-message-body',
+          },
+          includeSelect: true, // select 박스는 템플릿에서 직접 표시
+          userList: this.userList,
+        })
+
+        // 본문과 button/select 컨테이너 분리
+        const buttonContainerMatch = contentWithButton.match(/<div class="chatbot-message-body"[^>]*>[\s\S]*?<\/div>\s*$/)
+        if (buttonContainerMatch) {
+          this.mailButtonContainerHtml = buttonContainerMatch[0]
+          this.mailContentBodyHtml = contentWithButton.replace(buttonContainerMatch[0], '')
+        } else {
+          this.mailContentBodyHtml = contentWithButton
+          this.mailButtonContainerHtml = ''
+        }
+
+        // 메일 내용 및 데이터 저장
+        this.mailContentHtml = contentWithButton
+        this.mailContentData = collectedData
+
+        // 메시지 전송
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: contentWithButton,
+        })
+
+        // HTML에 포함된 select 박스 동적 마운트
+        this.$nextTick(() => {
+          this.bindSelectChangeEvent()
+        })
+      } catch (error) {
+        console.error('isTest 오류:', error)
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: `<div class="chatbot-message-body">테스트 실행 중 오류가 발생했습니다: ${error.message}</div>`,
+        })
+      }
+    },
+
+    async handleMailSendClick(event) {
+      event.preventDefault()
+      const button = event.target.closest('.chatbot-mail-send-btn')
+      if (!button) return
+
+      // base64 인코딩된 HTML 디코딩
+      const encodedHtml = button.getAttribute('data-html-content')
+      if (!encodedHtml) {
+        this.$alert('메일 내용을 찾을 수 없습니다.', '알림', {
+          confirmButtonText: '확인',
+        })
+        return
+      }
+
+      const htmlContent = decodeBase64Html(encodedHtml)
+
+      // 선택된 사용자가 없으면 알림
+      if (!this.selectedUsers) {
+        this.$alert('담당 직원을 선택해주세요.', '알림', {
+          confirmButtonText: '확인',
+        })
+        return
+      }
+
+      // 티켓 정보
+      const ticketInfo = this.alarmFocusTicketData || {
+        ticket_id: 'TEST_TICKET_001',
+        ticket_type: 'ATT2',
+        ticket_result: '테스트 장애',
+      }
+
+      // 공통 메일 전송 함수 사용 (단일 선택이지만 배열로 변환)
+      await handleSendEmail({
+        htmlContent,
+        receiverUsers: [this.selectedUsers], // 단일 값을 배열로 변환
+        ticketInfo,
+        userInfo: this.$store.state.user.info,
+        isBase64Encoded: false,
+        apiSendMQ,
+        onLoading: () => {
+          this.mailSendingLoading = true
+        },
+        onSuccess: (res) => {
+          this.mailSendingLoading = false
+          this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
+            confirmButtonText: '확인',
+          })
+
+          // 성공 메시지 표시
+          if (res.success) {
+            this.$store.dispatch('chatbot/botPushAnswerMessage', {
+              content: `<div class="chatbot-message-body">메일이 성공적으로 전송되었습니다.</div>`,
+            })
+          }
+        },
+        onError: (error) => {
+          this.mailSendingLoading = false
+          console.error('메일 전송 오류:', error)
+          this.$alert(error.message || '메일 전송 중 오류가 발생했습니다.', '오류', {
+            confirmButtonText: '확인',
+          })
+        },
+      })
+    },
+
     showWindowList() {
       let count = 0
       let text = '<div class="chatbot-command-header">열려있는 창 목록</div>'
@@ -376,6 +519,195 @@ export default {
 
       this.$store.dispatch('chatbot/botPushAnswerMessage', {
         content: text,
+      })
+    },
+
+    async onLoadUserList() {
+      try {
+        const res = await apiSelectUserList()
+        this.userList = res?.result ?? []
+      } catch (error) {
+        console.error('사용자 목록 로드 실패:', error)
+      }
+    },
+
+    onSelectedUsersChange() {
+      // 선택된 사용자 변경 시 HTML 업데이트
+      if (this.mailContentData) {
+        this.updateMailContentHtml()
+      }
+    },
+
+    bindSelectChangeEvent() {
+      // HTML에 포함된 select 박스를 동적으로 마운트
+      this.$nextTick(() => {
+        const selectWrappers = document.querySelectorAll('.chatbot-user-select-wrapper')
+        selectWrappers.forEach((wrapper) => {
+          // 기존에 마운트된 el-select가 있으면 완전히 제거 (el-tag 문제 방지)
+          const existingSelect = wrapper.querySelector('.el-select')
+          if (existingSelect) {
+            // Vue 인스턴스가 있으면 제거
+            if (existingSelect.__vue__) {
+              const vueInstance = existingSelect.__vue__
+              if (vueInstance.$parent) {
+                vueInstance.$parent.$destroy()
+              }
+            }
+            // DOM에서 제거
+            existingSelect.remove()
+          }
+
+          // data 속성에서 데이터 가져오기
+          const userListEncoded = wrapper.getAttribute('data-user-list')
+          const selectedUsersEncoded = wrapper.getAttribute('data-selected-users')
+
+          if (!userListEncoded || !selectedUsersEncoded) {
+            return
+          }
+
+          try {
+            // Base64 디코딩
+            const userListJson = decodeBase64Html(userListEncoded)
+            const selectedUsersJson = decodeBase64Html(selectedUsersEncoded)
+            const userList = JSON.parse(userListJson)
+            const selectedUserEmails = JSON.parse(selectedUsersJson)
+
+            // 선택된 사용자 객체 (단일 선택이므로 첫 번째 값만 사용)
+            const selectedUser = selectedUserEmails.length > 0
+              ? userList.find((user) => user.email === selectedUserEmails[0])
+              : null
+
+            // Vue 컴포넌트 동적 생성
+            // eslint-disable-next-line vue/one-component-per-file
+            const SelectComponent = this.$root.constructor.extend({
+              data() {
+                return {
+                  localSelectedUser: selectedUser,
+                  localUserList: userList,
+                }
+              },
+              render(h) {
+                return h(
+                  'el-select',
+                  {
+                    props: {
+                      value: this.localSelectedUser,
+                      multiple: false, // 단일 선택으로 명시
+                      filterable: false,
+                      size: 'mini',
+                      placeholder: '담당 직원을 선택하세요',
+                      clearable: true, // 선택 해제 가능
+                    },
+                    style: {
+                      width: '100%',
+                    },
+                    on: {
+                      input: (value) => {
+                        this.localSelectedUser = value
+                        // 부모 컴포넌트의 selectedUsers 업데이트 (단일 값)
+                        if (this.$parent && this.$parent.selectedUsers !== undefined) {
+                          this.$parent.selectedUsers = value
+                          this.$parent.updateMailContentHtml()
+                        }
+                      },
+                    },
+                  },
+                  this.localUserList.map((user) => {
+                    return h('el-option', {
+                      key: user.email, // key 명시적으로 설정
+                      props: {
+                        label: `${user.name} (${user.email})`,
+                        value: user,
+                      },
+                      scopedSlots: {
+                        default: () => [
+                          h('span', { style: { float: 'left' } }, user.name),
+                          h('span', { style: { float: 'right', color: '#8492a6', fontSize: '13px' } }, user.email),
+                        ],
+                      },
+                    })
+                  })
+                )
+              },
+            })
+
+            // 새 Vue 인스턴스 생성 및 마운트
+            const selectInstance = new SelectComponent({
+              parent: this,
+            })
+            selectInstance.$mount()
+            wrapper.appendChild(selectInstance.$el)
+          } catch (error) {
+            console.error('Select 컴포넌트 마운트 실패:', error)
+          }
+        })
+      })
+    },
+
+    updateMailContentHtml() {
+      if (!this.mailContentData) return
+
+      // 본문만 재생성 (button/select 컨테이너는 재사용)
+      const mailToSystemUrl = '#'
+      const bodyHtml = generateRequestContentHtml({
+        data: this.mailContentData,
+        selectedUsers: this.selectedUsers ? [this.selectedUsers] : [], // 단일 값을 배열로 변환
+        mailToSystemUrl,
+        formatterTimeStamp: (time, formatStr = 'YYYY-MM-DD HH:mm:ss') => {
+          if (!time) return ''
+          return this.moment(time).format(formatStr)
+        },
+        includeButton: false, // button/select는 재사용하므로 생성하지 않음
+        includeSelect: false,
+        userList: [],
+      })
+
+      // 본문과 button/select 컨테이너 결합
+      const updatedHtml = bodyHtml + this.mailButtonContainerHtml
+      this.mailContentHtml = updatedHtml
+      this.mailContentBodyHtml = bodyHtml
+
+      // 채팅 메시지 업데이트 (마지막 메시지가 메일 내용인 경우)
+      this.$nextTick(() => {
+        const messages = this.alarmFocusMode_chatMessages
+        if (messages.length > 0 && messages[messages.length - 1].content.includes('chatbot-mail-send-btn')) {
+          // 마지막 메시지 내용 업데이트
+          const lastMessage = messages[messages.length - 1]
+          lastMessage.content = updatedHtml
+          // select 박스 재마운트 (el-tag 문제 방지를 위해 완전히 재생성)
+          this.bindSelectChangeEvent()
+        }
+      })
+    },
+
+    updateSelectSelectedUsers() {
+      // select 박스의 data-selected-users 속성만 업데이트
+      this.$nextTick(() => {
+        const selectWrappers = document.querySelectorAll('.chatbot-user-select-wrapper')
+        selectWrappers.forEach((wrapper) => {
+          // 단일 선택이므로 이메일 배열로 변환 (기존 로직과 호환)
+          const selectedUserEmails = this.selectedUsers ? [this.selectedUsers.email] : []
+          const selectedUsersJson = JSON.stringify(selectedUserEmails)
+          const selectedUsersEncoded = encodeBase64Html(selectedUsersJson)
+          wrapper.setAttribute('data-selected-users', selectedUsersEncoded)
+
+          // 이미 마운트된 el-select가 있으면 값 업데이트
+          const selectInstance = wrapper.querySelector('.el-select')
+          if (selectInstance && selectInstance.__vue__) {
+            const vueInstance = selectInstance.__vue__
+            if (vueInstance.$parent && vueInstance.$parent.localSelectedUser !== undefined) {
+              vueInstance.$parent.localSelectedUser = this.selectedUsers
+            }
+          }
+        })
+
+        // button의 data-html-content도 업데이트 (본문이 변경되었으므로)
+        const buttons = document.querySelectorAll('.chatbot-mail-send-btn')
+        buttons.forEach((button) => {
+          const encodedHtml = encodeBase64Html(this.mailContentHtml)
+          const safeEncodedHtml = encodedHtml.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+          button.setAttribute('data-html-content', safeEncodedHtml)
+        })
       })
     },
 
@@ -710,6 +1042,11 @@ export default {
 
     formatMessage(content) {
       try {
+        // 이미 HTML이 포함된 경우 (chatbot-command-header, chatbot-mail-send-btn 등이 있는 경우) 그대로 반환
+        if (content.includes('chatbot-command-header') || content.includes('chatbot-mail-send-btn')) {
+          return content
+        }
+
         // 줄바꿈을 <br> 태그로 변환하고 HTML 태그 제거
         let formattedContent = content.replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
         formattedContent = formattedContent.replace(/(\s+)([^<]+)\s+<span class="move-text">\[진행\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[진행]</a>')
@@ -717,10 +1054,23 @@ export default {
         return formattedContent
       } catch (error) {
         console.error(error)
+        return content
       }
     },
 
     async handlePathClick(event, content) {
+      // select 박스 클릭은 이벤트 전파 중단
+      if (event.target.closest('.chatbot-user-select-wrapper') || event.target.classList.contains('chatbot-user-select')) {
+        event.stopPropagation()
+        return
+      }
+
+      // 메일 전송 버튼 클릭 처리
+      if (event.target.classList.contains('chatbot-mail-send-btn')) {
+        await this.handleMailSendClick(event)
+        return
+      }
+
       // this.captureContentToClipboard()
 
       // if (event.target.classList.contains('move-link')) {
@@ -864,6 +1214,27 @@ export default {
 
 ::v-deep .chatbot-message-body {
   margin-bottom: 10px;
+}
+
+::v-deep .chatbot-mail-send-btn {
+  background-color: #409EFF;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+::v-deep .chatbot-mail-send-btn:hover {
+  background-color: #66b1ff;
+}
+
+::v-deep .chatbot-mail-send-btn:active {
+  background-color: #3a8ee6;
 }
 
 ::v-deep .chatbot-body {
