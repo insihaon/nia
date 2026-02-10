@@ -335,7 +335,7 @@ export default {
     background-color: #eef0f3;
     transition: height 0.25s linear;
     #top-inner {
-      margin-left: 59px;
+      margin-left: 80px;
       min-width: 1400px;
       padding-top: 8px;
       background-color: #eef0f3;
