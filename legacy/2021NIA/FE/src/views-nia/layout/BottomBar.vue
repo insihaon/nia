@@ -27,9 +27,9 @@
 
         <!-- AI연동 그룹 -->
         <template v-if="groupedProcesses['AI연동'] && groupedProcesses['AI연동'].length > 0">
-          <div class="ml-4 flex items-center gap-x-2 process-group">
+          <div class="ml-4 flex flex-nowrap items-center gap-x-2 process-group">
             <span class="group-badge group-badge-collect">AI연동</span>
-            <div class="d-flex font-bold items-center gap-x-2">
+            <div class="d-flex flex-nowrap font-bold items-center gap-x-2">
               <span v-for="system in groupedProcesses['AI연동']" :key="system.name">
                 <div :style="{ color: system.status }" class="system-tooltip" style="border-right: solid 1px #ffffff82; padding-right: 5px; white-space: nowrap">
                   <div :class="{ blinking: system.status !== 'lime' }">{{ system.name }}</div>
@@ -42,9 +42,9 @@
 
         <!-- 수집/전송 그룹 -->
         <template v-if="groupedProcesses['수집/전송'] && groupedProcesses['수집/전송'].length > 0">
-          <div class="ml-4 flex items-center gap-x-2 process-group">
+          <div class="ml-4 flex flex-nowrap items-center gap-x-2 process-group">
             <span class="group-badge group-badge-collect">수집/전송</span>
-            <div class="d-flex font-bold items-center gap-x-2">
+            <div class="d-flex flex-nowrap font-bold items-center gap-x-2">
               <span v-for="system in groupedProcesses['수집/전송']" :key="system.name">
                 <div :style="{ color: system.status }" class="system-tooltip" style="border-right: solid 1px #ffffff82; padding-right: 5px; white-space: nowrap">
                   <div :class="{ blinking: system.status !== 'lime' }">{{ system.name }}</div>
@@ -441,6 +441,7 @@ export default {
 
   .process-group {
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     padding: 6px 10px;
     border-radius: 6px;
@@ -448,6 +449,8 @@ export default {
     backdrop-filter: blur(4px);
     height: 36px;
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .group-badge {

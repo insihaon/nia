@@ -1,0 +1,25 @@
+{
+  "name": "ui-agent-playwright",
+  "version": "1.0.0",
+  "description": "Playwright Agent for UI Testing with Evidence Collection",
+  "main": "tests/ui.spec.ts",
+  "scripts": {
+    "install:browsers": "playwright install chromium",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "postinstall": "playwright install chromium"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0"
+  },
+  "keywords": [
+    "playwright",
+    "ui-testing",
+    "e2e"
+  ],
+  "author": "",
+  "license": "MIT"
+}

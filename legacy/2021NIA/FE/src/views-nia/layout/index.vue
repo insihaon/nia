@@ -31,7 +31,7 @@ import WindowBase from '@/views-nia/layout/components/WindowBase'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import { makeAlertMessage } from '@/views-nia/js/commonFormat'
 import { apiIpAlarmList } from '@/api/nia'
-import chatbotIcon from '@/views-nia/dashBoard/chatbotIcon.vue'
+import chatbotIcon from '@/views-nia/layout/chatbotIconButton.vue'
 import _lo from 'lodash'
 import { mapState, mapGetters } from 'vuex'
 import EventBus from '@/utils/event-bus'
@@ -233,10 +233,6 @@ export default {
           })
         }
       }
-    },
-
-    handleOpenEditModal(row, type) {
-      this.$refs.ModaluserSettings.open({ row: row, type: type })
     },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })

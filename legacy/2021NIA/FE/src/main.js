@@ -24,6 +24,10 @@ import '@/utils/error-log'
 
 import '@/quasar'
 
+// UI Evidence Collection Plugin (개발 환경에서만)
+import uiEvidencePlugin from '@/plugins/uiEvidence'
+Vue.use(uiEvidencePlugin)
+
 import '@/styles/index.scss'
 import 'ag-grid-community/dist/styles/ag-grid.scss'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'

@@ -14,10 +14,10 @@ const systemMonitoringMapDefault = {
     'IPSDN_Resource': { key: 'ipResourceKey', show: true, group: '수집/전송' },
     'EMS_SIPC': { key: 'emsSipcKey', show: false, hide: true, group: '수집/전송' },
     'EMS_PM': { key: 'emsPmKey', show: false, hide: true, group: '수집/전송' },
-    '유해 Taffic AI(A)': { key: 'aiTrafficNoxKey', show: true, group: 'AI연동' },
-    '유해 Taffic AI(C)': { key: 'aiTrafficNoxKey2', show: true, group: 'AI연동' },
-    '이상 Taffic AI(A)': { key: 'aiTrafficAnoKey', show: true, group: 'AI연동' },
-    '이상 Taffic AI(C)': { key: 'aiTrafficAnoKey2', show: true, group: 'AI연동' },
+    '유해 Taffic AI - A': { key: 'aiTrafficNoxKey', show: true, group: 'AI연동' },
+    '유해 Taffic AI - C': { key: 'aiTrafficNoxKey2', show: true, group: 'AI연동' },
+    '이상 Taffic AI - A': { key: 'aiTrafficAnoKey', show: true, group: 'AI연동' },
+    '이상 Taffic AI - C': { key: 'aiTrafficAnoKey2', show: true, group: 'AI연동' },
 }
 
 const state = {
@@ -81,10 +81,10 @@ const state = {
             ],
         },
         aiTrafficNoxKey: {
-            name: '유해 Taffic AI(A)', status: 'red',
+            name: '유해 Taffic AI - A', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
-                <span>기존 유해트래픽 AI모델 연동 상태</span><br><br>
+                <span>AIF 유해트래픽 AI모델 연동 상태</span><br><br>
                 <span style="color:red">빨강</span> : AI 연동 실패<br>
                 <span style="color:lime">초록</span> : AI 연동 성공
             </div>
@@ -94,10 +94,10 @@ const state = {
             ],
         },
         aiTrafficAnoKey: {
-            name: '이상 Taffic AI(A)', status: 'red',
+            name: '이상 Taffic AI - A', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
-                <span>기존 이상트래픽 AI모델 연동 상태</span><br><br>
+                <span>AIF 이상트래픽 AI모델 연동 상태</span><br><br>
                 <span style="color:red">빨강</span> : AI 연동 실패<br>
                 <span style="color:lime">초록</span> : AI 연동 성공
             </div>
@@ -107,10 +107,10 @@ const state = {
             ],
         },
         aiTrafficNoxKey2: {
-            name: '유해 Taffic AI(C)', status: 'red',
+            name: '유해 Taffic AI - C', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
-                <span>신규 유해트래픽 AI모델 연동 상태</span><br><br>
+                <span>Codej 유해트래픽 AI모델 연동 상태</span><br><br>
                 <span style="color:red">빨강</span> : AI 연동 실패<br>
                 <span style="color:lime">초록</span> : AI 연동 성공
             </div>
@@ -120,10 +120,10 @@ const state = {
             ],
         },
         aiTrafficAnoKey2: {
-            name: '이상 Taffic AI(C)', status: 'red',
+            name: '이상 Taffic AI - C', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
-                <span>신규 유해트래픽 AI모델 연동 상태</span><br><br>
+                <span>Codej 유해트래픽 AI모델 연동 상태</span><br><br>
                 <span style="color:red">빨강</span> : AI 연동 실패<br>
                 <span style="color:lime">초록</span> : AI 연동 성공
             </div>

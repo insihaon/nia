@@ -139,6 +139,15 @@ const createRouter = () => {
     } else {
       window.$route = to
     }
+
+    // UI Evidence Collection: 라우트 변경 시 증거 수집
+    if (window.__emitEvidence && typeof window.__emitEvidence === 'function') {
+      window.__emitEvidence('route_change', {
+        from: from.path,
+        to: to.path,
+        name: to.name
+      })
+    }
   })
 
   return router
@@ -152,4 +161,3 @@ export function resetRouter() {
 }
 
 export default router
-

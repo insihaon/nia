@@ -17,7 +17,7 @@ var dialogOpenMixin = {
       },
       dialogList: {
         aiResponse: {
-          component: () => import('@/views-nia/dashBoard/aiResponse'),
+          component: () => import('@/views-nia/dashBoard/popup/aiResponse/index'),
           pageTitle: 'AI 장애대응',
           width: '1100',
           height: '750',
@@ -25,7 +25,7 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse.parameterKey
         },
         aiResponse_ATT_AI: {
-          component: () => import('@/views-nia/dashBoard/aiResponse_ATT_AI'),
+          component: () => import('@/views-nia/dashBoard/popup/aiResponse/aiResponse_ATT_AI'),
           pageTitle: 'AI 이상트래픽 장애대응',
           width: '1100',
           height: '750',
@@ -33,7 +33,7 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_ATT_AI.parameterKey
         },
         aiResponse_NTT_AI: {
-          component: () => import('@/views-nia/dashBoard/aiResponse_NTT_AI'),
+          component: () => import('@/views-nia/dashBoard/popup/aiResponse/aiResponse_NTT_AI'),
           pageTitle: '유해트래픽 AI 장애대응',
           width: '1800',
           height: '800',
@@ -41,7 +41,7 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_NTT_AI.parameterKey
         },
         requestForAction: {
-          component: () => import('@/views-nia/dashBoard/requestForAction'),
+          component: () => import('@/views-nia/dashBoard/popup/requestForAction/index'),
           pageTitle: '상황전파',
           width: '1200',
           height: '1100',
@@ -49,7 +49,7 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.requestForAction.parameterKey
         },
         processFin: {
-          component: () => import('@/views-nia/dashBoard/processFin'),
+          component: () => import('@/views-nia/dashBoard/popup/processFin/index'),
           pageTitle: '마감',
           width: '600',
           height: '700',
@@ -57,7 +57,7 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.processFin.parameterKey
         },
         configTest: {
-          component: () => import('@/views-nia/dashBoard/configTest'),
+          component: () => import('@/views-nia/dashBoard/popup/configTest/index'),
           pageTitle: '조치',
           width: '750',
           height: '660',
@@ -65,14 +65,14 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: 'configTest'
         },
         snapShot: {
-          component: () => import('@/views-nia/dashBoard/snapShot'),
+          component: () => import('@/views-nia/dashBoard/popup/snapShot/index'),
           pageTitle: '데이터 스냅샷',
           width: '600',
           height: '310',
           resizeble: true,
         },
         sopHistory: {
-          component: () => import('@/views-nia/alarmMonitoring/sopHistory'),
+          component: () => import('@/views-nia/pages/alarmMonitoring/sopHistory'),
           pageTitle: 'SOP 이력 조회',
           width: '1200',
           height: '900',
@@ -80,14 +80,14 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.sopHistory.parameterKey
         },
         selfProcessList: {
-          component: () => import('@/views-nia/dashBoard/selfProcessList'),
+          component: () => import('@/views-nia/dashBoard/popup/selfProcessList/index'),
           pageTitle: '자가 최적화 이력조회',
           width: '1000',
           height: '800',
           resizeble: true,
         },
         ticketDetail: {
-          component: () => import('@/views-nia/dashBoard/ticketDetail'),
+          component: () => import('@/views-nia/dashBoard/popup/ticketDetail/index'),
           pageTitle: '전표 상세내역',
           width: '1200',
           height: '770',
@@ -101,7 +101,7 @@ var dialogOpenMixin = {
           resizeble: true
         },
         niaTopology: {
-          component: () => import('@/views-nia/dashBoard/niaTopology'),
+          component: () => import('@/views-nia/dashBoard/popup/niaTopology/index'),
           pageTitle: '토폴로지',
           width: '1200',
           height: '785',
@@ -109,14 +109,14 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.niaTopology.parameterKey
         },
         systemMonitoringFilter: {
-          component: () => import('@/views-nia/dashBoard/systemMonitoringFilter'),
+          component: () => import('@/views-nia/layout/sideBar/popup/systemMonitoringFilter'),
           pageTitle: '시스템 모니터링 필터',
           width: '600',
           height: '380',
           resizeble: true,
         },
         disabilityStatusHistoryManagement: {
-          component: () => import('@/views-nia/alarmMonitoring/disabilityStatusHistoryManagement'),
+          component: () => import('@/views-nia/pages/alarmMonitoring/disabilityStatusHistoryManagement'),
           pageTitle: '장애이력',
           width: '1200',
           height: '900',
@@ -124,7 +124,7 @@ var dialogOpenMixin = {
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.parameterKey
         },
         chatbot: {
-          component: () => import('@/views-nia/dashBoard/chatbot'),
+          component: () => import('@/views-nia/dashBoard/popup/chatbot/index'),
           pageTitle: chatbotTitle,
           width: '600',
           height: '900',
