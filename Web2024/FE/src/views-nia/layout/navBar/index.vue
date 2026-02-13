@@ -86,7 +86,7 @@ import ChildItem from './ChildItem'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
 import { isExternal } from '@/utils/validate'
-import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
+import ModaluserSettings from '@/views-nia/layout/navBar/Popup/ModaluserSettings'
 
 const routeName = 'NavBar'
 export default {
