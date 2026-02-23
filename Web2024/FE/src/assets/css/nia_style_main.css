@@ -34,7 +34,7 @@ div.headerWrap span.menuTitle{
   background-repeat: no-repeat;
   background-position: 10px center;
   height:100%;
-  padding-left: 63px;
+  padding-left: 60px;
   line-height :28px;
   font-size: 20px;
   letter-spacing: -0.5px;
@@ -90,7 +90,7 @@ div.headerMenu>ul>li:hover>span{
 }
 
 
-div.headerMenu>ul>li>ul{ 
+div.headerMenu>ul>li>ul{
   position:absolute;
   left:0;
   top:65px; /* hover되는 li 태그 위치 조정  */
@@ -191,7 +191,7 @@ div.optionBox>div>div.searchBtnGroup{
   border-top: solid 1px #909399;
   padding-top: 10px;
   padding-bottom: 3px;
-  display: flex; 
+  display: flex;
   justify-content: center;
 }
 /* 검색창 collapse CSS */
@@ -301,20 +301,20 @@ div.optionRow>div>div.optionItem>div>div.el-select>div.el-input>.el-input__inner
   animation-delay: 0s;
   opacity: 0.75;
   background-position-y: 30px;
-}  
+}
 .slide2{
   animation-duration: 10s;
   animation-delay: 0.5s;
   opacity: 0.5;
   background-position-y: 20px;
-}  
+}
 .slide3{
   animation-duration: 16s;
   animation-delay: 0.75s;
   opacity: 0.5;
   animation-direction: reverse;
   background-position-y: 0px;
-}  
+}
 @keyframes slideAnimation {
   from{
     background-position-x:0;
@@ -428,7 +428,7 @@ div.mainCenterBoxWrap>div.menuItem{
   padding:40px;
   box-sizing: border-box;
   transition: all 0.25s;
-  
+
   background-repeat: no-repeat;
   background-position: 130% center;
 
@@ -675,7 +675,7 @@ div.popupWrap>div.popupWin>div.popupWinFooter>Button:disabled{
 }
 .statusBarWrap ul.statusBarMenu{
   border-radius:5px;
-  
+
 }
 .statusBarMenuLI>ul{
   background-color:transparent !important; box-shadow: none !important; filter:drop-shadow(0px 5px 5px rgba(0,0,0,0.15));

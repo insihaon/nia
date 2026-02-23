@@ -26,7 +26,7 @@ export const niaRoute = Object.freeze([
     path: '/performanceMonitoring',
     component: Layout,
     redirect: '/performanceMonitoring/trafficAnalysisInstitution',
-    meta: { title: '성능감시' },
+    meta: { title: '자원 · 성능 감시' },
     children: [
       {
         path: 'trafficAnalysisInstitution',
@@ -67,7 +67,7 @@ export const niaRoute = Object.freeze([
     disable: false,
     redirect: '/alarmMonitoring/sopHistory',
     meta: {
-      title: '장애감시',
+      title: '이력관리',
     },
     children: [
       {
@@ -94,6 +94,12 @@ export const niaRoute = Object.freeze([
         name: 'SyslogRuleHistoryInquiry',
         meta: { title: 'Syslog rule 이력조회' },
         modalMode: true
+      },
+      {
+        path: 'snapshotHistory',
+        component: () => import('@/views-nia/pages/dataSnapshot/snapshotHistory'),
+        name: 'SnapshotHistory',
+        meta: { title: '스냅샷 이력조회' },
       },
     ]
   },
@@ -141,60 +147,59 @@ export const niaRoute = Object.freeze([
     ]
   },
   {
-    path: '/profile',
+    path: '/transientOutage',
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/profile/profileInquiry',
+    redirect: '/transientOutage/transientOutageList',
     meta: {
-      title: '프로파일',
+      title: '장애감시',
     },
     children: [
       {
-        path: 'profileInquiry',
-        component: () => import('@/views-nia/pages/profile/profileInquiry'),
-        name: 'ProfileInquiry',
-        meta: { title: '조치 프로파일 조회' },
+        path: 'transientOutageList',
+        component: () => import('@/views-nia/pages/TransientOutage/TransientOutageList'),
+        name: 'TransientOutageList',
+        meta: { title: '순단장애' },
+      },
+      {
+        path: 'predictiveMaintenance',
+        component: () => import('@/views-nia/pages/PredictiveMaintenance/PredictiveMaintenanceTicket'),
+        name: 'PredictiveMaintenance',
+        meta: { title: '예지보전' },
       },
     ]
   },
   {
-    path: '/dataSnapshot',
+    path: '/nodeManagement',
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/dataSnapshot/snapshotHistory',
+    redirect: '/nodeManagement/nodeInquiryList',
     meta: {
-      title: '데이터스냅샷',
+      title: '자원 · 구성 관리',
     },
     children: [
       {
-        path: 'snapshotHistory',
-        component: () => import('@/views-nia/pages/dataSnapshot/snapshotHistory'),
-        name: 'SnapshotHistory',
-        meta: { title: '스냅샷 이력조회' },
+        path: 'nodeInquiryList',
+        component: () => import('@/views-nia/pages/nodeManagement/nodeInquiryList'),
+        name: 'NodeInquiryList',
+        meta: { title: '노드 리스트 조회' },
+      },
+      {
+        path: 'linkInquiryInfoList',
+        component: () => import('@/views-nia/pages/linkManagement/linkInquiryInfoList'),
+        name: 'LinkInquiryInfoList',
+        meta: { title: '링크 정보 조회' },
+      },
+      {
+        path: 'agencyInquiryList',
+        component: () => import('@/views-nia/pages/agency/agencyInquiryList'),
+        name: 'AgencyInquiryList',
+        meta: { title: '이용기관 조회' },
       },
     ]
   },
-  // {
-  //   path: '/userManagement',
-  //   component: Layout,
-  //   hidden: false,
-  //   disable: false,
-  //   redirect: '/userManagement/ModaluserSettings',
-  //   meta: {
-  //     title: '사용자 관리',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'userSettings',
-  //       component: () => import('@/views-nia/layout/navBar/Popup/ModaluserSettings'),
-  //       name: 'UserSettings',
-  //       meta: { title: '사용자 설정' },
-  //       modalMode: true
-  //     },
-  //   ]
-  // },
   {
     path: '/manager',
     component: Layout,
@@ -211,59 +216,11 @@ export const niaRoute = Object.freeze([
         name: 'AuthSettings',
         meta: { title: '관리자 권한 설정' },
       },
-    ]
-  },
-  {
-    path: '/nodeManagement',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/nodeManagement/nodeInquiryList',
-    meta: {
-      title: '노드관리',
-    },
-    children: [
       {
-        path: 'nodeInquiryList',
-        component: () => import('@/views-nia/pages/nodeManagement/nodeInquiryList'),
-        name: 'NodeInquiryList',
-        meta: { title: '노드 리스트 조회' },
-      },
-    ]
-  },
-  {
-    path: '/linkManagement',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/linkManagement/linkInquiryInfoList',
-    meta: {
-      title: '링크관리',
-    },
-    children: [
-      {
-        path: 'linkInquiryInfoList',
-        component: () => import('@/views-nia/pages/linkManagement/linkInquiryInfoList'),
-        name: 'LinkInquiryInfoList',
-        meta: { title: '링크 정보 조회' },
-      },
-    ]
-  },
-  {
-    path: '/agency',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/agency/agencyInquiryList',
-    meta: {
-      title: '이용기관',
-    },
-    children: [
-      {
-        path: 'agencyInquiryList',
-        component: () => import('@/views-nia/pages/agency/agencyInquiryList'),
-        name: 'AgencyInquiryList',
-        meta: { title: '이용기관 조회' },
+        path: 'profileInquiry',
+        component: () => import('@/views-nia/pages/profile/profileInquiry'),
+        name: 'ProfileInquiry',
+        meta: { title: '자동조치 프로파일 관리' },
       },
     ]
   },

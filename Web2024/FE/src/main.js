@@ -23,6 +23,7 @@ import '@/utils/extend'
 import '@/utils/error-log'
 
 import '@/quasar'
+import feather from 'vue-icon'
 
 // UI Evidence Collection Plugin (개발 환경에서만)
 import uiEvidencePlugin from '@/plugins/uiEvidence'
@@ -93,6 +94,20 @@ if (process.env.NODE_ENV !== 'production') {
 
 Object.keys(filters).forEach((key) => {
   Vue.filter(key, filters[key])
+})
+
+Vue.use(feather, {
+  name: 'v-icon',
+  props: {
+    baseClass: {
+      type: String,
+      default: 'v-icon'
+    },
+    classPrefix: {
+      type: String,
+      default: 'v-icon-'
+    }
+  }
 })
 
 Vue.config.devtools = process.env.NODE_ENV !== 'production'
