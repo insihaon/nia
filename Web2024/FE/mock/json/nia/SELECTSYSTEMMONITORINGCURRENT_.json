@@ -3,54 +3,129 @@
         "success": true,
         "encrypt": false,
         "sql": [
-            "SELECT \n            KEY_NAME\n            , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE\n            , YD_DATE AS YD_DATE1\n        FROM NIA.TB_LINKAGE_SEQ\n        WHERE KEY_NAME IN (\n            'aiIpSdnTrafficeKey',\n            'aiIpSdnSflowKey',\n            'aiIpSdnSyslogKey',\n            'aiIpSdnNodeFactorKey',\n            'aiTrafficNoxKey',\n            'aiTrafficAnoKey',\n            'aiIpPerfKey',\n            'aiIpResourceIfKey',\n            'aiIpResourceKey')"
+            "SELECT \n            KEY_NAME\n            , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE\n            , YD_DATE AS YD_DATE1\n            , NORMAL_TIME_LIMIT\n        FROM NIA.TB_LINKAGE_SEQ\n        WHERE KEY_NAME IN (\n            'aiIpSdnTrafficeKey',\n            'aiIpSdnSflowKey',\n            'aiIpSdnSyslogKey',\n            'aiIpSdnNodeFactorKey',\n            'aiTrafficNoxKey',\n            'aiTrafficAnoKey',\n            'aiTrafficNoxKey2',\n            'aiTrafficAnoKey2',\n            'aiIpPerfKey',\n            'aiIpResourceIfKey',\n            'aiIpResourceKey',\n            'ipSdnTrafficeKey',\n            'ipSdnSflowKey',\n            'ipSdnSyslogKey',\n            'ipSdnNodeFactorKey',\n            'ipPerfKey',\n            'ipResourceIfKey',\n            'ipResourceKey',\n            'emsSipcKey',\n            'emsPmKey'\n        )"
         ],
-        "total": 9,
+        "total": 20,
         "result": [
             {
-                "key_name": "aiIpSdnSyslogKey",
-                "yd_date": "2024-12-13 22:02:34",
-                "yd_date1": "2024-12-13T22:02:34.000+09:00"
+                "key_name": "ipResourceKey",
+                "yd_date": "2026-02-23 00:05:00",
+                "normal_time_limit": "00:05:00",
+                "yd_date1": "2026-02-23T00:05:00.000+09:00"
             },
             {
-                "key_name": "aiIpSdnNodeFactorKey",
-                "yd_date": "2024-12-13 22:04:22",
-                "yd_date1": "2024-12-13T22:04:22.000+09:00"
-            },
-            {
-                "key_name": "aiTrafficAnoKey",
-                "yd_date": "2024-12-13 21:10:41",
-                "yd_date1": "2024-12-13T21:10:41.000+09:00"
-            },
-            {
-                "key_name": "aiIpPerfKey",
-                "yd_date": "2024-12-13 22:02:14",
-                "yd_date1": "2024-12-13T22:02:14.000+09:00"
-            },
-            {
-                "key_name": "aiIpSdnTrafficeKey",
-                "yd_date": "2024-12-13 22:03:29",
-                "yd_date1": "2024-12-13T22:03:29.000+09:00"
-            },
-            {
-                "key_name": "aiIpSdnSflowKey",
-                "yd_date": "2024-12-13 22:04:17",
-                "yd_date1": "2024-12-13T22:04:17.000+09:00"
-            },
-            {
-                "key_name": "aiTrafficNoxKey",
-                "yd_date": "2024-12-13 07:17:09",
-                "yd_date1": "2024-12-13T07:17:09.000+09:00"
+                "key_name": "ipResourceIfKey",
+                "yd_date": "2026-02-23 00:15:00",
+                "normal_time_limit": "00:15:00",
+                "yd_date1": "2026-02-23T00:15:00.000+09:00"
             },
             {
                 "key_name": "aiIpResourceKey",
-                "yd_date": "2024-12-13 02:30:01",
-                "yd_date1": "2024-12-13T02:30:01.000+09:00"
+                "yd_date": "2026-02-23 02:30:01",
+                "normal_time_limit": "02:30:00",
+                "yd_date1": "2026-02-23T02:30:01.000+09:00"
             },
             {
                 "key_name": "aiIpResourceIfKey",
-                "yd_date": "2024-12-13 02:40:01",
-                "yd_date1": "2024-12-13T02:40:01.000+09:00"
+                "yd_date": "2026-02-23 02:40:01",
+                "normal_time_limit": "02:40:00",
+                "yd_date1": "2026-02-23T02:40:01.000+09:00"
+            },
+            {
+                "key_name": "emsSipcKey",
+                "yd_date": "2026-02-23 13:16:11",
+                "normal_time_limit": "1080000",
+                "yd_date1": "2026-02-23T13:16:11.000+09:00"
+            },
+            {
+                "key_name": "emsPmKey",
+                "yd_date": "2026-02-23 13:16:54",
+                "normal_time_limit": "1080000",
+                "yd_date1": "2026-02-23T13:16:54.000+09:00"
+            },
+            {
+                "key_name": "aiIpPerfKey",
+                "yd_date": "2026-02-23 13:27:25",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:27:25.000+09:00"
+            },
+            {
+                "key_name": "ipPerfKey",
+                "yd_date": "2026-02-23 13:24:02",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:24:02.000+09:00"
+            },
+            {
+                "key_name": "aiTrafficAnoKey",
+                "yd_date": "2026-02-21 06:53:03",
+                "normal_time_limit": "300000",
+                "yd_date1": "2026-02-21T06:53:03.000+09:00"
+            },
+            {
+                "key_name": "ipSdnSyslogKey",
+                "yd_date": "2026-02-23 13:27:19",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:27:19.000+09:00"
+            },
+            {
+                "key_name": "aiTrafficAnoKey2",
+                "yd_date": "2026-02-23 01:14:46",
+                "normal_time_limit": null,
+                "yd_date1": "2026-02-23T01:14:46.000+09:00"
+            },
+            {
+                "key_name": "aiTrafficNoxKey",
+                "yd_date": "2026-02-23 13:26:32",
+                "normal_time_limit": "300000",
+                "yd_date1": "2026-02-23T13:26:32.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnNodeFactorKey",
+                "yd_date": "2026-02-23 13:27:34",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:27:34.000+09:00"
+            },
+            {
+                "key_name": "ipSdnNodeFactorKey",
+                "yd_date": "2026-02-23 13:27:15",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:27:15.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnSyslogKey",
+                "yd_date": "2026-02-23 13:23:29",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:23:29.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnSflowKey",
+                "yd_date": "2026-02-23 13:27:33",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:27:33.000+09:00"
+            },
+            {
+                "key_name": "ipSdnTrafficeKey",
+                "yd_date": "2026-02-23 13:27:15",
+                "normal_time_limit": "300000",
+                "yd_date1": "2026-02-23T13:27:15.000+09:00"
+            },
+            {
+                "key_name": "aiTrafficNoxKey2",
+                "yd_date": "2026-02-23 13:27:34",
+                "normal_time_limit": null,
+                "yd_date1": "2026-02-23T13:27:34.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnTrafficeKey",
+                "yd_date": "2026-02-23 13:26:49",
+                "normal_time_limit": "300000",
+                "yd_date1": "2026-02-23T13:26:49.000+09:00"
+            },
+            {
+                "key_name": "ipSdnSflowKey",
+                "yd_date": "2026-02-23 13:27:37",
+                "normal_time_limit": "600000",
+                "yd_date1": "2026-02-23T13:27:37.000+09:00"
             }
         ]
     },
@@ -62,11 +137,11 @@
         "url": "/selectList/SELECT_SYSTEM_MONITORING_CURRENT",
         "urlOrigin": "/selectList/SELECT_SYSTEM_MONITORING_CURRENT",
         "params": null,
-        "data": "{\"encrypt\":\"74563LH5CiQYkFg6uwY=\"}",
-        "cmd": "{ \"url\": \"/selectList/SELECT_SYSTEM_MONITORING_CURRENT\", \"sqlId\": \"SELECT_SYSTEM_MONITORING_CURRENT\", \"param\": {\"encrypt\":\"74563LH5CiQYkFg6uwY=\"} }",
-        "requestTime": "2024-12-13 22:08:49.199",
-        "responseTime": "2024-12-13 22:08:49.382",
-        "duration": 183,
+        "data": "{\"encrypt\":\"NW072SgUNvbsPt0Fb34=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SYSTEM_MONITORING_CURRENT\", \"sqlId\": \"SELECT_SYSTEM_MONITORING_CURRENT\", \"param\": {\"encrypt\":\"NW072SgUNvbsPt0Fb34=\"} }",
+        "requestTime": "2026-02-23 13:30:58.601",
+        "responseTime": "2026-02-23 13:30:59.022",
+        "duration": 421,
         "jsonFileName": "SELECTSYSTEMMONITORINGCURRENT_.json"
     }
 }

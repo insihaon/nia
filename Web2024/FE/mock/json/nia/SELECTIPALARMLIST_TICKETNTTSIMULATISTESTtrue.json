@@ -1,0 +1,54 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT DISTINCT\n            ALARMNO,\n            TICKET_ID,\n            CLUSTERNO,\n            NODE_NUM,\n            NODE_NM,\n            ALARMLOC,\n            IF_NUM,\n            T.TICKET_TYPE,\n            TO_CHAR(ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME,\n            TO_CHAR(FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME,\n            PORT,\n            ALARMMSG,\n            FAULT_TYPE,\n            ALARMMSG_ORIGINAL,\n            TICKET_RCA_RESULT_CODE,\n            STATUS,\n            TICKET_RCA_RESULT_DTL_CODE,\n            TOTAL_RELATED_ALARM_CNT,\n            ROOT_CAUSE_SYSNAMEA,\n            ROOT_CAUSE_SYSNAMEZ,\n            ROOT_CAUSE_PORTA,\n            ROOT_CAUSE_PORTZ,\n            ZERO1_ENTROPY,\n            IP_ADDR,\n            AI_ACCURACY\n        FROM (\n            SELECT \n                ACM.ALARMNO,\n                TC.TICKET_ID,\n                ACM.CLUSTERNO,\n                NM.NODE_NUM AS NODE_NUM,\n                NM.NODE_NM AS NODE_NM,\n                ACM.ALARMLOC,\n                NULL AS IF_NUM,\n                TC.TICKET_TYPE,\n                TC.root_cause_type AS FAULT_TYPE,\n                ACM.ALARMTIME AS ALARMTIME,\n                NULL FAULT_TIME,\n                ACM.ALARMMSG,\n                ACM.PORT,\n                ACM.ALARMMSG_ORIGINAL,\n                TC.STATUS,\n                TC.TICKET_RCA_RESULT_CODE,\n                TC.TICKET_RCA_RESULT_DTL_CODE,\n                NULL TOTAL_RELATED_ALARM_CNT,\n                AL.ROOT_CAUSE_SYSNAMEA,\n                AL.ROOT_CAUSE_SYSNAMEZ,\n                AL.ROOT_CAUSE_PORTA,\n                AL.ROOT_CAUSE_PORTZ,\n                TC.ZERO1_ENTROPY,\n                NM.IP_ADDR AS IP_ADDR,\n                SOP.AI_ACCURACY\n            FROM (\n                SELECT \n                    ACM.ALARMNO,\n                    MAX(ACM.CLUSTERNO) AS CLUSTERNO,\n                    ACM.SYSNAME,\n                    ACM.ALARMTIME AS ALARMTIME,\n                    ACM.CLEARTIME,\n                    ACM.ALARMLOC,\n                    ACM.ALARMMSG,\n                    ACM.ALARMLEVEL,\n                    ACM.PORT,\n                    ACM.ALARMMSG_ORIGINAL\n                FROM rca.tb_alarm_cur_mst ACM\n                WHERE ALARMNO LIKE 'I%'\n                GROUP BY ACM.ALARMNO, ACM.SYSNAME, ACM.ALARMTIME, ACM.CLEARTIME, ACM.ALARMLOC, ACM.ALARMMSG, ACM.ALARMLEVEL, ACM.PORT, ACM.ALARMMSG_ORIGINAL\n            ) ACM\n            LEFT JOIN rca.tb_rca_ticket_current TC ON ACM.clusterno = TC.cluster_no\n            LEFT JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID\n            LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA\n            LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID\n            UNION ALL\n            SELECT\n                NULL ALARMNO,\n                TC.TICKET_ID,\n                CLUSTER_NO AS CLUSTERNO,\n                nm.node_num AS NODE_NUM,\n                nm.node_nm AS NODE_NM,\n                pt.if_id AS ALARMLOC,\n                pt.if_num AS IF_NUM,\n                TC.TICKET_TYPE,\n                TC.root_cause_type AS FAULT_TYPE,\n                TICKET_GENERATION_TIME AS ALARMTIME,\n                FAULT_TIME,\n                TC.root_cause_type AS ALARMMSG,\n                NULL PORT,\n                NULL ALARMMSG_ORIGINAL,\n                TC.STATUS,\n                TC.TICKET_RCA_RESULT_CODE,\n                TC.TICKET_RCA_RESULT_DTL_CODE,\n                TOTAL_RELATED_ALARM_CNT,\n                ROOT_CAUSE_SYSNAMEA,\n                ROOT_CAUSE_SYSNAMEZ,\n                ROOT_CAUSE_PORTA,\n                ROOT_CAUSE_PORTZ,\n                TC.ZERO1_ENTROPY,\n                NM.IP_ADDR AS IP_ADDR,\n                SOP.AI_ACCURACY\n            FROM rca.tb_rca_ticket_current TC\n            INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID\n            INNER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA\n            INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID and PT.node_id = NM.node_id\n            LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID\n            WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'ATT2_AI')\n                AND TC.PARENT_TICKET_ID IS NULL\n            UNION ALL\n            SELECT\n                NULL ALARMNO,\n                TC.TICKET_ID,\n                CLUSTER_NO AS CLUSTERNO,\n                '-' AS NODE_NUM,\n                '-' AS NODE_NM,\n                '-' AS ALARMLOC,\n                '-' AS IF_NUM,\n                TC.TICKET_TYPE,\n                TC.root_cause_type AS FAULT_TYPE,\n                TICKET_GENERATION_TIME AS ALARMTIME,\n                FAULT_TIME,\n                TC.root_cause_type AS ALARMMSG,\n                NULL PORT,\n                NULL ALARMMSG_ORIGINAL,\n                TC.STATUS,\n                TC.TICKET_RCA_RESULT_CODE,\n                TC.TICKET_RCA_RESULT_DTL_CODE,\n                TOTAL_RELATED_ALARM_CNT,\n                '-' AS ROOT_CAUSE_SYSNAMEA,\n                '-' AS ROOT_CAUSE_SYSNAMEZ,\n                '-' AS ROOT_CAUSE_PORTA,\n                '-' AS ROOT_CAUSE_PORTZ,\n                TC.ZERO1_ENTROPY,\n                '-' AS IP_ADDR,\n                SOP.AI_ACCURACY\n            FROM rca.tb_rca_ticket_current TC\n            LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID\n            WHERE TC.TICKET_TYPE IN ('NTT', 'NTT_AI')\n                AND TC.PARENT_TICKET_ID IS NULL\n            UNION ALL\n            SELECT \n                SAM.ALARMNO,\n                NULL TICKET_ID,\n                NULL CLUSTERNO,\n                SAM.NODE_NUM,\n                SAM.NODE_NM,\n                SAM.ALARMLOC,\n                NULL AS IF_NUM,\n                'SYSLOG' AS TICKET_TYPE,\n                NULL FAULT_TYPE,\n                SAM.ALARMTIME AS ALARMTIME,\n                NULL FAULT_TIME,\n                SAM.ALARMMSG,\n                NULL PORT,\n                SAM.ETC AS ALARMMSG_ORIGINAL,\n                CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS\n                    ELSE '-'\n                END AS STATUS,\n                NULL TICKET_RCA_RESULT_DTL_CODE,\n                NULL TICKET_RCA_RESULT_CODE,\n                NULL TOTAL_RELATED_ALARM_CNT,\n                NULL ROOT_CAUSE_SYSNAMEA,\n                NULL ROOT_CAUSE_SYSNAMEZ,\n                NULL ROOT_CAUSE_PORTA,\n                NULL ROOT_CAUSE_PORTZ,\n                NULL ZERO1_ENTROPY,\n                NM.IP_ADDR AS IP_ADDR,\n                NULL AS AI_ACCURACY\n            FROM rca.tb_syslog_alarm_mst SAM\n            LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM\n        ) T\n        WHERE 1=1 \n            AND T.TICKET_ID = 'NTT_SIMULATION'\n        ORDER BY ALARMTIME DESC"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "ticket_type": "NTT_AI",
+                "root_cause_sysnamez": "-",
+                "clusterno": null,
+                "alarmno": null,
+                "if_num": "-",
+                "fault_time": "2025-11-12 14:31:44",
+                "node_nm": "-",
+                "root_cause_porta": "-",
+                "ticket_rca_result_dtl_code": "유해 트래픽 탐지",
+                "alarmmsg": "TrafficFail",
+                "ticket_rca_result_code": "TRAFFIC_NOXIOUS_DETECTION",
+                "fault_type": "TrafficFail",
+                "root_cause_sysnamea": "-",
+                "ticket_id": "NTT_SIMULATION",
+                "ai_accuracy": "0",
+                "port": null,
+                "alarmtime": "2025-11-12 14:31:44",
+                "root_cause_portz": "-",
+                "zero1_entropy": 0.0195773102,
+                "alarmmsg_original": null,
+                "node_num": "-",
+                "ip_addr": "-",
+                "alarmloc": "-",
+                "total_related_alarm_cnt": 1,
+                "status": "ACK"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_IP_ALARM_LIST",
+        "urlOrigin": "/selectList/SELECT_IP_ALARM_LIST",
+        "params": null,
+        "data": "{\"TICKET_ID\":\"NTT_SIMULATION\",\"ALARMNO\":null,\"IS_TEST\":true,\"encrypt\":\"CYxST4Ou7gH0VTVR1xw=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_IP_ALARM_LIST\", \"sqlId\": \"SELECT_IP_ALARM_LIST\", \"param\": {\"TICKET_ID\":\"NTT_SIMULATION\",\"ALARMNO\":null,\"IS_TEST\":true,\"encrypt\":\"CYxST4Ou7gH0VTVR1xw=\"} }",
+        "requestTime": "2026-02-23 13:31:08.666",
+        "responseTime": "2026-02-23 13:31:08.829",
+        "duration": 163,
+        "jsonFileName": "SELECTIPALARMLIST_TICKETNTTSIMULATISTESTtrue.json"
+    }
+}

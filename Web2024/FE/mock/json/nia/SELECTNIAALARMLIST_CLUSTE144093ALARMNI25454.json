@@ -1,0 +1,46 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "WITH sub_ticket_alarm AS\n        ( \n            SELECT \n                T.*,\n                AL.ticket_al_id,\n                AL.root_cause_alarm_noa,\n                AL.root_cause_alarm_noz\n            FROM RCA.TB_RCA_TICKET_CURRENT T\n            LEFT JOIN LATERAL (\n                SELECT ticket_al_id, root_cause_alarm_noa, root_cause_alarm_noz\n                FROM RCA.TB_RCA_TICKET_AL_CURRENT AL\n                WHERE AL.TICKET_ID = T.TICKET_ID\n                ORDER BY AL.TICKET_AL_ID DESC\n                FETCH FIRST 1 ROWS ONLY\n            ) AL ON TRUE\n        )\n        SELECT  T.ALARMNO AS ALARMNO,\n                T.CLUSTERNO AS CLUSTERNO,\n                T.TMP_CLUSTER_NO AS TMP_CLUSTER_NO,\n                T.SYSNAME AS SYSNAME,\n                T.EQUIPTYPE AS EQUIPTYPE,\n                T.ALARMTIME AS ALARMTIME,\n                T.RECEIVETIME AS RECEIVETIME,\n                T.ALARMLOC AS ALARMLOC,\n                T.ALARMMSG AS ALARMMSG,\n                T.UNIT AS UNIT,\n                T.ALARMLEVEL AS ALARMLEVEL,\n                T.CLUSTERNO_ORIGINAL AS CLUSTERNO_ORIGINAL,\n                T.CLEARTIME AS CLEARTIME,\n                T.PTPNAME AS PTPNAME,\n                T.SLOT AS SLOT,\n                T.PORT AS PORT,\n                CASE WHEN ta.root_cause_alarm_noa IS NULL AND ta.root_cause_alarm_noz IS NULL THEN true ELSE false\n                END RELATED_ALARM\n        FROM    rca.tb_alarm_cur_mst T\n        LEFT OUTER JOIN sub_ticket_alarm ta ON T.clusterno = ta.cluster_no\n         WHERE 1=1\n                AND T.CLUSTERNO = '144093'\n                AND T.ALARMNO = 'I25454'"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "equiptype": "n9k",
+                "alarmmsg": "PORT_DOWN",
+                "clusterno": "144093",
+                "clusterno_original": null,
+                "alarmno": "I25454",
+                "slot": null,
+                "related_alarm": false,
+                "unit": null,
+                "cleartime": "2025-10-28T12:02:46.000+09:00",
+                "port": "1720408774278",
+                "alarmtime": "2025-10-28T12:02:46.000+09:00",
+                "sysname": "daejeon-n9k",
+                "tmp_cluster_no": "131860",
+                "alarmloc": "Ethernet1/28",
+                "receivetime": "2025-10-28T12:02:46.000+09:00",
+                "ptpname": null,
+                "alarmlevel": "5"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_NIA_ALARM_LIST",
+        "urlOrigin": "/selectList/SELECT_NIA_ALARM_LIST",
+        "params": null,
+        "data": "{\"CLUSTERNO\":\"144093\",\"ALARMNO\":\"I25454\",\"encrypt\":\"ySmqlCC7dqu87SbQDFw=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_NIA_ALARM_LIST\", \"sqlId\": \"SELECT_NIA_ALARM_LIST\", \"param\": {\"CLUSTERNO\":\"144093\",\"ALARMNO\":\"I25454\",\"encrypt\":\"ySmqlCC7dqu87SbQDFw=\"} }",
+        "requestTime": "2026-02-23 13:34:23.543",
+        "responseTime": "2026-02-23 13:34:23.811",
+        "duration": 268,
+        "jsonFileName": "SELECTNIAALARMLIST_CLUSTE144093ALARMNI25454.json"
+    }
+}

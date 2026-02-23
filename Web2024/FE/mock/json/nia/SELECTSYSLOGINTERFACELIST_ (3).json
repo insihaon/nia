@@ -1,0 +1,483 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT DISTINCT ALARMLOC AS VALUE\n        FROM rca.tb_syslog_alarm_mst\n        WHERE ALARMLOC IS NOT NULL"
+        ],
+        "total": 152,
+        "result": [
+            {
+                "value": "xe27"
+            },
+            {
+                "value": "cd16"
+            },
+            {
+                "value": "xe40"
+            },
+            {
+                "value": "xe33"
+            },
+            {
+                "value": "vlan1.212"
+            },
+            {
+                "value": "cd35"
+            },
+            {
+                "value": "eth0"
+            },
+            {
+                "value": "xe35"
+            },
+            {
+                "value": "vlan1.101"
+            },
+            {
+                "value": "ce10/1"
+            },
+            {
+                "value": "ce3"
+            },
+            {
+                "value": "ce1/1"
+            },
+            {
+                "value": "vlan1.29"
+            },
+            {
+                "value": "xe23"
+            },
+            {
+                "value": "ce3/1"
+            },
+            {
+                "value": "xe17"
+            },
+            {
+                "value": "vlan1.310"
+            },
+            {
+                "value": "po10"
+            },
+            {
+                "value": "ce8"
+            },
+            {
+                "value": "vlan1.25"
+            },
+            {
+                "value": "xe21"
+            },
+            {
+                "value": "cd54"
+            },
+            {
+                "value": "cd49"
+            },
+            {
+                "value": "ce2/1"
+            },
+            {
+                "value": "ce13"
+            },
+            {
+                "value": "xe28"
+            },
+            {
+                "value": "xe7"
+            },
+            {
+                "value": "cd1"
+            },
+            {
+                "value": "cd13"
+            },
+            {
+                "value": "ce1"
+            },
+            {
+                "value": "cd51"
+            },
+            {
+                "value": "ce5"
+            },
+            {
+                "value": "xe13"
+            },
+            {
+                "value": "vlan1.45"
+            },
+            {
+                "value": "xe20"
+            },
+            {
+                "value": "xe19"
+            },
+            {
+                "value": "xe52/1"
+            },
+            {
+                "value": "vlan1.19"
+            },
+            {
+                "value": "cd17"
+            },
+            {
+                "value": "vlan1.41"
+            },
+            {
+                "value": "xe37"
+            },
+            {
+                "value": "po400"
+            },
+            {
+                "value": "cd2"
+            },
+            {
+                "value": "xe18"
+            },
+            {
+                "value": "ce18/1"
+            },
+            {
+                "value": "vlan1.18"
+            },
+            {
+                "value": "xe30"
+            },
+            {
+                "value": "ce44"
+            },
+            {
+                "value": "ce16"
+            },
+            {
+                "value": "xe11"
+            },
+            {
+                "value": "vlan1.1633"
+            },
+            {
+                "value": "ce21/1"
+            },
+            {
+                "value": "ce31/1"
+            },
+            {
+                "value": "xe16"
+            },
+            {
+                "value": "xe19.128"
+            },
+            {
+                "value": "ce29"
+            },
+            {
+                "value": "cd34/1"
+            },
+            {
+                "value": "cd50"
+            },
+            {
+                "value": "cd4/1"
+            },
+            {
+                "value": "ce2"
+            },
+            {
+                "value": "cd31"
+            },
+            {
+                "value": "ce11/1"
+            },
+            {
+                "value": "xe43"
+            },
+            {
+                "value": "vlan1.883"
+            },
+            {
+                "value": "ce23/1"
+            },
+            {
+                "value": "po40"
+            },
+            {
+                "value": "cd14"
+            },
+            {
+                "value": "ce23"
+            },
+            {
+                "value": "ce4/1"
+            },
+            {
+                "value": "ce4"
+            },
+            {
+                "value": "ce20"
+            },
+            {
+                "value": "cd11"
+            },
+            {
+                "value": "xe6"
+            },
+            {
+                "value": "ce20/1"
+            },
+            {
+                "value": "vlan1.12"
+            },
+            {
+                "value": "cd15"
+            },
+            {
+                "value": "xe12"
+            },
+            {
+                "value": "cd53"
+            },
+            {
+                "value": "xe39"
+            },
+            {
+                "value": "ce17/1"
+            },
+            {
+                "value": "xe25"
+            },
+            {
+                "value": "cd48"
+            },
+            {
+                "value": "ce6/1"
+            },
+            {
+                "value": "xe9"
+            },
+            {
+                "value": "ce15"
+            },
+            {
+                "value": "xe44"
+            },
+            {
+                "value": "xe29"
+            },
+            {
+                "value": "vlan1.2100"
+            },
+            {
+                "value": "cd32/1"
+            },
+            {
+                "value": "ce5/1"
+            },
+            {
+                "value": "cd20/1"
+            },
+            {
+                "value": "ce0"
+            },
+            {
+                "value": "xe22"
+            },
+            {
+                "value": "ce11"
+            },
+            {
+                "value": "vlan1.15"
+            },
+            {
+                "value": "xe38"
+            },
+            {
+                "value": "cd22/1"
+            },
+            {
+                "value": "vlan1.24"
+            },
+            {
+                "value": "xe49/1"
+            },
+            {
+                "value": "vlan1.322"
+            },
+            {
+                "value": "cd12"
+            },
+            {
+                "value": "xe3"
+            },
+            {
+                "value": "cd0"
+            },
+            {
+                "value": "xe26"
+            },
+            {
+                "value": "vlan1.2200"
+            },
+            {
+                "value": "ce32/1"
+            },
+            {
+                "value": "cd55"
+            },
+            {
+                "value": "cd6/1"
+            },
+            {
+                "value": "vlan1.47"
+            },
+            {
+                "value": "xe42"
+            },
+            {
+                "value": "vlan1.240"
+            },
+            {
+                "value": "vlan1.211"
+            },
+            {
+                "value": "xe24"
+            },
+            {
+                "value": "xe32"
+            },
+            {
+                "value": "xe8"
+            },
+            {
+                "value": "xe15"
+            },
+            {
+                "value": "vlan1.26"
+            },
+            {
+                "value": "xe2"
+            },
+            {
+                "value": "vlan1.208"
+            },
+            {
+                "value": "xe46"
+            },
+            {
+                "value": "vlan1.28"
+            },
+            {
+                "value": "vlan1.46"
+            },
+            {
+                "value": "xe36"
+            },
+            {
+                "value": "xe47"
+            },
+            {
+                "value": "xe34"
+            },
+            {
+                "value": "vlan1.43"
+            },
+            {
+                "value": "ce14"
+            },
+            {
+                "value": "cd5/1"
+            },
+            {
+                "value": "vlan1.16"
+            },
+            {
+                "value": "ce6"
+            },
+            {
+                "value": "vlan1.230"
+            },
+            {
+                "value": "xe31"
+            },
+            {
+                "value": "xe10"
+            },
+            {
+                "value": "xe5"
+            },
+            {
+                "value": "xe45"
+            },
+            {
+                "value": "xe4"
+            },
+            {
+                "value": "vlan1.1634"
+            },
+            {
+                "value": "xe41"
+            },
+            {
+                "value": "ce12/1"
+            },
+            {
+                "value": "xe1"
+            },
+            {
+                "value": "xe48"
+            },
+            {
+                "value": "ce19/1"
+            },
+            {
+                "value": "ce29/1"
+            },
+            {
+                "value": "xe14"
+            },
+            {
+                "value": "vlan1.37"
+            },
+            {
+                "value": "vlan1.14"
+            },
+            {
+                "value": "xe50/1"
+            },
+            {
+                "value": "cd3"
+            },
+            {
+                "value": "ce9/1"
+            },
+            {
+                "value": "vlan1.102"
+            },
+            {
+                "value": "po100"
+            },
+            {
+                "value": "ce12"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SYSLOG_INTERFACE_LIST",
+        "urlOrigin": "/selectList/SELECT_SYSLOG_INTERFACE_LIST",
+        "params": null,
+        "data": "{\"encrypt\":\"7re7m/CBEfDkvxLsTdo=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SYSLOG_INTERFACE_LIST\", \"sqlId\": \"SELECT_SYSLOG_INTERFACE_LIST\", \"param\": {\"encrypt\":\"7re7m/CBEfDkvxLsTdo=\"} }",
+        "requestTime": "2026-02-23 13:34:50.908",
+        "responseTime": "2026-02-23 13:34:51.782",
+        "duration": 874,
+        "jsonFileName": "SELECTSYSLOGINTERFACELIST_.json"
+    }
+}

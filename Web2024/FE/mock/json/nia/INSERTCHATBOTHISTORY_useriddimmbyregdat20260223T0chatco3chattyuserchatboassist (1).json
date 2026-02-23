@@ -1,0 +1,26 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "INSERT INTO nia.tb_chatbot_history \n        (\n            user_id\n            , reg_date\n            , chat_content\n            , chat_type\n            , chatbot_action_type\n        ) \n        VALUES \n        (\n            'dimmby'\n            , '2026-02-23T04:33:12.323Z'::timestamp\n            , '3'\n            , 'user'\n            , 'assist'\n        )"
+        ],
+        "total": 1,
+        "result": 1
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectOne/INSERT_CHATBOT_HISTORY",
+        "urlOrigin": "/selectOne/INSERT_CHATBOT_HISTORY",
+        "params": null,
+        "data": "{\"user_id\":\"dimmby\",\"reg_date\":\"2026-02-23T04:33:12.323Z\",\"chat_content\":\"3\",\"chat_type\":\"user\",\"chatbot_action_type\":\"assist\",\"encrypt\":\"CG4oFnJozws2Qkpo99k=\"}",
+        "cmd": "{ \"url\": \"/selectOne/INSERT_CHATBOT_HISTORY\", \"sqlId\": \"INSERT_CHATBOT_HISTORY\", \"param\": {\"user_id\":\"dimmby\",\"reg_date\":\"2026-02-23T04:33:12.323Z\",\"chat_content\":\"3\",\"chat_type\":\"user\",\"chatbot_action_type\":\"assist\",\"encrypt\":\"CG4oFnJozws2Qkpo99k=\"} }",
+        "requestTime": "2026-02-23 13:33:12.376",
+        "responseTime": "2026-02-23 13:33:12.570",
+        "duration": 194,
+        "jsonFileName": "INSERTCHATBOTHISTORY_useriddimmbyregdat20260223T0chatco3chattyuserchatboassist.json"
+    }
+}

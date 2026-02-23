@@ -1,0 +1,47 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            NREN_ID,\n            NREN_NAME,\n            NREN_IP\n        FROM RESOURCE.TB_USER_ORGAN_IP\n         WHERE (  NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = 'seoul-s9510-1') )"
+        ],
+        "total": 4,
+        "result": [
+            {
+                "nren_ip": "203.255.248.214/30",
+                "nren_id": "seoul-s9510-1_xe12",
+                "nren_name": "한양대학교병원"
+            },
+            {
+                "nren_ip": "203.255.250.160/29",
+                "nren_id": "seoul-s9510-1_xe12",
+                "nren_name": "한양대학교병원"
+            },
+            {
+                "nren_ip": "203.255.254.192/26",
+                "nren_id": "seoul-s9510-1_xe12",
+                "nren_name": "한양대학교병원"
+            },
+            {
+                "nren_ip": "203.255.249.128/29",
+                "nren_id": "seoul-s9510-1_xe12",
+                "nren_name": "한양대학교병원"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_AGENCY_IP_LIST",
+        "urlOrigin": "/selectList/SELECT_AGENCY_IP_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"seoul-s9510-1\",\"encrypt\":\"rSEo2ucUpB6IlTmXhwM=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_AGENCY_IP_LIST\", \"sqlId\": \"SELECT_AGENCY_IP_LIST\", \"param\": {\"node_id\":\"seoul-s9510-1\",\"encrypt\":\"rSEo2ucUpB6IlTmXhwM=\"} }",
+        "requestTime": "2026-02-23 13:33:54.803",
+        "responseTime": "2026-02-23 13:33:55.007",
+        "duration": 204,
+        "jsonFileName": "SELECTAGENCYIPLIST_nodeidseouls9510.json"
+    }
+}

@@ -5,7 +5,7 @@
         "sql": null,
         "total": null,
         "result": {
-            "m": "8a9d54b2bb94e8b0ae0b11495854886c073f6ad43b80361eef71f22e88f3d239e2562e0d7dadceab39d32818b90dc22ba1893b6ff375616fae1706f05da5c6829f38b1f3313e802708c7c0a592d7c2a8426176e6bf063e816eab4683949c25a695c9cc945b3319d2506b7ad8d90295724e12d2c9769a3cf10071a446117410d7",
+            "m": "895c9c0345f4f4a1b8384fc444b0fd9d4345ad8ff227f8eca0099a1ea2ad3acafe55512cf5cc9a836edafb24eee04144d0d562139d70117e33ffd5a02031eecb81e39044453d70ce0349a0a4090eeab989d998d0dd75e4d60c4c9fd5f33039dad0e4d8543a0ffe4c419f89123fabf6c6f5ad0a17af6139d0aac94f273713d2f7",
             "e": "10001"
         }
     },
@@ -16,11 +16,11 @@
         "url": "getkey",
         "urlOrigin": "getkey",
         "params": null,
-        "data": "{\"encrypt\":\"aJEMCzoJBmWQfwD+TuU=\"}",
-        "cmd": "{ \"url\": \"getkey\", \"sqlId\": \"\", \"param\": {\"encrypt\":\"aJEMCzoJBmWQfwD+TuU=\"} }",
-        "requestTime": "2024-12-13 22:08:47.972",
-        "responseTime": "2024-12-13 22:08:48.328",
-        "duration": 356,
+        "data": "{\"encrypt\":\"L/oGGgplpAgP2yzZ3gc=\"}",
+        "cmd": "{ \"url\": \"getkey\", \"sqlId\": \"\", \"param\": {\"encrypt\":\"L/oGGgplpAgP2yzZ3gc=\"} }",
+        "requestTime": "2026-02-23 13:51:17.016",
+        "responseTime": "2026-02-23 13:51:18.279",
+        "duration": 1264,
         "jsonFileName": "getkey_.json"
     }
 }

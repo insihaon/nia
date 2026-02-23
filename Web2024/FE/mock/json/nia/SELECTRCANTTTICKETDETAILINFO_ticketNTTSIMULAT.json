@@ -1,0 +1,41 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "WITH TicketData AS (\n            SELECT\n                T.traffic_type,\n                T.json_key,\n                T.normal_traffic_ratio,\n                T.tcp_syn_flooding_ratio,\n                T.land_attack_ratio,\n                T.ping_of_death_ratio,\n                T.udp_flooding_ratio,\n                CAST(T.json_key AS BIGINT) start_key,\n                H.row_cnt,        \n                T.TICKET_ID\n            FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO T\n            INNER JOIN nia.tb_linkage_hist H ON\n                H.key_name = 'aiIpSdnSflowKey'\n                AND H.file_name = CONCAT('ipSdnSflow_', CAST(T.json_key AS TEXT), '.json')\n            WHERE T.TICKET_ID = 'NTT_SIMULATION'\n        ),\n        TimeRange AS (\n            SELECT \n                MIN(collect_timestamp) as oldest_timestamp, \n                MAX(collect_timestamp) as latest_timestamp\n            FROM rca.tb_sflow_collect_hist\n            WHERE COLLECT_SEQ   <=   (SELECT start_key FROM TicketData)\n            AND COLLECT_SEQ   >=   ((SELECT start_key FROM TicketData) - (SELECT row_cnt FROM TicketData))\n        )\n        SELECT \n            t.*, \n            r.oldest_timestamp, \n            r.latest_timestamp \n        FROM TicketData t, TimeRange r\n        limit 1"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "ping_of_death_ratio": "5",
+                "udp_flooding_ratio": "10",
+                "json_key": "15981655119",
+                "normal_traffic_ratio": "0",
+                "land_attack_ratio": "5",
+                "start_key": 15981655119,
+                "latest_timestamp": "2025-12-04T00:00:08.000+09:00",
+                "traffic_type": "tcpSynFlooding",
+                "oldest_timestamp": "2025-12-03T23:59:07.000+09:00",
+                "tcp_syn_flooding_ratio": "80",
+                "ticket_id": "NTT_SIMULATION",
+                "row_cnt": 468
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_RCA_NTT_TICKET_DETAIL_INFO",
+        "urlOrigin": "/selectList/SELECT_RCA_NTT_TICKET_DETAIL_INFO",
+        "params": null,
+        "data": "{\"ticket_id\":\"NTT_SIMULATION\",\"encrypt\":\"LZ0te3SOWn9AdKYoSiE=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_RCA_NTT_TICKET_DETAIL_INFO\", \"sqlId\": \"SELECT_RCA_NTT_TICKET_DETAIL_INFO\", \"param\": {\"ticket_id\":\"NTT_SIMULATION\",\"encrypt\":\"LZ0te3SOWn9AdKYoSiE=\"} }",
+        "requestTime": "2026-02-23 13:32:27.600",
+        "responseTime": "2026-02-23 13:32:28.480",
+        "duration": 880,
+        "jsonFileName": "SELECTRCANTTTICKETDETAILINFO_ticketNTTSIMULAT.json"
+    }
+}
