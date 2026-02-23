@@ -67,6 +67,7 @@ const Base = {
       devt: (state) => state.devt,
       dataHub: (state) => state.dataHub,
       aam: (state) => state.aam,
+      untact: (state) => state.untact,
       aamPersisted: (state) => state.aamPersisted,
       influenceCircitStore: (state) => state.influenceCircitStore,
       pmmlte: (state) => state.pmmlte,

@@ -926,3 +926,23 @@ export function apiSelectIpsdnInterfaceList(params = {}) {
     data: params
   })
 }
+
+export function apiRcaRequest(sqlId, params = {}, url = '/selectList') {
+  return http({
+    url: url,
+    method: 'post',
+    filePath: filePath,
+    sqlId: sqlId,
+    data: params
+  })
+}
+
+export function apiUserProcess(params = {}, type = 'mba') {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: `USER_PROCESS_${type.toUpperCase()}`,
+    data: params
+  })
+}

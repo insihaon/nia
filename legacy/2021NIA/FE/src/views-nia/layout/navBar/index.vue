@@ -13,20 +13,19 @@
         <!-- only parent -->
         <!-- <el-scrollbar ref="scrollHeader" wrap-class="scrollbar-wrapper" :vertical="false" @wheel.native="handleScroll"> -->
         <nav v-if="!isMobile" id="menu-bar" class="h-full">
-          <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px; margin-left : 10px">
-            <el-menu-item
+          <ul ref="menuList" class="menu-list">
+            <li
               v-for="route in permission_routes"
               v-if="isHidden(route) && route.meta"
               id="menu-item"
               :key="route.path"
-              style="line-height: 4rem"
-              class="h-full text-white font-semibold transition-colors"
+              class="menu-item h-full text-white font-semibold transition-colors"
             >
               <router-link v-if="route.meta" :to="route.path">
                 {{ route.meta.title }}
               </router-link>
-            </el-menu-item>
-          </el-menu>
+            </li>
+          </ul>
         </nav>
         <!-- </el-scrollbar> -->
       </div>
@@ -121,6 +120,7 @@ export default {
   },
   mounted() {
     this.setTime()
+    this.adjustMenuWidth()
     const header = document.querySelector('#sub-menu')
     const menuItem = document.querySelectorAll('#menu-item')
     menuItem?.forEach((el) => {
@@ -133,6 +133,11 @@ export default {
     })
     header?.addEventListener('mouseout', function (event) {
       header.classList.remove('open')
+    })
+  },
+  updated() {
+    this.$nextTick(() => {
+      this.adjustMenuWidth()
     })
   },
   methods: {
@@ -163,6 +168,30 @@ export default {
     },
     setTime() {
       this.currentTime = this.toStringTime(Date.now(), 'YYYY.MM.DD A hh:mm:ss')
+    },
+    adjustMenuWidth() {
+      this.$nextTick(() => {
+        if (!this.$refs.menuList) return
+
+        const menuItems = this.$refs.menuList.querySelectorAll('#menu-item')
+        if (menuItems.length === 0) return
+
+        // 각 li의 실제 width를 측정
+        let totalWidth = 0
+        let maxWidth = 0
+        menuItems.forEach((item) => {
+          const width = item.offsetWidth || item.getBoundingClientRect().width
+          totalWidth += width
+          if (width > maxWidth) {
+            maxWidth = width
+          }
+        })
+
+        // ul의 width를 모든 li의 총 width로 설정
+        if (totalWidth > 0) {
+          this.$refs.menuList.style.width = `${totalWidth}px`
+        }
+      })
     },
   },
 }
@@ -201,16 +230,13 @@ export default {
     }
   }
   #systeminfo-container {
-    display: flex;
-    align-items: center;
     font-size: 21px;
     font-weight: bold;
-    padding-top: 5px;
-    .lottie {
-      width: 50px;
-      height: 50px;
-      background: transparent;
-    }
+    width: 200px;
+    height: 100%;
+    line-height: 60px;
+    text-align: center;
+
     #system-name {
       color: rgb(255, 255, 255);
     }
@@ -221,16 +247,40 @@ export default {
     }
   }
   #menu-bar {
-    margin-left: 120px;
-    ul {
+    width: calc(100% - 200px);
+
+    .menu-list {
+      display: flex;
       flex-wrap: nowrap;
-    }
-    ul, li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
+      width: auto;
+      min-width: auto;
+      max-width: none;
       transition: all 0.4s;
       letter-spacing: 1px;
+      border-right: 0px;
     }
-    li {
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      flex-shrink: 0;
+      transition: all 0.4s;
+      letter-spacing: 1px;
+      line-height: 4rem;
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+      }
     }
   }
   ::v-deep #other-container {
@@ -301,21 +351,27 @@ export default {
   }
   #menu-item {
     font-size: 16px;
-    min-width: 150px;
-    width: 153px;
+    min-width: 250px;
+    width: auto;
     transition: all 0.4s;
-    padding: 0px !important;
-    a:after {
-      position: absolute;
-      top: 100%;
-      left: 20px;
-      width: 73%;
-      height: 1px;
-      background: $aiTemplateDefault;
-      content: '';
-      opacity: 0;
-      transition: height 0.3s, opacity 0.3s, transform 0.3s;
-      transform: translateY(-10px);
+    padding: 0;
+    flex-shrink: 0;
+    position: relative;
+    a {
+      position: relative;
+      &:after {
+        /* hover시 메뉴 밑줄 */
+        position: absolute;
+        top: 100%;
+        left: 20px;
+        width: calc(250px - 40px);
+        height: 1px;
+        background: $aiTemplateDefault;
+        content: '';
+        opacity: 0;
+        transition: height 0.3s, opacity 0.3s, transform 0.3s;
+        transform: translateY(-10px);
+      }
     }
     &:hover {
       a:after,
@@ -330,17 +386,16 @@ export default {
     z-index: 3;
     height: 0px;
     width: 100%;
-    padding-left: 140px;
+    padding-left: 260px;
     overflow: hidden;
     background-color: #eef0f3;
     transition: height 0.25s linear;
     #top-inner {
-      margin-left: 80px;
       min-width: 1400px;
       padding-top: 8px;
       background-color: #eef0f3;
       li {
-        min-width: 150px;
+        width: 250px;
         text-align: center;
         padding: 5px;
         border-left: solid 1px #91939975;
@@ -358,10 +413,10 @@ export default {
     background: #fff;
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
     #menu-bar {
-      ul {
+      .menu-list {
         background-color: #fff !important;
       }
-      li {
+      .menu-item {
         color: $aiTemplateDefault !important;
         background-color: #fff !important;
       }

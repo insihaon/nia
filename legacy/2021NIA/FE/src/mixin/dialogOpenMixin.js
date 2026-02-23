@@ -67,7 +67,7 @@ var dialogOpenMixin = {
         snapShot: {
           component: () => import('@/views-nia/dashBoard/popup/snapShot/index'),
           pageTitle: '데이터 스냅샷',
-          width: '600',
+          width: '800',
           height: '310',
           resizeble: true,
         },
