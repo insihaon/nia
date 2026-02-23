@@ -1,0 +1,26 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n        \tSOP.SOP_ID ,\n            SOP.TICKET_ID ,\n            SOP.TICKET_TYPE ,\n            CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽(Model-A)'\n            WHEN SOP.TICKET_TYPE = 'ATT2_AI' THEN '이상 트래픽(Model-C)'\n            WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽(Model-A)'\n            WHEN SOP.TICKET_TYPE = 'NTT_AI' THEN '유해 트래픽(Model-C)'\n            WHEN SOP.TICKET_TYPE = 'NFTT' THEN '장비 과부하 장애'\n            WHEN SOP.TICKET_TYPE = 'FTT' THEN '비장애'\n            ELSE '장애' END AS TICKETTYPE,\n            SOP.TICKET_RESULT ,\n            SOP.STATUS ,\n            TO_CHAR(SOP.REQUEST_TIME, 'YYYY-MM-DD HH24:MI:SS') AS REQUEST_TIME,\n            TO_CHAR(SOP.RECEIVE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS RECEIVE_TIME,\n            SOP.DETAIL ,\n            SOP.FAULT_CLASSIFY ,\n            SOP.FAULT_TYPE ,\n            SOP.FAULT_DETAIL_CONTENT ,\n            SOP.ETC_CONTENT ,\n            SOP.AI_ACCURACY ,\n            AL.ROOT_CAUSE_SYSNAMEA ,\n            AL.ROOT_CAUSE_SYSNAMEZ ,\n            AL.ROOT_CAUSE_PORTA ,\n            AL.ROOT_CAUSE_PORTZ ,\n            NODEA.IP_ADDR AS IP_ADDRA ,\n            NODEZ.IP_ADDR AS IP_ADDRZ ,\n            TC.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE ,\n            TO_CHAR(TC.FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME ,\n            SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,\n            TO_CHAR(SOP.HANDLING_ACK_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_ACK_TIME ,\n            SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,\n            TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME,\n            TRNTDI.TRAFFIC_TYPE AS TRAFFIC_TYPE\n        FROM nia.tb_sop SOP\n        LEFT JOIN rca.tb_rca_ticket_al_current AL ON SOP.TICKET_ID = AL.TICKET_ID\n        LEFT JOIN rca.tb_rca_ticket_current TC    ON SOP.TICKET_ID = TC.TICKET_ID\n        LEFT JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA\n        LEFT JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ\n        LEFT JOIN RCA.TB_RCA_NTT_TICKET_DETAIL_INFO TRNTDI on TRNTDI.TICKET_ID = TC.TICKET_ID\n        WHERE 1=1\n            AND TC.PARENT_TICKET_ID IS NULL\n            AND SOP.TICKET_ID LIKE '%' || '' || '%'\n            AND AL.ROOT_CAUSE_SYSNAMEA = 'daejeon-n9k'\n            AND COALESCE(SOP.RECEIVE_TIME, SOP.REQUEST_TIME)    >=   '2026-02-16 00:00:00'::TIMESTAMP\n            AND COALESCE(SOP.RECEIVE_TIME, SOP.REQUEST_TIME)    <=   '2026-02-23 23:59:59.999'::TIMESTAMP\n            AND TC.TICKET_TYPE = 'RT'\n        ORDER BY SOP.REQUEST_TIME DESC \n            LIMIT 100 OFFSET 0"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SOP_HIST_LIST",
+        "urlOrigin": "/selectList/SELECT_SOP_HIST_LIST",
+        "params": null,
+        "data": "{\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"NODE_NM\":\"daejeon-n9k\",\"ALARMLOC\":\"\",\"START_DATE\":\"2026-02-16 00:00:00\",\"END_DATE\":\"2026-02-23 23:59:59.999\",\"TICKET_TYPE\":\"RT\",\"NTT_TRAFFIC_TYPE\":\"\",\"encrypt\":\"OUauor/swD2MTvDHxgE=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SOP_HIST_LIST\", \"sqlId\": \"SELECT_SOP_HIST_LIST\", \"param\": {\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"NODE_NM\":\"daejeon-n9k\",\"ALARMLOC\":\"\",\"START_DATE\":\"2026-02-16 00:00:00\",\"END_DATE\":\"2026-02-23 23:59:59.999\",\"TICKET_TYPE\":\"RT\",\"NTT_TRAFFIC_TYPE\":\"\",\"encrypt\":\"OUauor/swD2MTvDHxgE=\"} }",
+        "requestTime": "2026-02-23 13:34:50.041",
+        "responseTime": "2026-02-23 13:34:50.336",
+        "duration": 295,
+        "jsonFileName": "SELECTSOPHISTLIST_limit100page1NODENMdaejeonn9kSTARTD2026021600ENDDAT2026022323TICKETRT.json"
+    }
+}

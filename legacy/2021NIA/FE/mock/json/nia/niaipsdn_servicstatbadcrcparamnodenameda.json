@@ -5,16 +5,9 @@
         "sql": [],
         "total": 1,
         "result": {
-            "status": true,
-            "message": "Data Read Complete.",
-            "data": [
-                {
-                    "ifStat": {
-                        "badCrc": 1
-                    },
-                    "ifName": "ce12/1"
-                }
-            ]
+            "status": false,
+            "message": "daejeon-n9k is not exists.",
+            "data": null
         }
     },
     "status": 200,
@@ -25,11 +18,11 @@
         "url": "/nia/ipsdn",
         "urlOrigin": "/nia/ipsdn",
         "params": null,
-        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=daejeon-7712&ifname=ce12/1\",\"encrypt\":\"9NmJlZYFsNE2azqR3m0=\"}",
-        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=daejeon-7712&ifname=ce12/1\",\"encrypt\":\"9NmJlZYFsNE2azqR3m0=\"} }",
-        "requestTime": "2024-12-13 22:11:25.023",
-        "responseTime": "2024-12-13 22:11:25.403",
-        "duration": 380,
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=daejeon-n9k&ifname=Ethernet1/28\",\"encrypt\":\"/uiZhCT3ERbe63eZ8/s=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=daejeon-n9k&ifname=Ethernet1/28\",\"encrypt\":\"/uiZhCT3ERbe63eZ8/s=\"} }",
+        "requestTime": "2026-02-23 13:34:38.238",
+        "responseTime": "2026-02-23 13:34:38.460",
+        "duration": 222,
         "jsonFileName": "niaipsdn_servicstatbadcrcparamnodenameda.json"
     }
 }

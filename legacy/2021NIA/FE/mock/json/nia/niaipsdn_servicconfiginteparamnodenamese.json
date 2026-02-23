@@ -5,36 +5,10 @@
         "sql": [],
         "total": 1,
         "result": {
-            "status": true,
-            "message": "Interface Config/Read Complete.",
-            "data": [
-                {
-                    "secondary": {
-                        "secIpAddr": "116.89.164.161/28"
-                    },
-                    "ifName": "xe19",
-                    "description": "NREN-SE_Univ_MedL2 1G 02018888-6763",
-                    "duplex": "full",
-                    "aclInterface": {
-                        "aclIntfTypeList": {
-                            "ifAclType": "ip",
-                            "aclIntfDirList": {
-                                "ifAclDir": "out",
-                                "ifAclName": "xe19-block-out"
-                            }
-                        }
-                    },
-                    "ipAddr": "210.114.95.65/26",
-                    "speed": "auto-1g",
-                    "loadInterval": 30,
-                    "mtu": 9216,
-                    "equip_ip": [
-                        {
-                            "ip": "210.114.95.65/26"
-                        }
-                    ]
-                }
-            ]
+            "timestamp": "2026-02-23T04:36:03.395+00:00",
+            "status": 500,
+            "error": "Internal Server Error",
+            "path": "/ipsdn/services/config/interfaces/"
         }
     },
     "status": 200,
@@ -45,11 +19,11 @@
         "url": "/nia/ipsdn",
         "urlOrigin": "/nia/ipsdn",
         "params": null,
-        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"2Iu4fn3XqOFohXWGRTw=\"}",
-        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"2Iu4fn3XqOFohXWGRTw=\"} }",
-        "requestTime": "2024-12-13 22:11:22.508",
-        "responseTime": "2024-12-13 22:11:22.879",
-        "duration": 371,
+        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-s9510-1&ifname=xe23\",\"encrypt\":\"govUT6WOQAPLIhFbf9U=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-s9510-1&ifname=xe23\",\"encrypt\":\"govUT6WOQAPLIhFbf9U=\"} }",
+        "requestTime": "2026-02-23 13:33:54.803",
+        "responseTime": "2026-02-23 13:33:55.022",
+        "duration": 219,
         "jsonFileName": "niaipsdn_servicconfiginteparamnodenamese.json"
     }
 }
