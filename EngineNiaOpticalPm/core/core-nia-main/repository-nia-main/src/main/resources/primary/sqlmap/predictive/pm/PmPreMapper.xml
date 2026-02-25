@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.ap.core.repository.primary.mapper.predictive.pm.PmPreMapper">
+	<select id="selectPmModelSendDataList" resultType="kr.go.ap.core.primary.nia.dto.pm.model.PmModelSendDataDto">
+        SELECT DISTINCT TID, SYSNAME, PTPNAME, IN_OUT
+          FROM MBA.TB_ROADM_OPTICAL_PERFORMANCE_DAILY
+         WHERE COLLECTION_DATE = (NOW() - INTERVAL '1 DAYS')::DATE
+           AND IN_OUT = 'IN'
+           AND SPAN_LOSS IS NOT NULL
+	</select>
+
+    <select id="selectPmAlarmCheckList" resultType="kr.go.ap.core.primary.nia.dto.pm.optical.PerformanceDailyDto">
+        WITH HIST AS (
+            SELECT TRUNK_NAME, SYSNAME, PTPNAME, DIRECTION, NODE_TOTAL_DEVIATION
+              FROM MBA.TB_ROADM_OPTICAL_PERFORMANCE_DAILY
+             WHERE COLLECTION_DATE >= (DATE_TRUNC('DAY', CURRENT_DATE) - INTERVAL '14 DAYS')
+               AND IN_OUT = 'IN'
+               AND NODE_TOTAL_DEVIATION IS NOT NULL
+         <![CDATA[      AND ABS(NODE_TOTAL_DEVIATION) < 8  ]]>
+        ),
+        CALIB AS (
+            SELECT TRUNK_NAME, SYSNAME, PTPNAME, DIRECTION
+                 , PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY NODE_TOTAL_DEVIATION) AS BETA_MEDIAN
+                 , STDDEV_SAMP(NODE_TOTAL_DEVIATION) AS SIGMA_DEV
+              FROM HIST
+             GROUP BY TRUNK_NAME, SYSNAME, PTPNAME, DIRECTION
+        )
+        SELECT COLLECTION_DATE, TRUNK_NAME, DIRECTION, SYSNAME
+          FROM (
+                SELECT PD.COLLECTION_DATE, PD.TRUNK_NAME, PD.SYSNAME, PD.PTPNAME, PD.DIRECTION
+                     , PD.NODE_TOTAL_DEVIATION - COALESCE(C.BETA_MEDIAN, 0) AS NTD_VARIANCE2
+                     , C.SIGMA_DEV
+                  FROM MBA.TB_ROADM_OPTICAL_PERFORMANCE_DAILY PD
+                  LEFT OUTER JOIN CALIB C
+                    ON PD.TRUNK_NAME = C.TRUNK_NAME
+                   AND PD.SYSNAME = C.SYSNAME
+                   AND PD.PTPNAME = C.PTPNAME
+                   AND PD.DIRECTION = C.DIRECTION
+                 WHERE COLLECTION_DATE > RCA.FC_GET_MINUS_DAY(1)
+        ) PM
+         WHERE ABS(NTD_VARIANCE2) > GREATEST(2.0, 3 * SIGMA_DEV)
+
+        <!--
+        SELECT COLLECTION_DATE, TRUNK_NAME, DIRECTION, SYSNAME
+             , COUNT(SYSNAME) AS CNT
+          FROM MBA.TB_ROADM_OPTICAL_PERFORMANCE_DAILY
+         WHERE COLLECTION_DATE = RCA.FC_GET_MINUS_DAY(1)
+		<![CDATA[   AND (NODE_TOTAL_DEVIATION <= -2 OR NODE_TOTAL_DEVIATION >= 2) ]]>
+		 GROUP BY COLLECTION_DATE, TRUNK_NAME, DIRECTION -->
+    </select>
+
+    <select id="callSetPerformanceDaily" resultType="string">
+        SELECT MBA.FC_SET_PERFORMANCE_DAILY()
+    </select>
+
+    <select id="callSetPerformanceDailyNtd" resultType="string">
+        SELECT MBA.FC_SET_PERFORMANCE_DAILY_NTD()
+    </select>
+
+    <select id="callSetPerformanceDailyReference" resultType="string">
+        SELECT MBA.FC_SET_PERFORMANCE_DAILY_REFERENCE()
+    </select>
+
+        <select id="selectWarningDateCheckList" resultType="kr.go.ap.core.primary.nia.dto.pm.model.PmAiTicketCheckDto" parameterType="string">
+            SELECT DISTINCT ON(WPM.TRUNK_NAME, OPD.DIRECTION) WPM.TRUNK_NAME, WPM.TID, WPM.SYSNAME, WPM.PTPNAME, WPM.IN_OUT, WARNING_VALUE_MAX
+                 , OPD.DIRECTION, WPM.COLLECTION_DATE ::DATE, WPM.WARNING_DATE ::DATE
+              FROM (
+                    SELECT TRUNK_NAME, TID, SYSNAME, PTPNAME, IN_OUT, WARNING_VALUE_MAX, COLLECTION_DATE, WARNING_DATE, SEQ
+                      FROM (
+                            SELECT ROR.TRUNK_NAME, AI.TID, AI.SYSNAME, AI.PTPNAME, AI.IN_OUT, ROR.REFERENCE_VALUE, AI.VALUE_MAX, (AI.VALUE_MAX - ROR.REFERENCE_VALUE) AS WARNING_VALUE_MAX
+                                 , ABS(AI.VALUE_MAX - ROR.REFERENCE_VALUE) >= 3 AS IS_WARNING_VALUE_MAX
+                                 , NOW() ::DATE - '1 DAY' ::INTERVAL AS COLLECTION_DATE, (NOW() ::DATE - '1 DAY' ::INTERVAL) + (AI.SEQ ::TEXT ||' DAY') ::INTERVAL AS WARNING_DATE
+                                 , AI.SEQ
+                              FROM MBA.TB_PM_AI_PREDICT_RESULT AI
+                              LEFT OUTER JOIN MBA.TB_ROADM_OPTICAL_REFERENCE ROR
+                                ON AI.TID = ROR.TID
+                               AND AI.PTPNAME = ROR.PTPNAME
+                               AND AI.IN_OUT = ROR.IN_OUT
+                    ) PM
+             WHERE IS_WARNING_VALUE_MAX = TRUE
+            ) WPM
+              LEFT OUTER JOIN MBA.TB_ROADM_OPTICAL_PERFORMANCE_DAILY OPD
+                ON WPM.TID = OPD.TID
+               AND WPM.PTPNAME = OPD.PTPNAME
+               AND WPM.IN_OUT = OPD.IN_OUT
+               AND WPM.COLLECTION_DATE = OPD.COLLECTION_DATE
+            <if test="updateYn != Y">
+              LEFT OUTER JOIN MBA.TB_ROADM_PREDICTIVE_MAINTENANCE_TICKET PMT
+                ON PMT.TRUNK_NAME = WPM.TRUNK_NAME
+               AND PMT.DIRECTION = OPD.DIRECTION
+               AND PMT.REASON = 'Node Total Deviation 변화'
+        <![CDATA[      WHERE ((WPM.WARNING_DATE - NOW() ::DATE) <= '20 DAY'::::INTERVAL) = TRUE ]]>
+               AND PMT.TICKETNO IS NULL
+            </if>
+             ORDER BY WPM.TRUNK_NAME, OPD.DIRECTION, WPM.WARNING_DATE, WPM.SEQ
+        </select>
+
+    <update id="updateWarningDate" parameterType="kr.go.ap.core.primary.nia.dto.pm.model.PmAiTicketCheckDto">
+        UPDATE MBA.TB_ROADM_OPTICAL_REFERENCE
+           SET WARNING_DATE = #{warningDate}::DATE
+         WHERE TID = #{tid}
+           AND PTPNAME = #{ptpname}
+    </update>
+
+</mapper>
+
+
