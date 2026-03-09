@@ -118,7 +118,7 @@ const _component = {
       const { ticketno, issue_date } = this.selectedTicket
       try {
         const res = await apiRcaRequest('SELECT_MBA_PREDICTIVE_REVIEW', { ticketno, issue_date })
-        this.reviewList = res?.data
+        this.reviewList = res?.result
       } catch (error) {
         this.debug && this.error(error)
       } finally {

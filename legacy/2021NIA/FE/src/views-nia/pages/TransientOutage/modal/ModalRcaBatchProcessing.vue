@@ -101,7 +101,7 @@ const _component = {
     async loadBatchTicketList() {
       try {
         const res = await apiRcaRequest('SELECT_TICKET_ALARM_BATCH_LIST', { TICKET_ID: this.ticket.ticket_id })
-        this.batchTicketList = res.data || []
+        this.batchTicketList = res.result || []
       } catch (error) {
         this.error(error)
       }

@@ -928,6 +928,7 @@ export function apiSelectIpsdnInterfaceList(params = {}) {
 }
 
 export function apiRcaRequest(sqlId, params = {}, url = '/selectList') {
+  // untact code
   return http({
     url: url,
     method: 'post',
@@ -938,6 +939,7 @@ export function apiRcaRequest(sqlId, params = {}, url = '/selectList') {
 }
 
 export function apiUserProcess(params = {}, type = 'mba') {
+  // untact code
   return http({
     url: '/modify',
     method: 'post',

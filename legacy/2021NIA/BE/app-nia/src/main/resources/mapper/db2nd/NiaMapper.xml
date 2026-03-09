@@ -130,6 +130,11 @@
 
 <!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
 <select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    WITH params AS (
+    SELECT
+        now() - interval '7 days' AS dt_from,
+        now() AS dt_to
+    )
     SELECT DISTINCT
         ALARMNO,
         TICKET_ID,
@@ -196,10 +201,12 @@
                 ACM.PORT,
                 ACM.ALARMMSG_ORIGINAL
             FROM rca.tb_alarm_cur_mst ACM
+            CROSS JOIN params p
             WHERE ALARMNO LIKE 'I%'
-                <if test="IS_TEST == null">
-                    AND ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
-                </if>
+            <if test="IS_TEST == null">
+                AND ACM.ALARMTIME <![CDATA[ >= ]]> p.dt_from
+                AND ACM.ALARMTIME <![CDATA[ < ]]>  p.dt_to
+            </if>
             GROUP BY ACM.ALARMNO, ACM.SYSNAME, ACM.ALARMTIME, ACM.CLEARTIME, ACM.ALARMLOC, ACM.ALARMMSG, ACM.ALARMLEVEL, ACM.PORT, ACM.ALARMMSG_ORIGINAL
         ) ACM
         LEFT JOIN rca.tb_rca_ticket_current TC ON ACM.clusterno = TC.cluster_no
@@ -238,10 +245,12 @@
         INNER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
         INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID and PT.node_id = NM.node_id
         LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        CROSS JOIN params p
         WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'ATT2_AI')
             AND TC.PARENT_TICKET_ID IS NULL
             <if test="IS_TEST == null">
-                AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> now() - INTERVAL '7' DAY
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> p.dt_from
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ < ]]>  p.dt_to
             </if>
         UNION ALL
         SELECT
@@ -272,10 +281,12 @@
             SOP.AI_ACCURACY
         FROM rca.tb_rca_ticket_current TC
         LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        CROSS JOIN params p
         WHERE TC.TICKET_TYPE IN ('NTT', 'NTT_AI')
             AND TC.PARENT_TICKET_ID IS NULL
             <if test="IS_TEST == null">
-                AND TC.TICKET_GENERATION_TIME   <![CDATA[ >= ]]>   now() - INTERVAL '7' DAY
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> p.dt_from
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ < ]]>  p.dt_to
             </if>
         UNION ALL
         SELECT 
@@ -308,8 +319,10 @@
             NULL AS AI_ACCURACY
         FROM rca.tb_syslog_alarm_mst SAM
         LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
+        CROSS JOIN params p
         <if test="IS_TEST == null">
-            WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+            WHERE SAM.ALARMTIME <![CDATA[ >= ]]> (p.dt_to - interval '2 days')
+            AND SAM.ALARMTIME <![CDATA[ < ]]>  p.dt_to
         </if>
     ) T
     WHERE 1=1 
