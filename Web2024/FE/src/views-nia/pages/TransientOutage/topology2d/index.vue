@@ -13,7 +13,6 @@
       <div class="gripper" />
       <div class="properties flex-column" style="display: none;" />
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
@@ -46,22 +45,6 @@ export default {
         table: []
       },
       map: null,
-      // map_v1
-      // mapData: {
-      //   config: {
-      //     converter: 'mba',
-      //     options: {
-      //       node: { /* 'fix_size': true, */ 'r': 60, 'width': 60, 'height': 60, 'badge_size': 40, 'opacity': 0, 'dragable': true },
-      //       link: { 'displayField': 'name' },
-      //       link_traffic: { 'show_arrow': false, 'r': 5, 'color': '#fff' },
-      //       link_type: 'arc'
-      //     },
-      //     zoom: { initScale: 1.5, sscale: 2 },
-      //   },
-      //   trunk_name: '',
-      //   data: { nodes: [], links: [] }
-      // }
-      // map_v2
       mapData: {
         config: {
           converter: 'mba',
@@ -121,7 +104,7 @@ export default {
 
     this.addScript([
       ...js,
-      './extlib/map2d/lib/map2d.min.js'
+      './extlib/map2d/lib/map2d_untact.min.js'
     ], async)
   },
   methods: {
@@ -155,12 +138,7 @@ export default {
     },
     async handleSearch() {
       try {
-        /* 임시주석처리 */
-        // this.openLoading()
-        // const res = await apiGetObjectFromJsonFile('data_mba_1.json')
-        // const { data } = res
-        // this.result.table = data
-        // this.map.load(data)
+        //
       } catch (error) {
         console.log(error)
       } finally {
@@ -186,8 +164,8 @@ export default {
         }
         await apiRcaRequest('SELECT_TICKET_ROOT_ALARM_LIST', params).then(async(result) => {
           const result2 = await apiRcaRequest('SELECT_MBA_TOPOLOGY_LIST', { TRUNK_NAME: ticket.trunk_name || '' })
-          const nodeList = result2?.data || []
-          const linkList = result?.data || []
+          const nodeList = result2?.result || []
+          const linkList = result?.result || []
 
           nodes = nodeList
           links = nodeList?.length > 0 ? linkList : []
@@ -209,14 +187,12 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>
-
 <style lang="scss">
   :root {
       --focus-color: rgba(0, 0, 0, 0.7);
   }
+
+.MbaTopology2D {
   // 상세정보 테이블 깜빡임
   @keyframes blinking {
       0% {background-color: rgba(255, 0, 0, 0.7);}
@@ -229,7 +205,6 @@ export default {
       }
   }
 
-  /*<editor-fold desc="[tooltip style]">*/
   .tooltip {
       line-height: 1;
       font-weight: bold;
@@ -244,9 +219,7 @@ export default {
       display: inline-block;
       width: 75px;
   }
-  /*</editor-fold desc="[tooltip style]">*/
 
-.MbaTopology2D {
   border-radius: 17px 17px 0 0;
   .background {
       position: absolute;
@@ -254,20 +227,15 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
-      /* background: url("../../images/background.jpg") no-repeat center center fixed;  */
       border-radius: 17px 17px 0 0;
       background-color: #032c37;
       background-size: contain;
-      // filter: blur(4px);
-      // -webkit-filter: blur(4px);
   }
   text {
       fill: white;
-      /*fill: #000;*/
       font-family: 'Open Sans';
   }
 
-  /*<editor-fold desc="[상세정보 테이블]">*/
   th, td {
       border: 1px dotted grey;
       padding: 0.5em;
@@ -280,13 +248,10 @@ export default {
       display: flex;
       flex-direction: row;
   }
-  /* .flex-item {
-  } */
   .controls {
       position: absolute;
       top: 1rem;
       left: 1rem;
-      /*transform: translateY(50%);*/
       display: flex;
       flex-direction: column;
       visibility: hidden;
@@ -299,7 +264,6 @@ export default {
       display: flex;
       justify-content: space-between;
       color: white;
-      // font-size: .85rem;
       font-family: system-ui, -apple-system, sans-serif;
   }
   .gripper {
@@ -319,14 +283,10 @@ export default {
       left: 1em;
   }
   .properties table {
-      /*width: 100%;*/
       border: 1px dotted grey;
       border-collapse: collapse;
       table-layout: fixed;
   }
-  /* .properties table tr > td{
-      width: 15em;
-  } */
   .properties.flex-column .flex-item:not(:first-of-type) {
       margin-top: 1.5em;
   }
@@ -354,7 +314,6 @@ export default {
   div.template.TSS-160 div.table-wapper table {table-layout:initial !important;}
   div.template.TSS-160 div.table-wapper tr td {width: 30px;}
   .animation-blink {animation: blinking 1s infinite;}
-  /*</editor-fold desc="[상세정보 테이블]">*/
 
   svg#topology_container {
       width: 100%;
@@ -370,26 +329,17 @@ export default {
       visibility: hidden;
   }
 
-  /*<editor-fold desc="[link style]">*/
   .links .link_container .link_path {
       stroke: #999;
       fill: none;
-      // stroke-width: 5px;
   }
   .links .link_container .link_selector {
       stroke: rgba(170, 160, 100, 0);
       fill: none;
-      // stroke-width: 7px;
   }
   .links .link_container.focus .link_path {
       stroke: var(--focus-color) !important;
   }
-  /*</editor-fold desc="[link style]">*/
-
-  /*<editor-fold desc="[link-label style]">*/
-  /*</editor-fold desc="[link-label style]">*/
-
-  /*<editor-fold desc="[node style]">*/
   .nodes {
       cursor: pointer;
   }
@@ -406,7 +356,6 @@ export default {
   {
       fill: none;
       stroke: #000;
-      /*vector-effect: non-scaling-stroke;*/
       stroke-dasharray: 4px;
       animation: stroke 0.2s linear infinite;
       shape-rendering: geometricPrecision;
@@ -435,25 +384,16 @@ export default {
   .nodes .node_container.focus circle {
       stroke: var(--focus-color) !important;
   }
-  /*</editor-fold desc="[node style]">*/
 
-  /*<editor-fold desc="[description style]">*/
   .desc g text {
       text-anchor: middle;
   }
-  /*</editor-fold desc="[description style]">*/
 
-  /*<editor-fold desc="[debug: show intermediate nodes]">*/
-  /* debug: show intermediate nodes */
   .intermediate_nodes {
       stroke: #000;
-      // stroke-width: 1.5px;
   }
-  /*</editor-fold desc="[debug: show intermediate nodes]">*/
 
-  /*<editor-fold desc="[animation]">*/
   .animation_resume {
-      /* running | paused | initial | inherit */
       -webkit-animation-play-state: running;
       -moz-animation-play-state: running;
       animation-play-state: running;
@@ -463,6 +403,5 @@ export default {
       -moz-animation-play-state: paused;
       animation-play-state: paused;
   }
-  /*</editor-fold desc="[animaition]">*/
 }
 </style>

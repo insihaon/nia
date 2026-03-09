@@ -215,6 +215,14 @@ export default {
       { value: 'SCONNALIAS', label: '수용회선명' },
     ],
   },
+
+  RcaTicketStatus: {
+    INIT: { text: '발생', code: 'INIT', index: 0, hex: '#b14948', fnFilter: d => d?.status === 'INIT' },
+    ACK: { text: '인지', code: 'ACK', index: 1, hex: '#f7aa17', fnFilter: d => d?.status === 'ACK' },
+    FIN: { text: '마감', code: 'FIN', index: 2, hex: '#52a43a', fnFilter: d => d?.status === 'FIN' },
+    AUTO_FIN: { text: '자동마감'/* (10분이상) */, code: 'AUTO_FIN', index: 3, hex: '#adcc1e', fnFilter: d => d?.status === 'AUTO_FIN' }
+    // NATURE: { text: '자동마감(10분이내)', code: 'NATURE', index: 4, hex: '#70802b', fnFilter: d => d?.status === 'NATURE' }
+  },
 }
 
 export function objectToArray(obj) {

@@ -33,13 +33,11 @@
 
           <el-col class="box-container">
             <div class="az-title">{{ isCable ?'장애코어': '근원장애' }} System/Port 정보</div>
-            <!-- <div>3-2 Table</div> -->
             <comp-ag-grid ref="ackSystemAgGrid" v-model="ackSystemGridData" class="miniGridHeader" />
           </el-col>
 
           <el-col v-if="!isMba" class="ack-cable-system-info">
             <div class="az-title">근원장애 광케이블 리스트 정보</div>
-            <!-- <div>4-2 Table</div> -->
             <comp-ag-grid ref="rootDisorderGridData" v-model="rootDisorderGridData" class="GridHeader" />
           </el-col>
           <el-form
@@ -65,18 +63,6 @@
                 </el-form-item>
               </el-col>
             </el-col>
-
-            <!-- <el-col v-if="" class="box-container">
-              <el-col :span="24">
-                <el-form-item :label="radioForm.label" style="display: flex;">
-                  <el-radio-group v-model="userInput.fault_type" size="small">
-                    <el-radio-button v-for="value in radioForm.items" :key="value" :label="value">
-                      {{ value }}
-                    </el-radio-button>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-            </el-col> -->
 
             <el-col v-if="(processType === 'fin' && !isMba) || (!isMba && !isCable)">
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="pb-2 flex items-end">
@@ -293,9 +279,6 @@ const _component = {
     this.reason = { lv1: { value: '', disabled: false }, lv2: { value: '', disabled: true }, lv3: { value: '', disabled: true } }
     this.charge = { lv1: { value: '', disabled: false }, lv2: { value: '', disabled: true } }
     this.clear = { lv1: { value: '', disabled: false } }
-    // reason: { lv1: { value: '', disabled: false }, lv2: { value: '', disabled: true }, lv3: { value: '', disabled: true } },
-    //   charge: { lv1: { value: '', disabled: false }, lv2: { value: '', disabled: true } },
-    //   clear: { lv1: { value: '', disabled: false } }
   },
   methods: {
     onCreated() {
@@ -355,7 +338,7 @@ const _component = {
             break
         }
         const res = await apiRcaRequest(`SELECT_FAULT${type.toUpperCase()}_${lv}_LIST`, params)
-        this[`fault${type}`][lv.toLowerCase()] = res.data
+        this[`fault${type}`][lv.toLowerCase()] = res.result
       } catch (error) {
         this.error(error)
       }
@@ -376,7 +359,7 @@ const _component = {
           MAX_DAYS: 31
         }
         const res = await apiRcaRequest('SELECT_TICKET_HANDLING_CURRENT_LIST', param)
-        const [item] = res.data
+        const [item] = res.result
         this._merge(this.ticket, item)
         this._merge(this.userInput, item)
       } catch (error) {

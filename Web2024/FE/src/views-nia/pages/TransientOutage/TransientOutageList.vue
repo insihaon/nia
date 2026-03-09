@@ -6,13 +6,20 @@ te<template>
           <el-icon class="el-icon-tickets pr-1" /> 순단장애 감시
         </div>
         <div class="h-100 d-flex items-center function-panel">
-          <template v-for="optionItems in otherOtionsItem">
-            <div :key="optionItems.key" class="h-100 d-flex items-center " @click.stop="handleClickOtherOption(optionItems.key)">
-              <el-tooltip effect="dark" :content="optionItems.content" placement="bottom-start">
-                <v-icon :name="optionItems.class" />
-              </el-tooltip>
-            </div>
-          </template>
+          <div
+            v-for="optionItems in otherOtionsItem"
+            :key="optionItems.key"
+            class="h-100 d-flex items-center"
+            @click.stop="handleClickOtherOption(optionItems.key)"
+          >
+            <el-tooltip
+              effect="dark"
+              :content="optionItems.content"
+              placement="bottom-start"
+            >
+              <v-icon :name="optionItems.class" />
+            </el-tooltip>
+          </div>
           <el-col class="total-count fr">
             <span class="total">TOTAL: {{ getTicketList().length || 0 }}</span>
           </el-col>
@@ -435,7 +442,7 @@ export default {
       try {
         this.openLoading(target, { background: '#dadddf' })
         const res = await apiRcaRequest('SELECT_TICKET_CUR_LIST', { IS_MBA: true, MAX_DAYS: 14 })
-        this.mbaTicketList = res?.data || []
+        this.mbaTicketList = res?.result || []
         this.$store.dispatch('untact/insertTicketMbaList', this.mbaTicketList)
         this.initTicketCtrl()
       } catch (error) {
@@ -466,7 +473,7 @@ export default {
       try {
         const res = await apiRcaRequest('SELECT_TICKET_ROOT_ALARM_LIST', { TICKET_TYPE: ticket.ticket_type, TICKET_ID: ticket.ticket_id, MAX_DAYS: 31 })
         ticketCtrl[ticket.ticket_id].isOpen = true/* !ticketCtrl[ticket.ticket_id].isOpen */
-        ticketCtrl[ticket.ticket_id].azList = res?.data ?? []
+        ticketCtrl[ticket.ticket_id].azList = res?.result ?? []
       } catch (error) {
         this.error(error)
       } finally {
@@ -478,7 +485,7 @@ export default {
       const ticket = this.selectedTicket
       try {
         const res = await apiRcaRequest('SELECT_MBA_LOW_ALARM_LIST', { TICKET_ID: ticket.ticket_id })
-        this.alarmList = res?.data ?? []
+        this.alarmList = res?.result ?? []
       } catch (error) {
         this.error(error)
       }
@@ -491,7 +498,7 @@ export default {
       }
       try {
         const res = await apiRcaRequest('SELECT_MBA_PMM_INFLUENCECIRCUIT_LIST', { TICKET_ID: ticket.ticket_id, TICKET_TYPE: 'MBA' })
-        this.influencecircuitList = res?.data ?? []
+        this.influencecircuitList = res?.result ?? []
       } catch (error) {
         this.error(error)
       }
@@ -500,7 +507,7 @@ export default {
       const ticket = this.selectedTicket
       try {
         const res = await apiRcaRequest('SELECT_MBA_REPEATER_SLOT_DATA', { TRUNK_NAME: ticket.trunk_name }, '/selectOne')
-        Object.assign(this.selectedTicket, { rsspuSlot: res?.data?.rsspuslot })
+        Object.assign(this.selectedTicket, { rsspuSlot: res?.result?.rsspuslot })
       } catch (error) {
         this.error(error)
       }

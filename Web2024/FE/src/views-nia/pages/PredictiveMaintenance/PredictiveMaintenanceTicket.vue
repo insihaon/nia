@@ -211,7 +211,7 @@ export default {
       try {
         this.openLoading(target, { background: '#dadddf' })
         const res = await apiRcaRequest('SELECT_TICKET_PMM_LIST')
-        this.pmmTicketList = res?.data || []
+        this.pmmTicketList = res?.result || []
         this.$store.dispatch('untact/insertTicketPmmList', this.pmmTicketList)
         this.initTicketCtrl()
       } catch (error) {
@@ -306,7 +306,7 @@ export default {
       }
       try {
         const res = await apiRcaRequest('SELECT_MBA_PMM_INFLUENCECIRCUIT_LIST', { TICKET_ID: ticket.ticketno, TICKET_TYPE: 'PM' })
-        this.influencecircuitList = res?.data ?? []
+        this.influencecircuitList = res?.result ?? []
       } catch (error) {
         this.error(error)
       }
@@ -315,7 +315,7 @@ export default {
       const ticket = this.selectedTicket
       try {
         const res = await apiRcaRequest('SELECT_MBA_REPEATER_SLOT_DATA', { TRUNK_NAME: ticket.trunk_name }, '/selectOne')
-        Object.assign(this.selectedTicket, { rsspuSlot: res?.data?.rsspuslot })
+        Object.assign(this.selectedTicket, { rsspuSlot: res?.result?.rsspuslot })
       } catch (error) {
         this.error(error)
       }
