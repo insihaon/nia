@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+    <!--  POTN  -->
+    <kbase name="potn" packages="rules.potn.single">
+        <ksession name="ksession-potn"/>
+    </kbase>
+
+    <!--  ROADM  -->
+    <kbase name="roadm" packages="rules.roadm.single">
+        <ksession name="ksession-roadm"/>
+    </kbase>
+
+    <!--  SWITCH  -->
+    <kbase name="switchs" packages="rules.switchs.single">
+        <ksession name="ksession-switchs"/>
+    </kbase>
+
+    <!--  MULTI  -->
+    <kbase name="multi" packages="rules.multi">
+        <ksession name="ksession-multi"/>
+    </kbase>
+</kmodule>

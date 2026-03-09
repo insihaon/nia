@@ -1,0 +1,97 @@
+<md-dialog id="administrator" class="alarm-dialog" ng-cloak style="width: 60%; height:70%">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()"> &nbsp; 권한 설정</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form>
+        <md-dialog-content>
+            <div layout="column" class="alarmContents">
+                <md-card class="alarm-card">
+                    <md-tabs md-border-bottom="" md-stretch-tabs md-selected="currentTab">
+                        <md-tab label="권한 리스트" md-on-select="changeTab1()">
+                            <div layout="row" md-theme="grey" layout-sm="column" ng-hide="isRcaProgressHide"
+                                 layout-align="space-around" style="position: absolute; z-index: 200;margin: calc(45vh - 100px) 46%;">
+                            </div>
+                            <div layout="column" flex layout-fill>
+                                <div layout="row" class="pagination search-container" style="justify-content: end;">
+                                    <div layout="row" class="date-container" style="margin-top: 3px;margin-left: 10px;">
+                                        <input class="nav_search form-control mr-sm-2 mini-ticket-search" select-on-click ng-model="rcaSearchTextArea"
+                                               type="text" placeholder="Search" ng-keydown="enterRcaSearch($event)" aria-label="Search"
+                                               ng-enter="applyRcaSearch(rcaSearchTextArea,selector.value)"style="margin-left: 20px; margin-right: 50px;"/>
+                                        <md-select class="search-option-select" multiple="" placeholder="옵션선택" id="openCloseMulti"
+                                                   ng-model="selector.value" name="grant_name" style="margin-right:20px;" init="true">
+                                            <md-option ng-repeat="grant in grantName" ng-model="selected" ng-selected="checkAll(true)" ng-change="columnToggled()">
+                                                {{grant.text}}
+                                            </md-option>
+                                        </md-select>
+                                        <md-button class="search-option-switch" ng-click="applyRcaSearch(rcaSearchTextArea,selector.value)" aria-label="''">
+                                            <i class="fa fa-search fa-lg"></i>
+                                        </md-button>
+                                        <md-button class="search-option-switch clearBtn" ng-click="searchClear()">
+                                            전체보기
+                                        </md-button>
+                                    </div>
+                                </div>
+                                <div layout="column" class="table-wapper" flex layout-fill>
+                                    <table md-table multiple>
+                                        <thead md-head>
+                                            <tr md-row>
+                                                <th md-column md-column-size="150" class="pr-0">name</th>
+                                                <th md-column md-column-size="100" class="pr-0">ID</th>
+                                                <th md-column md-column-size="130" class="pr-0">분류</th>
+                                                <th md-column md-column-size="160" class="pr-0">PHONE_NUMBER</th>
+                                                <th md-column md-column-size="180" class="pr-0">EMAIL</th>
+                                                <th md-column md-column-size="180" class="pr-0">마지막 접속시간</th>
+                                                <th md-column md-column-size="110" class="pr-0">권한선택</th>
+                                                <th md-column md-column-size="100" class="pr-0"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="alarm-tbody" md-body>
+                                            <tr md-row class="repeated-item" ng-repeat="item in gridOptions.data"> <!-- item in gridOptions.data -->
+                                                <td md-cell md-column-size="150" class="pr-0">{{item.name}}</td>
+                                                <td md-cell md-column-size="100" class="pr-0">{{item.id}}</td>
+                                                <td md-cell md-column-size="130" class="pr-0">{{item.agency_name}}</td>
+                                                <td md-cell md-column-size="160" class="pr-0">{{item.phone_number}}</td>
+                                                <td md-cell md-column-size="180" class="pr-0">{{item.email}}</td>
+                                                <td md-cell md-column-size="180" class="pr-0">{{tools.store.formatDateTime(item.last_login)}}</td>
+                                                <td md-cell md-column-size="110" >
+                                                    <div class="over-cell" show-over-text ng-hide="checked">
+                                                        <md-select multiple ng-model="item.chanagedGrantArray" ng-init="init(item)"
+                                                        md-on-open="onSelectOpen(item,grant.value)" ng-change='onSelectChanged(item)' md-selected-text="getSelectedText(item)" aria-label="''">
+                                                            <md-option ng-value="grant" ng-repeat="grant in grantName" ng-selected="isCheck(item,grant.value)">
+                                                                {{grant.text}}
+                                                            </md-option>
+                                                        </md-select>
+                                                    </div>
+                                                </td>
+                                                <td md-cell md-column-size="100">
+                                                    <md-button class="md-raised dialog-btn base-btn-2"
+                                                            ng-click="dlgFunc.result(item);" ng-disabled="(item.lvl == item.lvl_copy)">저장
+                                                    </md-button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- <md-table-pagination class="mt-2" md-limit="tab1.pagination.limit"
+                                                    md-limit-options="[30,50,100,200]" md-page="tab1.pagination.selected"
+                                                    md-total="{{tab1.pagination.total}}" md-page-select="true" md-boundary-links="true">
+                                </md-table-pagination> -->
+                                <div class="modalFooter" >
+                                    <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()" style="float: right;" >닫기</md-button>
+                                </div>
+                            </div>
+                        </md-tab>
+                    </md-tabs>
+                </md-card>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>
+

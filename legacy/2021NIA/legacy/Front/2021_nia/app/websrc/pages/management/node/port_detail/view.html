@@ -1,0 +1,52 @@
+<md-dialog class="port-detail-dialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">{{isUpdate ? '포트 수정 및 삭제' : '포트 등록'}}</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form class="h-100">
+        <md-dialog-content class="h-100">
+            <div layout="column" class="port-detail-dialog-content">
+                <table class="nia-custom-table port-detail-table">
+                    <tr>
+                        <td class="title">I/F ID</td>
+                        <td><input class="node-id w-75" ng-model="portAddData.if_id" ng-disabled="isUpdate && !isEditable" /></td>
+                        <td class="title">I/F명</td>
+                        <td ng-if="!isUpdate"><input class="node-name w-75" ng-model="portAddData.if_nm" clear-btn ng-disabled="!isEditable"/></td>
+                        <td ng-if="isUpdate"><input class="node-name w-75" ng-model="portAddData.if_nm" disabled /></td>
+                    </tr>
+                    <tr>
+                        <td class="title">I/F 타입</td>
+                        <td>
+                            <md-select ng-model="portAddData.if_type" style="width: 150px; padding-left: 15px;" ng-disabled="!isEditable">
+                                <md-option ng-value="type.code_nm" ng-repeat="type in selectIfTpyeName">{{type.code_nm}}</md-option>
+                            </md-select>
+                        </td>
+                        <td class="title">IP 주소</td>
+                        <td><input class="mac-address w-75" ng-model="portAddData.ip_addr" clear-btn ng-disabled="!isEditable"/></td>
+                    </tr>
+                    <tr>
+                        <td class="title">대역폭</td>
+                        <td><input type="number" class="mac-address w-75" ng-model="portAddData.if_speed" ng-disabled="!isEditable"/></td>
+                        <td class="title">사용여부</td>
+                        <td>
+                            <md-select class="node-item-use w-75" ng-model="portAddData.if_oper_status">
+                                <md-option ng-value="use.key" ng-repeat="use in selectPortUseName">{{use.value}}</md-option>
+                            </md-select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modalFooter">
+                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="portSave()">{{isUpdate ? '수정' : '저장'}}</md-button>
+                <md-button class="md-raised base-btn-2 nia-dark-button md-hide" ng-style="{display: isEditable && !isUpdate ? 'inline-block !important':'none'}" ng-disabled="isEditable != true" ng-click="portDelete()">삭제</md-button>
+                <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()">닫기</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

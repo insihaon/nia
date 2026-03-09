@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    function load() {
+
+        let initValue = {
+            equipTypeLte: [
+                { display: 'DU10SAME', selected: true },
+                { display: 'DU20SAME', selected: true, a :1 },
+                { selected: true, display: 'DU30SAME' },
+                { display: 'DU10NSNN', selected: true },
+                { display: 'DU20NSNN', selected: true },
+                { display: 'DU30NSNN', selected: true },
+                { display: 'DU10LGES', selected: true },
+                { display: 'DU20LGES', selected: true },
+                { display: 'DU30LGES', selected: true },
+                { display: 'ETC', selected: true }
+            ],
+            date: {
+                start: '',
+                end: ''
+            },
+            maxDays: 14,
+            notice: {
+                seqnum: []
+            }
+        }
+
+        var myValue = JSON.parse(JSON.stringify(initValue));
+
+        initValue.addedTest1 = {"array" : [1,2,3], "object": {key: "value"} };
+        initValue.equipTypeLte[1].display = "newValue";
+        initValue.equipTypeLte.splice(4);
+        assignDefault(myValue, initValue);
+
+        // var s = JSON.stringify(initValue);
+        // s.replace(/"selected":\s*(true|false)/gi, "").replace(/,,/g, ",").replace(/{,/g, "{").replace(/,}/g, "}");
+
+        debugger;
+    }
+
+    function assignDefault(targetValue, defaultValue) {
+
+        function clone(source) {
+            return JSON.parse(JSON.stringify(source))
+        }
+
+        function euqals(a, b) {
+            return JSON.stringify(a) == JSON.stringify(b);
+        }
+
+        if (defaultValue) {
+
+            if (!targetValue) {
+                targetValue = clone(defaultValue);
+                return;
+            }
+
+            if (targetValue instanceof Array && defaultValue instanceof Array) {
+
+                if (targetValue.length > defaultValue.length) {
+                    targetValue.splice(defaultValue.length);
+                }
+
+                for (var i= 0; i < defaultValue.length ; i++) {
+
+                    if(i >= targetValue.length) targetValue.push(null);
+
+                    JSON.stringify(defaultValue[i])
+                    if (!targetValue[i]) {
+                        targetValue[i] = clone(defaultValue[i]);
+                    } else {
+                        var v1 = clone(targetValue[i]);
+                        var v2 = clone(defaultValue[i]);
+                        delete (v1.selected);
+                        delete (v2.selected);
+
+                        if (!euqals(v1, v2)) {
+                            targetValue[i] = clone(defaultValue[i]);
+                        }
+                    }
+                }
+
+            } else if (targetValue instanceof Object && defaultValue instanceof Object) {
+                var keys1 = Object.keys(targetValue);
+                var keys2 = Object.keys(defaultValue);
+                var deletedKeys = keys1.filter(n => !keys2.includes(n));
+
+                for (var key in defaultValue) {
+
+                    if (!targetValue[key]) {
+                        targetValue[key] = clone(defaultValue[key]);
+                    } else {
+                        // if (targetValue[key] instanceof Object && defaultValue[key] instanceof Object) {
+                        assignDefault(targetValue[key], defaultValue[key]);
+                        // }
+                    }
+                }
+
+                for (let i = 0; i < deletedKeys.length; i++) {
+                    delete targetValue[deletedKeys[i]];
+                }
+            }
+        }
+    }
+</script>
+<body onload="load()">
+</body>
+</html>

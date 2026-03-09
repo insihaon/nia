@@ -1,0 +1,9 @@
+.selfHealing div.aiProcess_firstContent {
+    background-color: rgb(255 255 255);
+    width: 95%;
+    height: 40%;
+    position: relative;
+    margin: 65px 12px 12px 12px;
+    box-shadow: 1px 2px 5px 0 rgba(0, 0, 0, 0.26);
+    min-height: 225px;
+}

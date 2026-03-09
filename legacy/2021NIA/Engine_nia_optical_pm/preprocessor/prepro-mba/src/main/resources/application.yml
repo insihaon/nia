@@ -1,0 +1,28 @@
+logging:
+  level:
+    root: INFO
+    p6spy: OFF
+  config: classpath:logback-config-spring.xml
+
+server:
+  port: 6804
+
+spring:
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: real

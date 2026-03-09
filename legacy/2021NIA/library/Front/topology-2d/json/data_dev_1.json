@@ -1,0 +1,33 @@
+{
+    "nodes": [],
+    "links": [],
+    "config": {
+        "converter": "performance_debug",
+        "options": {
+            "svg_viewbox": false,
+            "node_fix_size": true,
+            "node_r_width": 30,
+            "node_width": 40,
+            "node_height": 35,
+            "node_badge_size": 25,
+            "node_text_size": 12,
+            "link_text_field": "name",
+            "link_traffic_show": false,
+            "link_traffic_arrow_show": false,
+            "link_traffic_r": 5,
+            "link_traffic_r_color": "#fff",
+            "grid_mode": false,
+            "bg_grid": true
+        },
+        "zoom": {
+            "disable": false,
+            "initScale": 1,
+            "node": {
+                "min_scale": 1
+            }
+        }, 
+        "map": {
+            "bg_element": false
+        }
+    }
+}

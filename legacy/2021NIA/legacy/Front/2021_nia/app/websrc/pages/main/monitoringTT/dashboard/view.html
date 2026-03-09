@@ -1,0 +1,124 @@
+<div class="dashboardContainer" layout="column" flex layout-fill ng-cloak>
+    
+    <div class="view-header">
+        <div class="title">AI 관제 시스템 처리량 <i class="fa fa-refresh" ng-click="reload()"></i></div>
+        <div class="condition" layout="row" flex>
+            <md-select ng-model="dashboardOpinion.dataType" style="width: 120px; margin-right: 10px;" placeholder="데이터 단위">
+                <md-option  ng-value="item.value" ng-repeat="item in dataTypeAll"  >
+                    <span>{{item.text}}</span>
+                </md-option>
+            </md-select>
+            <div ng-show="dashboardOpinion.dataType === 'MONTH'">
+            <label>MONTH</label>
+            <input id="typeMonth" type="month" ng-change="onChangeMonth(month)" ng-model="month" min="2022-10" max="lastMonth" required />
+            </div>
+            <div ng-show="dashboardOpinion.dataType === 'DAY'">
+            <label>시작일</label>
+            <input mdc-datetime-picker="" date="true" time="false" type="text" ng-change="fromChangeDate(fromDateTime)" ng-model="fromDateTime" >
+            <label>종료일</label>
+            <input mdc-datetime-picker="" date="true" time="false" type="text" ng-change="toChangeDate(toDateTime)" ng-model="toDateTime" >
+            </div>
+            <md-button ng-click="handleSearch()">검색</md-button>
+            <md-button ng-click="searchClear()">초기화</md-button>
+        </div>
+    </div> 
+    
+    <div layout="row" class="group" flex="50" layout-margin>
+        <div layout="column" layout-fill>
+            <div layout="row" class="group-contents" flex layout-fill>
+                <div layout="column" class="chart-wrapper" flex="60">
+                    <!-- <div class="chart-title">티켓 발생량</div> -->
+                    <div class="chart" flex>
+                        <div class="aiProcess_secondContent pr-3" style="height: auto; min-height: 100px;" flex>
+                            <div style="min-height:100%; color: #000; fill: #000;" id="ticketChart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div layout="column" class="chart-wrapper" flex>
+                    <div class="table" flex layout-fill>
+                        <table layout-fill>
+                            <tbody>
+                                <tr ng-repeat="item in tableData1">
+                                    <td >{{item.name}}</td>
+                                    <td >{{dashboardData[item.value].toLocaleString()}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout="row" class="group" flex="50" layout-margin>
+        <div layout="column" layout-fill>
+            <div layout="row" class="group-contents" flex layout-fill>
+                <div layout="column" class="chart-wrapper" flex="60">
+                    <!-- <div class="chart-title">데이터 수집량</div> -->
+                    <div class="chart" flex>
+                        <div class="aiProcess_secondContent pr-3" style="height: auto; min-height: 100px;" flex>
+                            <div style="min-height: 100%; color: #000; fill: #000;" id="dataCollectChart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div layout="column" class="chart-wrapper" flex>
+                    <div class="table" flex>
+                        <table layout-fill>
+                            <tbody>
+                                <tr ng-repeat="item in tableData2">
+                                    <td >{{item.name}}</td>
+                                    <td >{{dashboardData[item.value].toLocaleString()}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout="row" class="group" flex="50" layout-margin>
+        <div layout="column" layout-fill>
+            <div layout="row" class="group-contents" flex layout-fill>
+                <div layout="column" class="chart-wrapper" flex="60">
+                    <!-- <div class="chart-title">데이터 제공량(데이터레이크 연계량)</div> -->
+                    <div class="chart" flex>
+                        <div class="aiProcess_secondContent pr-3" style="height: auto; min-height: 100px;" flex>
+                            <div style="min-height: 100%; color: #000; fill: #000;" id="dataOfferChart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div layout="column" class="chart-wrapper" flex>
+                    <div class="table" flex>
+                        <table layout-fill>
+                            <tbody>
+                                <tr ng-repeat="item in tableData3">
+                                    <td >{{item.name}}</td>
+                                    <td >{{dashboardData[item.value].toLocaleString()}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div layout="row" class="group" layout-margin>
+        <div layout="column" layout-fill>
+            <div layout="row" class="group-contents" flex layout-fill>
+                <div layout="column" class="chart-wrapper" flex>
+                    <div class="chart-title">AI 엔진 처리량</div>
+                    <div layout="row" class="chart" flex layout-fill style="justify-content: space-around; padding: 10px;">
+                        <span style="color: #000;">일 단위 추론 건수 : {{ '123,456,789' }} 개</span>
+                        <span style="color: #000;">신규 업데이트된 모델 : {{ '609' }} 개</span>
+                        <span style="color: #000;">모델 정확도 Recall : {{ '1.0' }} </span>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>

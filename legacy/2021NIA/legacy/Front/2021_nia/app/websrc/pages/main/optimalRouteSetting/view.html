@@ -1,0 +1,88 @@
+<md-dialog class="profile-list-dialog" id="optimalRouteSetting" ng-cloak style="width: 60%; height:70%">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">&nbsp;이력 조회</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form>
+        <md-dialog-content>
+            <div layout="column" class="profile-list-dialog-content">
+                <md-card class="profile-card" style="margin: 20px;">
+                    <div layout="column" class="profile-list-search">
+                        <div class="profile-list-search-info">
+                            <span class="ml-2">FROM</span>
+                            <md-input-container class="node-date" style="margin: 0px 0px 0px 25px;">
+                                <input mdc-datetime-picker="" date="true" time="false" type="text"
+                                       show-todays-date="" minutes="true" min-date="date" show-icon="true"
+                                       edit-input="true" short-time="true" ng-init="null" ng-enter="handleSearch()"
+                                       ng-model="searchBypassRouteData.startDateTime" class=" dtp-no-msclear dtp-input md-input"/>
+                            </md-input-container>
+                            <span class="ml-2">TO</span>
+                            <md-input-container class="node-date" style="margin: 0px 0px 0px 25px;">
+                                <input mdc-datetime-picker="" date="true" time="false" type="text"
+                                       show-todays-date="" minutes="true" min-date="date" show-icon="true"
+                                       edit-input="true" short-time="true" ng-init="null" ng-enter="handleSearch()"
+                                       ng-model="searchBypassRouteData.endDateTime" class=" dtp-no-msclear dtp-input md-input"/>
+                            </md-input-container>
+                            <span class="ml-2">티켓 번호</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="profile-explanation" ng-model="searchBypassRouteData.ticketNum" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                            <!-- <span class="ml-2">항목3</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="profile-title" ng-model="searchProfileData.profileTitle" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container> -->
+                        </div>
+                        <div class="profile-list-search-btn">
+                            <!-- <md-button class="profile-list-search-btn" ng-click="exportExcel()" style="font-size: 11px;"><i class="fas fa-file-excel fa-lg" style="color: #008000; margin-right: 2px; font-size: 20px;"></i>엑셀저장</md-button> -->
+                            <md-button class="profile-list-search-btn" ng-click="handleSearch()" style="font-size: 11px;">
+                                <i class="fa fa-search fa-lg"></i>
+                            </md-button>
+                            <md-button class="search-option-switch clearBtn" ng-click="searchClear()" style="margin-right: 50px;">
+                                전체보기
+                            </md-button>
+                        </div>
+                    </div>
+                    <div layout="column" class="profile-table">
+                        <table md-table>
+                            <thead md-head>
+                                <tr md-row>
+                                    <th md-column md-column-size="100" class="pr-0"><span>변경 시간</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>E2E_ID</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>작업자</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>처리 구분</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>처리 결과</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>우회 대상</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>작업일</span></th>
+                                </tr>
+                            </thead>
+                            <tbody md-body>
+                                <tr md-row ng-repeat="item in gridResult" >
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.handling_time  | dateFormat}}</td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.ticket_id}}</td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.user_id}}</td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.handling_type}}</td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.result}}</td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.link_id}}</td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.sourcedate}}<br><a ng-click="onClickRestore(item.sourcedate)" ng-if="item.result !== '성공' || item.handling_type !== '복원'">경로 복원</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <md-table-pagination class="mt-2" md-limit="historyPagingTable.limit"
+                                         md-limit-options="[30,50,100,200]" md-page="historyPagingTable.selected"
+                                         md-total="{{gridResult.total || 0}}" md-page-select="true" md-boundary-links="true">
+                    </md-table-pagination>
+                </md-card>
+            </div>
+            <div class="modalFooter">
+                <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()">닫기</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

@@ -1,0 +1,929 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.web.mapper.db2nd.Data2ndMapper">
+
+    <!-- CP 사업자 일별 트래픽 -->
+    <select id="selectCpDailyTrafficList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            CP_ID , CP_NM, 
+            CP_TYPE_CD, DECODE(CP_TYPE_CD, '1', '국내','2', '해외') AS CP_TYPE_NM,
+            COLLECT_Y4MMDD, PHYSICAL_SPEED ,
+            DAY00_AVG_INBPS, DAY00_AVG_OUTBPS, DAY00_MAX_INBPS, DAY00_MAX_OUTBPS, 
+            DAY01_AVG_INBPS, DAY01_AVG_OUTBPS, DAY01_MAX_INBPS, DAY01_MAX_OUTBPS, 
+            DAY02_AVG_INBPS, DAY02_AVG_OUTBPS, DAY02_MAX_INBPS, DAY02_MAX_OUTBPS, 
+            DAY03_AVG_INBPS, DAY03_AVG_OUTBPS, DAY03_MAX_INBPS, DAY03_MAX_OUTBPS, 
+            DAY04_AVG_INBPS, DAY04_AVG_OUTBPS, DAY04_MAX_INBPS, DAY04_MAX_OUTBPS, 
+            DAY05_AVG_INBPS, DAY05_AVG_OUTBPS, DAY05_MAX_INBPS, DAY05_MAX_OUTBPS, 
+            DAY06_AVG_INBPS, DAY06_AVG_OUTBPS, DAY06_MAX_INBPS, DAY06_MAX_OUTBPS, 
+            DAY07_AVG_INBPS, DAY07_AVG_OUTBPS, DAY07_MAX_INBPS, DAY07_MAX_OUTBPS, 
+            DAY08_AVG_INBPS, DAY08_AVG_OUTBPS, DAY08_MAX_INBPS, DAY08_MAX_OUTBPS, 
+            DAY09_AVG_INBPS, DAY09_AVG_OUTBPS, DAY09_MAX_INBPS, DAY09_MAX_OUTBPS, 
+            DAY10_AVG_INBPS, DAY10_AVG_OUTBPS, DAY10_MAX_INBPS, DAY10_MAX_OUTBPS, 
+            DAY11_AVG_INBPS, DAY11_AVG_OUTBPS, DAY11_MAX_INBPS, DAY11_MAX_OUTBPS, 
+            DAY12_AVG_INBPS, DAY12_AVG_OUTBPS, DAY12_MAX_INBPS, DAY12_MAX_OUTBPS, 
+            DAY13_AVG_INBPS, DAY13_AVG_OUTBPS, DAY13_MAX_INBPS, DAY13_MAX_OUTBPS,
+            DAY14_AVG_INBPS, DAY14_AVG_OUTBPS, DAY14_MAX_INBPS, DAY14_MAX_OUTBPS, 
+            DAY15_AVG_INBPS, DAY15_AVG_OUTBPS, DAY15_MAX_INBPS, DAY15_MAX_OUTBPS, 
+            DAY16_AVG_INBPS, DAY16_AVG_OUTBPS, DAY16_MAX_INBPS, DAY16_MAX_OUTBPS, 
+            DAY17_AVG_INBPS, DAY17_AVG_OUTBPS, DAY17_MAX_INBPS, DAY17_MAX_OUTBPS, 
+            DAY18_AVG_INBPS, DAY18_AVG_OUTBPS, DAY18_MAX_INBPS, DAY18_MAX_OUTBPS, 
+            DAY19_AVG_INBPS, DAY19_AVG_OUTBPS, DAY19_MAX_INBPS, DAY19_MAX_OUTBPS, 
+            DAY20_AVG_INBPS, DAY20_AVG_OUTBPS, DAY20_MAX_INBPS, DAY20_MAX_OUTBPS, 
+            DAY21_AVG_INBPS, DAY21_AVG_OUTBPS, DAY21_MAX_INBPS, DAY21_MAX_OUTBPS, 
+            DAY22_AVG_INBPS, DAY22_AVG_OUTBPS, DAY22_MAX_INBPS, DAY22_MAX_OUTBPS, 
+            DAY23_AVG_INBPS, DAY23_AVG_OUTBPS, DAY23_MAX_INBPS, DAY23_MAX_OUTBPS
+            FROM (
+            SELECT 
+            T.CP_ID , CM.CP_NM , CM.CP_TYPE_CD, T.COLLECT_Y4MMDD , T.HH, T.PHYSICAL_SPEED 
+            , T.AVG_INBPS
+            , T.MAX_INBPS
+            , T.AVG_OUTBPS
+            , T.MAX_OUTBPS
+            FROM MDB_CP_TRAFFIC_HH T
+            INNER JOIN TB_CP_LIST_MST CM ON CM.CP_ID = T.CP_ID 
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_type_nm != null and search_type_nm != ''">
+                        AND CM.CP_TYPE_CD = #{search_type_nm}
+                    </if>
+                    <if test="search_cp_nm != null and search_cp_nm != ''">
+                        AND CM.CP_NM LIKE '%' || #{search_cp_nm} || '%'
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND T.COLLECT_Y4MMDD =  #{search_date}
+                    </if>
+                </trim>
+            </where>
+            )
+            PIVOT (
+            MAX(ROUND(AVG_INBPS,1)) AVG_INBPS
+            , MAX(ROUND(AVG_OUTBPS,1)) AVG_OUTBPS
+            , MAX(ROUND(MAX_INBPS,1)) MAX_INBPS
+            , MAX(ROUND(MAX_OUTBPS,1)) MAX_OUTBPS
+            FOR HH IN (
+                    '00' AS DAY00, '01' AS DAY01, '02' AS DAY02, '03' AS DAY03, '04' AS DAY04, '05' AS DAY05
+                , '06' AS DAY06, '07' AS DAY07, '08' AS DAY08, '09' AS DAY09, '10' AS DAY10, '11' AS DAY11
+                , '12' AS DAY12, '13' AS DAY13, '14' AS DAY14, '15' AS DAY15, '16' AS DAY16, '17' AS DAY17
+                , '18' AS DAY18, '19' AS DAY19, '20' AS DAY20, '21' AS DAY21, '22' AS DAY22, '23' AS DAY23)
+            )
+    </select>
+
+    <!-- CP 사업자 회선 일별 트래픽 -->
+    <select id="selectCpDailyCircuitTrafficList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            CP_ID , CP_NM, 
+            CP_TYPE_CD, DECODE(CP_TYPE_CD, '1', '국내','2', '해외') AS CP_TYPE_NM,
+            EQUIP_ID, IF_NM,
+            EQUIP_ALIAS, IF_DESC,
+            COLLECT_Y4MMDD, PHYSICAL_SPEED ,
+            DAY00_AVG_INBPS, DAY00_AVG_OUTBPS, DAY00_MAX_INBPS, DAY00_MAX_OUTBPS, 
+            DAY01_AVG_INBPS, DAY01_AVG_OUTBPS, DAY01_MAX_INBPS, DAY01_MAX_OUTBPS, 
+            DAY02_AVG_INBPS, DAY02_AVG_OUTBPS, DAY02_MAX_INBPS, DAY02_MAX_OUTBPS, 
+            DAY03_AVG_INBPS, DAY03_AVG_OUTBPS, DAY03_MAX_INBPS, DAY03_MAX_OUTBPS, 
+            DAY04_AVG_INBPS, DAY04_AVG_OUTBPS, DAY04_MAX_INBPS, DAY04_MAX_OUTBPS, 
+            DAY05_AVG_INBPS, DAY05_AVG_OUTBPS, DAY05_MAX_INBPS, DAY05_MAX_OUTBPS, 
+            DAY06_AVG_INBPS, DAY06_AVG_OUTBPS, DAY06_MAX_INBPS, DAY06_MAX_OUTBPS, 
+            DAY07_AVG_INBPS, DAY07_AVG_OUTBPS, DAY07_MAX_INBPS, DAY07_MAX_OUTBPS, 
+            DAY08_AVG_INBPS, DAY08_AVG_OUTBPS, DAY08_MAX_INBPS, DAY08_MAX_OUTBPS, 
+            DAY09_AVG_INBPS, DAY09_AVG_OUTBPS, DAY09_MAX_INBPS, DAY09_MAX_OUTBPS, 
+            DAY10_AVG_INBPS, DAY10_AVG_OUTBPS, DAY10_MAX_INBPS, DAY10_MAX_OUTBPS, 
+            DAY11_AVG_INBPS, DAY11_AVG_OUTBPS, DAY11_MAX_INBPS, DAY11_MAX_OUTBPS, 
+            DAY12_AVG_INBPS, DAY12_AVG_OUTBPS, DAY12_MAX_INBPS, DAY12_MAX_OUTBPS, 
+            DAY13_AVG_INBPS, DAY13_AVG_OUTBPS, DAY13_MAX_INBPS, DAY13_MAX_OUTBPS,
+            DAY14_AVG_INBPS, DAY14_AVG_OUTBPS, DAY14_MAX_INBPS, DAY14_MAX_OUTBPS, 
+            DAY15_AVG_INBPS, DAY15_AVG_OUTBPS, DAY15_MAX_INBPS, DAY15_MAX_OUTBPS, 
+            DAY16_AVG_INBPS, DAY16_AVG_OUTBPS, DAY16_MAX_INBPS, DAY16_MAX_OUTBPS, 
+            DAY17_AVG_INBPS, DAY17_AVG_OUTBPS, DAY17_MAX_INBPS, DAY17_MAX_OUTBPS, 
+            DAY18_AVG_INBPS, DAY18_AVG_OUTBPS, DAY18_MAX_INBPS, DAY18_MAX_OUTBPS, 
+            DAY19_AVG_INBPS, DAY19_AVG_OUTBPS, DAY19_MAX_INBPS, DAY19_MAX_OUTBPS, 
+            DAY20_AVG_INBPS, DAY20_AVG_OUTBPS, DAY20_MAX_INBPS, DAY20_MAX_OUTBPS, 
+            DAY21_AVG_INBPS, DAY21_AVG_OUTBPS, DAY21_MAX_INBPS, DAY21_MAX_OUTBPS, 
+            DAY22_AVG_INBPS, DAY22_AVG_OUTBPS, DAY22_MAX_INBPS, DAY22_MAX_OUTBPS, 
+            DAY23_AVG_INBPS, DAY23_AVG_OUTBPS, DAY23_MAX_INBPS, DAY23_MAX_OUTBPS
+        FROM (
+            SELECT 
+            T.CP_ID , CM.CP_NM , CM.CP_TYPE_CD, T.COLLECT_Y4MMDD , T.HH, T.PHYSICAL_SPEED 
+            , T.EQUIP_ID
+            , T.IF_NM
+            , FE.EQUIP_ALIAS
+            , FI.IF_DESC
+            , T.AVG_INBPS
+            , T.MAX_INBPS
+            , T.AVG_OUTBPS
+            , T.MAX_OUTBPS
+            FROM MDB_CP_IF_TRAFFIC_HH T
+            INNER JOIN TB_EQUIP_MST FE ON T.EQUIP_ID = FE.EQUIP_ID 
+            INNER JOIN TB_IF_MST FI ON T.EQUIP_ID = FI.EQUIP_ID AND T.IF_NM = FI.IF_NM
+            INNER JOIN TB_CP_LIST_MST CM ON CM.CP_ID = T.CP_ID 
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_cp_type != null and search_cp_type != ''">
+                        AND CM.CP_TYPE_CD = #{search_cp_type}
+                    </if>
+                    <if test="search_cp_nm != null and search_cp_nm != ''">
+                        AND CM.CP_NM LIKE '%' || #{search_cp_nm} || '%'
+                    </if>
+                    <if test="search_ll_num != null and search_ll_num != ''">
+                        AND T.LL_NUM LIKE '%' || #{search_ll_num} || '%'
+                    </if>
+                    <if test="search_equip != null and search_equip != ''">
+                        AND FE.EQUIP_ALIAS LIKE '%' || #{search_equip} || '%'
+                    </if>
+                    <if test="search_if_nm != null and search_if_nm != ''">
+                        AND T.IF_NM LIKE '%' || #{search_if_nm} || '%'
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND T.COLLECT_Y4MMDD =  #{search_date}
+                    </if>
+                </trim>
+            </where>
+        )
+        PIVOT (
+            MAX(ROUND(AVG_INBPS,1)) AVG_INBPS
+            , MAX(ROUND(AVG_OUTBPS,1)) AVG_OUTBPS
+            , MAX(ROUND(MAX_INBPS,1)) MAX_INBPS
+            , MAX(ROUND(MAX_OUTBPS,1)) MAX_OUTBPS
+            FOR HH IN (
+                    '00' AS DAY00, '01' AS DAY01, '02' AS DAY02, '03' AS DAY03, '04' AS DAY04, '05' AS DAY05
+                , '06' AS DAY06, '07' AS DAY07, '08' AS DAY08, '09' AS DAY09, '10' AS DAY10, '11' AS DAY11
+                , '12' AS DAY12, '13' AS DAY13, '14' AS DAY14, '15' AS DAY15, '16' AS DAY16, '17' AS DAY17
+                , '18' AS DAY18, '19' AS DAY19, '20' AS DAY20, '21' AS DAY21, '22' AS DAY22, '23' AS DAY23)
+        )
+    </select>
+
+    <!-- CP 사업자 월별 트래픽 -->
+    <select id="selectCpMonthlyTrafficList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            CP_ID , CP_NM, 
+            CP_TYPE_CD, DECODE(CP_TYPE_CD, '1', '국내','2', '해외') AS CP_TYPE_NM,
+            COLLECT_Y4MMDD, PHYSICAL_SPEED ,
+            DAY01_AVG_INBPS, DAY01_AVG_OUTBPS, DAY01_MAX_INBPS, DAY01_MAX_OUTBPS, 
+            DAY02_AVG_INBPS, DAY02_AVG_OUTBPS, DAY02_MAX_INBPS, DAY02_MAX_OUTBPS,
+            DAY03_AVG_INBPS, DAY03_AVG_OUTBPS, DAY03_MAX_INBPS, DAY03_MAX_OUTBPS,
+            DAY04_AVG_INBPS, DAY04_AVG_OUTBPS, DAY04_MAX_INBPS, DAY04_MAX_OUTBPS,
+            DAY05_AVG_INBPS, DAY05_AVG_OUTBPS, DAY05_MAX_INBPS, DAY05_MAX_OUTBPS,
+            DAY06_AVG_INBPS, DAY06_AVG_OUTBPS, DAY06_MAX_INBPS, DAY06_MAX_OUTBPS, 
+            DAY07_AVG_INBPS, DAY07_AVG_OUTBPS, DAY07_MAX_INBPS, DAY07_MAX_OUTBPS, 
+            DAY08_AVG_INBPS, DAY08_AVG_OUTBPS, DAY08_MAX_INBPS, DAY08_MAX_OUTBPS, 
+            DAY09_AVG_INBPS, DAY09_AVG_OUTBPS, DAY09_MAX_INBPS, DAY09_MAX_OUTBPS,
+            DAY10_AVG_INBPS, DAY10_AVG_OUTBPS, DAY10_MAX_INBPS, DAY10_MAX_OUTBPS, 
+            DAY11_AVG_INBPS, DAY11_AVG_OUTBPS, DAY11_MAX_INBPS, DAY11_MAX_OUTBPS,
+            DAY12_AVG_INBPS, DAY12_AVG_OUTBPS, DAY12_MAX_INBPS, DAY12_MAX_OUTBPS,
+            DAY13_AVG_INBPS, DAY13_AVG_OUTBPS, DAY13_MAX_INBPS, DAY13_MAX_OUTBPS,
+            DAY14_AVG_INBPS, DAY14_AVG_OUTBPS, DAY14_MAX_INBPS, DAY14_MAX_OUTBPS,
+            DAY15_AVG_INBPS, DAY15_AVG_OUTBPS, DAY15_MAX_INBPS, DAY15_MAX_OUTBPS, 
+            DAY16_AVG_INBPS, DAY16_AVG_OUTBPS, DAY16_MAX_INBPS, DAY16_MAX_OUTBPS,
+            DAY17_AVG_INBPS, DAY17_AVG_OUTBPS, DAY17_MAX_INBPS, DAY17_MAX_OUTBPS,
+            DAY18_AVG_INBPS, DAY18_AVG_OUTBPS, DAY18_MAX_INBPS, DAY18_MAX_OUTBPS, 
+            DAY19_AVG_INBPS, DAY19_AVG_OUTBPS, DAY19_MAX_INBPS, DAY19_MAX_OUTBPS,
+            DAY20_AVG_INBPS, DAY20_AVG_OUTBPS, DAY20_MAX_INBPS, DAY20_MAX_OUTBPS,
+            DAY21_AVG_INBPS, DAY21_AVG_OUTBPS, DAY21_MAX_INBPS, DAY21_MAX_OUTBPS,
+            DAY22_AVG_INBPS, DAY22_AVG_OUTBPS, DAY22_MAX_INBPS, DAY22_MAX_OUTBPS,
+            DAY23_AVG_INBPS, DAY23_AVG_OUTBPS, DAY23_MAX_INBPS, DAY23_MAX_OUTBPS, 
+            DAY24_AVG_INBPS, DAY24_AVG_OUTBPS, DAY24_MAX_INBPS, DAY24_MAX_OUTBPS, 
+            DAY25_AVG_INBPS, DAY25_AVG_OUTBPS, DAY25_MAX_INBPS, DAY25_MAX_OUTBPS,
+            DAY26_AVG_INBPS, DAY26_AVG_OUTBPS, DAY26_MAX_INBPS, DAY26_MAX_OUTBPS,
+            DAY27_AVG_INBPS, DAY27_AVG_OUTBPS, DAY27_MAX_INBPS, DAY27_MAX_OUTBPS,
+            DAY28_AVG_INBPS, DAY28_AVG_OUTBPS, DAY28_MAX_INBPS, DAY28_MAX_OUTBPS,
+            DAY29_AVG_INBPS, DAY29_AVG_OUTBPS, DAY29_MAX_INBPS, DAY29_MAX_OUTBPS, 
+            DAY30_AVG_INBPS, DAY30_AVG_OUTBPS, DAY30_MAX_INBPS, DAY30_MAX_OUTBPS, 
+            DAY31_AVG_INBPS, DAY31_AVG_OUTBPS, DAY31_MAX_INBPS, DAY31_MAX_OUTBPS
+        FROM (
+            SELECT 
+                T.CP_ID , CM.CP_NM , CM.CP_TYPE_CD, T.COLLECT_Y4MMDD , T.PHYSICAL_SPEED 
+                , SUBSTR(T.COLLECT_Y4MMDD,-2) DD
+                , T.AVG_INBPS
+                , T.MAX_INBPS
+                , T.AVG_OUTBPS
+                , T.MAX_OUTBPS
+            FROM MDB_CP_TRAFFIC_DD T
+            INNER JOIN TB_CP_LIST_MST CM ON CM.CP_ID = T.CP_ID 
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_cp_type != null and search_cp_type != ''">
+                        AND CM.CP_TYPE_CD = #{search_cp_type}
+                    </if>
+                    <if test="search_cp_nm != null and search_cp_nm != ''">
+                        AND CM.CP_NM LIKE '%' || #{search_cp_nm} || '%'
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND T.COLLECT_Y4MMDD LIKE  #{search_date} || '%'
+                    </if>
+                </trim>
+            </where>
+        )
+        PIVOT (
+            MAX(ROUND(AVG_INBPS,1)) AVG_INBPS
+            , MAX(ROUND(AVG_OUTBPS,1)) AVG_OUTBPS
+            , MAX(ROUND(MAX_INBPS,1)) MAX_INBPS
+            , MAX(ROUND(MAX_OUTBPS,1)) MAX_OUTBPS
+            FOR DD IN (
+                    '01' AS DAY01, '02' AS DAY02, '03' AS DAY03, '04' AS DAY04, '05' AS DAY05, '06' AS DAY06, '07' AS DAY07, '08' AS DAY08, '09' AS DAY09, '10' AS DAY10, '11' AS DAY11, '12' AS DAY12, '13' AS DAY13, '14' AS DAY14, '15' AS DAY15, '16' AS DAY16, '17' AS DAY17, '18' AS DAY18, '19' AS DAY19, '20' AS DAY20, '21' AS DAY21, '22' AS DAY22, '23' AS DAY23, '24' AS DAY24, '25' AS DAY25, '26' AS DAY26, '27' AS DAY27, '28' AS DAY28, '29' AS DAY29, '30' AS DAY30, '31' AS DAY31
+            )
+        )
+    </select>
+
+    <!-- CP 사업자 회선 월별 트래픽 -->
+    <select id="selectCpMonthlyCircuitTrafficList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            CP_ID , CP_NM, 
+            CP_TYPE_CD, DECODE(CP_TYPE_CD, '1', '국내','2', '해외') AS CP_TYPE_NM,
+            EQUIP_ID, IF_NM,
+            EQUIP_ALIAS, IF_DESC,
+            COLLECT_Y4MMDD, PHYSICAL_SPEED ,
+            DAY01_AVG_INBPS, DAY01_AVG_OUTBPS, DAY01_MAX_INBPS, DAY01_MAX_OUTBPS, 
+            DAY02_AVG_INBPS, DAY02_AVG_OUTBPS, DAY02_MAX_INBPS, DAY02_MAX_OUTBPS,
+            DAY03_AVG_INBPS, DAY03_AVG_OUTBPS, DAY03_MAX_INBPS, DAY03_MAX_OUTBPS,
+            DAY04_AVG_INBPS, DAY04_AVG_OUTBPS, DAY04_MAX_INBPS, DAY04_MAX_OUTBPS,
+            DAY05_AVG_INBPS, DAY05_AVG_OUTBPS, DAY05_MAX_INBPS, DAY05_MAX_OUTBPS,
+            DAY06_AVG_INBPS, DAY06_AVG_OUTBPS, DAY06_MAX_INBPS, DAY06_MAX_OUTBPS, 
+            DAY07_AVG_INBPS, DAY07_AVG_OUTBPS, DAY07_MAX_INBPS, DAY07_MAX_OUTBPS, 
+            DAY08_AVG_INBPS, DAY08_AVG_OUTBPS, DAY08_MAX_INBPS, DAY08_MAX_OUTBPS, 
+            DAY09_AVG_INBPS, DAY09_AVG_OUTBPS, DAY09_MAX_INBPS, DAY09_MAX_OUTBPS,
+            DAY10_AVG_INBPS, DAY10_AVG_OUTBPS, DAY10_MAX_INBPS, DAY10_MAX_OUTBPS, 
+            DAY11_AVG_INBPS, DAY11_AVG_OUTBPS, DAY11_MAX_INBPS, DAY11_MAX_OUTBPS,
+            DAY12_AVG_INBPS, DAY12_AVG_OUTBPS, DAY12_MAX_INBPS, DAY12_MAX_OUTBPS,
+            DAY13_AVG_INBPS, DAY13_AVG_OUTBPS, DAY13_MAX_INBPS, DAY13_MAX_OUTBPS,
+            DAY14_AVG_INBPS, DAY14_AVG_OUTBPS, DAY14_MAX_INBPS, DAY14_MAX_OUTBPS,
+            DAY15_AVG_INBPS, DAY15_AVG_OUTBPS, DAY15_MAX_INBPS, DAY15_MAX_OUTBPS, 
+            DAY16_AVG_INBPS, DAY16_AVG_OUTBPS, DAY16_MAX_INBPS, DAY16_MAX_OUTBPS,
+            DAY17_AVG_INBPS, DAY17_AVG_OUTBPS, DAY17_MAX_INBPS, DAY17_MAX_OUTBPS,
+            DAY18_AVG_INBPS, DAY18_AVG_OUTBPS, DAY18_MAX_INBPS, DAY18_MAX_OUTBPS, 
+            DAY19_AVG_INBPS, DAY19_AVG_OUTBPS, DAY19_MAX_INBPS, DAY19_MAX_OUTBPS,
+            DAY20_AVG_INBPS, DAY20_AVG_OUTBPS, DAY20_MAX_INBPS, DAY20_MAX_OUTBPS,
+            DAY21_AVG_INBPS, DAY21_AVG_OUTBPS, DAY21_MAX_INBPS, DAY21_MAX_OUTBPS,
+            DAY22_AVG_INBPS, DAY22_AVG_OUTBPS, DAY22_MAX_INBPS, DAY22_MAX_OUTBPS,
+            DAY23_AVG_INBPS, DAY23_AVG_OUTBPS, DAY23_MAX_INBPS, DAY23_MAX_OUTBPS, 
+            DAY24_AVG_INBPS, DAY24_AVG_OUTBPS, DAY24_MAX_INBPS, DAY24_MAX_OUTBPS, 
+            DAY25_AVG_INBPS, DAY25_AVG_OUTBPS, DAY25_MAX_INBPS, DAY25_MAX_OUTBPS,
+            DAY26_AVG_INBPS, DAY26_AVG_OUTBPS, DAY26_MAX_INBPS, DAY26_MAX_OUTBPS,
+            DAY27_AVG_INBPS, DAY27_AVG_OUTBPS, DAY27_MAX_INBPS, DAY27_MAX_OUTBPS,
+            DAY28_AVG_INBPS, DAY28_AVG_OUTBPS, DAY28_MAX_INBPS, DAY28_MAX_OUTBPS,
+            DAY29_AVG_INBPS, DAY29_AVG_OUTBPS, DAY29_MAX_INBPS, DAY29_MAX_OUTBPS, 
+            DAY30_AVG_INBPS, DAY30_AVG_OUTBPS, DAY30_MAX_INBPS, DAY30_MAX_OUTBPS, 
+            DAY31_AVG_INBPS, DAY31_AVG_OUTBPS, DAY31_MAX_INBPS, DAY31_MAX_OUTBPS
+        FROM (
+            SELECT 
+                T.CP_ID , CM.CP_NM , CM.CP_TYPE_CD, T.COLLECT_Y4MMDD , T.PHYSICAL_SPEED 
+                , SUBSTR(T.COLLECT_Y4MMDD,-2) DD
+                , T.EQUIP_ID
+                , T.IF_NM
+                , FE.EQUIP_ALIAS
+                , FI.IF_DESC
+                , T.AVG_INBPS
+                , T.MAX_INBPS
+                , T.AVG_OUTBPS
+                , T.MAX_OUTBPS
+            FROM MDB_CP_IF_TRAFFIC_DD T
+            INNER JOIN TB_EQUIP_MST FE ON T.EQUIP_ID = FE.EQUIP_ID 
+            INNER JOIN TB_IF_MST FI ON T.EQUIP_ID = FI.EQUIP_ID AND T.IF_NM = FI.IF_NM
+            INNER JOIN TB_CP_LIST_MST CM ON CM.CP_ID = T.CP_ID 
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_cp_type != null and search_cp_type != ''">
+                        AND CM.CP_TYPE_CD = #{search_type_nm}
+                    </if>
+                    <if test="search_cp_nm != null and search_cp_nm != ''">
+                        AND CM.CP_NM LIKE '%' || #{search_cp_nm} || '%'
+                    </if>
+                     <if test="search_ll_num != null and search_ll_num != ''">
+                        AND T.IF_NM LIKE '%' || #{search_ll_num} || '%'
+                    </if>
+                     <if test="search_alias != null and search_alias != ''">
+                        AND FE.EQUIP_ALIAS LIKE '%' || #{search_alias} || '%'
+                    </if>
+                     <if test="search_if_nm != null and search_if_nm != ''">
+                        AND T.IF_NM LIKE '%' || #{search_if_nm} || '%'
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND T.COLLECT_Y4MMDD LIKE  #{search_date} || '%'
+                    </if>
+                </trim>
+            </where>
+            )
+        PIVOT (
+            MAX(ROUND(AVG_INBPS,1)) AVG_INBPS
+            , MAX(ROUND(AVG_OUTBPS,1)) AVG_OUTBPS
+            , MAX(ROUND(MAX_INBPS,1)) MAX_INBPS
+            , MAX(ROUND(MAX_OUTBPS,1)) MAX_OUTBPS
+            FOR DD IN (
+                    '01' AS DAY01, '02' AS DAY02, '03' AS DAY03, '04' AS DAY04, '05' AS DAY05, '06' AS DAY06, '07' AS DAY07, '08' AS DAY08, '09' AS DAY09, '10' AS DAY10, '11' AS DAY11, '12' AS DAY12, '13' AS DAY13, '14' AS DAY14, '15' AS DAY15, '16' AS DAY16, '17' AS DAY17, '18' AS DAY18, '19' AS DAY19, '20' AS DAY20, '21' AS DAY21, '22' AS DAY22, '23' AS DAY23, '24' AS DAY24, '25' AS DAY25, '26' AS DAY26, '27' AS DAY27, '28' AS DAY28, '29' AS DAY29, '30' AS DAY30, '31' AS DAY31
+            )
+            )
+    </select>
+
+    <!-- IDC 회선 월별 트래픽 -->
+    <select id="selectIdcMonthlyCircuitTrafficList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            CLS_CD, IDC_CENTER_NM, COLLECT_TIME, COLLECT_Y4MM, 
+            DAY01_INBPS, DAY01_OUTBPS, DAY02_INBPS, DAY02_OUTBPS, DAY03_INBPS, DAY03_OUTBPS, 
+            DAY04_INBPS, DAY04_OUTBPS, DAY05_INBPS, DAY05_OUTBPS, DAY06_INBPS, DAY06_OUTBPS, 
+            DAY07_INBPS, DAY07_OUTBPS, DAY08_INBPS, DAY08_OUTBPS, DAY09_INBPS, DAY09_OUTBPS, 
+            DAY10_INBPS, DAY10_OUTBPS, DAY11_INBPS, DAY11_OUTBPS, DAY12_INBPS, DAY12_OUTBPS, 
+            DAY13_INBPS, DAY13_OUTBPS, DAY14_INBPS, DAY14_OUTBPS, DAY15_INBPS, DAY15_OUTBPS, 
+            DAY16_INBPS, DAY16_OUTBPS, DAY17_INBPS, DAY17_OUTBPS, DAY18_INBPS, DAY18_OUTBPS, 
+            DAY19_INBPS, DAY19_OUTBPS, DAY20_INBPS, DAY20_OUTBPS, DAY21_INBPS, DAY21_OUTBPS, 
+            DAY22_INBPS, DAY22_OUTBPS, DAY23_INBPS, DAY23_OUTBPS, DAY24_INBPS, DAY24_OUTBPS, 
+            DAY25_INBPS, DAY25_OUTBPS, DAY26_INBPS, DAY26_OUTBPS, DAY27_INBPS, DAY27_OUTBPS, 
+            DAY28_INBPS, DAY28_OUTBPS, DAY29_INBPS, DAY29_OUTBPS, DAY30_INBPS, DAY30_OUTBPS, 
+            DAY31_INBPS, DAY31_OUTBPS
+        FROM (
+            SELECT 
+                C.CLS_CD   
+                , C.IDC_CENTER_NM   
+                , TO_CHAR(TO_DATE(COLLECT_Y4MMDDH24||COLLECT_MIN,'YYYYMMDDHH24MI'),'HH24:MI')    COLLECT_TIME
+                , TO_CHAR(TO_DATE(COLLECT_Y4MMDDH24||COLLECT_MIN,'YYYYMMDDHH24MI'),'DD')       COLLECT_DD   
+                , TO_CHAR(TO_DATE(COLLECT_Y4MMDDH24||COLLECT_MIN,'YYYYMMDDHH24MI'),'YYYYMM')    COLLECT_Y4MM   
+                , ROUND(AVG(INBPS)) INBPS         
+                , ROUND(AVG(OUTBPS)) OUTBPS      
+            FROM TB_IDC_IF_CURTRF_DTL C
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_cls != null and search_cls != ''">
+                        AND C.CLS_CD = #{search_cls}
+                    </if>
+                    <if test="search_idc != null and search_idc != ''">
+                        AND C.IDC_CENTER_NM LIKE '%' || #{search_idc} || '%'
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND C.COLLECT_Y4MMDDH24 LIKE  #{search_date}||'%'
+                    </if>
+                </trim>
+            </where>
+            <!-- WHERE C.COLLECT_Y4MMDDH24 LIKE '20220701%'    -->
+            GROUP BY C.COLLECT_Y4MMDDH24||C.COLLECT_MIN,C.CLS_CD, C.IDC_CENTER_NM 
+        )
+        PIVOT (
+              AVG(INBPS) INBPS
+            , AVG(OUTBPS) OUTBPS
+            FOR COLLECT_DD IN (
+                    '01' AS DAY01, '02' AS DAY02, '03' AS DAY03, '04' AS DAY04, '05' AS DAY05, '06' AS DAY06, '07' AS DAY07, '08' AS DAY08, '09' AS DAY09, '10' AS DAY10, '11' AS DAY11, '12' AS DAY12, '13' AS DAY13, '14' AS DAY14, '15' AS DAY15, '16' AS DAY16, '17' AS DAY17, '18' AS DAY18, '19' AS DAY19, '20' AS DAY20, '21' AS DAY21, '22' AS DAY22, '23' AS DAY23, '24' AS DAY24, '25' AS DAY25, '26' AS DAY26, '27' AS DAY27, '28' AS DAY28, '29' AS DAY29, '30' AS DAY30, '31' AS DAY31
+            )
+        )
+    </select>
+
+    <!-- 백본 구간 일별 트래픽통계 -->
+    <select id="selectBackDailyTrafficStat" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            DOMAIN, COLLECT_Y4MMDD
+            , WIRE_PHYSICAL_SPEED
+            , WIRE_AVG_INBPS, WIRE_AVG_OUTBPS
+            , WIRE_MAX_INBPS, WIRE_MAX_OUTBPS
+            , WIRELESS_PHYSICAL_SPEED
+            , WIRELESS_AVG_INBPS, WIRELESS_AVG_OUTBPS
+            , WIRELESS_MAX_INBPS, WIRELESS_MAX_OUTBPS
+            , IPTV_PHYSICAL_SPEED
+            , IPTV_AVG_INBPS, IPTV_AVG_OUTBPS
+            , IPTV_MAX_INBPS, IPTV_MAX_OUTBPS
+        FROM (
+            SELECT 
+                T.SECTION_TYPE_CD
+                , HH || '시' AS DOMAIN
+                , T.COLLECT_Y4MMDD 
+                , T.PHYSICAL_SPEED 
+                , T.AVG_INBPS
+                , T.MAX_INBPS
+                , T.AVG_OUTBPS
+                , T.MAX_OUTBPS
+            FROM MDB_BACKBONE_TRAFFIC_HH T
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_domain != null and search_domain != ''">
+                        AND T.SECTION_TYPE_CD = #{search_domain}
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND T.COLLECT_Y4MMDD =  #{search_date}
+                    </if>
+                </trim>
+            </where>
+            <!-- WHERE COLLECT_Y4MMDD = '20220702' -->
+            )   
+            PIVOT (
+                    MAX(PHYSICAL_SPEED) PHYSICAL_SPEED
+                , AVG(AVG_INBPS) AVG_INBPS
+                , AVG(AVG_OUTBPS) AVG_OUTBPS
+                , MAX(MAX_INBPS) MAX_INBPS
+                , MAX(MAX_OUTBPS) MAX_OUTBPS
+            FOR SECTION_TYPE_CD IN (
+            --      select distinct SECTION_CD from TB_CP_SECTION_TYPE_CD AS ST) 
+                    'WIRE' AS WIRE, 'WIRELESS' AS WIRELESS, 'IPTV' AS IPTV
+            )
+        )
+        ORDER BY DOMAIN
+    </select>
+
+    <!-- 백본 구간 월별 트래픽통계 -->
+    <select id="selectBackMonthlyTrafficStat" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            TO_CHAR(TO_DATE(COLLECT_Y4MMDD,'YYYYMMDD'), 'DD') || '일' AS DOMAIN
+            , COLLECT_Y4MMDD
+            , WIRE_PHYSICAL_SPEED
+            , WIRE_AVG_INBPS, WIRE_AVG_OUTBPS
+            , WIRE_MAX_INBPS, WIRE_MAX_OUTBPS
+            , WIRELESS_PHYSICAL_SPEED
+            , WIRELESS_AVG_INBPS, WIRELESS_AVG_OUTBPS
+            , WIRELESS_MAX_INBPS, WIRELESS_MAX_OUTBPS
+            , IPTV_PHYSICAL_SPEED
+            , IPTV_AVG_INBPS, IPTV_AVG_OUTBPS
+            , IPTV_MAX_INBPS, IPTV_MAX_OUTBPS
+        FROM (
+            SELECT 
+                T.SECTION_TYPE_CD
+                , T.COLLECT_Y4MMDD
+                , T.PHYSICAL_SPEED 
+                , T.AVG_INBPS
+                , T.MAX_INBPS
+                , T.AVG_OUTBPS
+                , T.MAX_OUTBPS
+            FROM MDB_BACKBONE_TRAFFIC_DD T
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="search_domain != null and search_domain != ''">
+                        AND T.SECTION_TYPE_CD = #{search_domain}
+                    </if>
+                    <if test="search_date != null and search_date != ''">
+                        AND T.COLLECT_Y4MMDD LIKE  #{search_date}||'__'
+                    </if>
+                </trim>
+            </where>
+            <!-- WHERE COLLECT_Y4MMDD LIKE '202207__' -->
+            )   
+        PIVOT (
+                MAX(PHYSICAL_SPEED) PHYSICAL_SPEED
+                , AVG(AVG_INBPS) AVG_INBPS
+                , AVG(AVG_OUTBPS) AVG_OUTBPS
+                , MAX(MAX_INBPS) MAX_INBPS
+                , MAX(MAX_OUTBPS) MAX_OUTBPS
+            FOR SECTION_TYPE_CD IN (
+                'WIRE' AS WIRE, 'WIRELESS' AS WIRELESS, 'IPTV' AS IPTV
+            )
+        )
+        ORDER BY DOMAIN
+    </select>
+
+    <!-- CP 사업자 정보 조회  -->
+    <select id="selectCpInfomation" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            CP_ID, CP_NM, CP_TYPE_CD, DECODE(CP_TYPE_CD,'1','국내','2','해외','기타') CP_TYPE_NM
+            , MNG_ORG_ID
+            , MNG_USER_ID
+            , MOBILE_PHONE_NUM, EMAIL
+            , CONTENT
+            , REG_TIME, REG_USER_ID
+            , CHNG_TIME, CHNG_USER_ID
+        FROM TB_CP_LIST_MST CM
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="search_cp_type != null and search_cp_type != ''">
+                    AND CM.CP_TYPE_CD = #{search_cp_type}
+                </if>
+                <if test="search_cp_nm != null and search_cp_nm != ''">
+                    AND CM.CP_NM = #{search_cp_nm}
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <!-- CP 사업자 회선 관리 -->
+    <select id="selectCpCircuit" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            DECODE(CP_TYPE_CD,'1','국내','2','해외','기타') CP_TYPE_CD
+            , CM.CP_ID
+            , CM.CP_NM 
+            , CM.MNG_USER_ID 
+            , ORG.TEAM_ORG_DESC
+            , OFM.OFFICE_NM 
+            , FE.EQUIP_ID
+            , FE.EQUIP_ALIAS 
+            , CCM.IF_NM
+            , CCM.LL_NUM
+        FROM TB_CP_LIST_MST CM
+        INNER JOIN TB_CP_CIRCUIT_MST CCM ON CM.CP_ID =CCM.CP_ID
+        --INNER JOIN TB_IF_MST FI ON FI.EQUIP_ID = CCM.EQUIP_ID AND FI.IF_NM = CCM.IF_NM
+        INNER JOIN TB_EQUIP_MST FE ON FE.EQUIP_ID = CCM.EQUIP_ID
+        INNER JOIN TB_OFFICE_ORG_MAPP_MST OMM ON FE.V_OFFICE_ID = OMM.OFFICE_ID AND FE.SVC_NET_CD=OMM.SVC_NET_CD
+        INNER JOIN TB_OFFICE_MST OFM ON FE.V_OFFICE_ID = OFM.OFFICE_ID
+        INNER JOIN (
+            SELECT 
+                    O4.ORG_ID AS HEAD_ORG_ID, O4.ORG_NM AS HEAD_ORG_NM, O4.ORG_DESC AS HEAD_ORG_DESC
+                , O5.ORG_ID AS NSC_ORG_ID, O5.ORG_NM AS NSC_ORG_NM, O5.ORG_DESC AS NSC_ORG_DESC
+                , O6.ORG_ID AS TEAM_ORG_ID, O6.ORG_NM AS TEAM_ORG_NM, O6.ORG_DESC AS TEAM_ORG_DESC
+            FROM MVW_EQUIP_ORG_MST O4
+            INNER JOIN MVW_EQUIP_ORG_MST O5 ON O4.ORG_ID = O5.HIGHER_ORG_ID 
+            INNER JOIN MVW_EQUIP_ORG_MST O6 ON O5.ORG_ID = O6.HIGHER_ORG_ID
+            WHERE O4.HIGHER_ORG_ID ='000001'
+        ) ORG ON OMM.ORG_ID =ORG.TEAM_ORG_ID
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="search_cp_type != null and search_cp_type != ''">
+                    AND CM.CP_TYPE_CD = #{search_cp_type}
+                </if>
+                <if test="search_model != null and search_model != ''">
+                    <if test="search_input != null and search_input != ''">
+                        <choose>
+                            <when test ="search_model.equals('cpnm')">
+                                AND CM.CP_NM = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('llnum')">
+                                AND CCM.LL_NUM = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('equipalias')">
+                                AND FE.EQUIP_ALIAS = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('masterip')">
+                                AND FE.MASTER_IP = #{search_input}
+                            </when>
+                        </choose>
+                    </if>
+                </if>
+            </trim>
+        </where>
+        <!-- WHERE CM.CP_ID='TEST001' -->
+    </select>
+
+    <!-- IDC 회선 정보 기능  -->
+    <select id="selectIdcCircuitInfomation" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            --   UF_CODE1('CLS_CD',ICM.CLS_CD ) CLS_NM
+              ROWNUM
+            , ICM.CLS_CD
+            , (SELECT CD_NM FROM TB_CODE_CD WHERE CD = ICM.CLS_CD AND CATEGORY_CD='IDC_CLS_CD') CLS_NM
+            , ICM.IDC_CENTER_NM 
+            , ICM.AS_NUM 
+            , ICM.LL_NUM
+            , FE.EQUIP_ID 
+            , FE.EQUIP_ALIAS
+            , FE.MASTER_IP
+            , ICM.IF_NM 
+        FROM TB_IDC_CIRCUIT_MST ICM
+        INNER JOIN TB_EQUIP_MST FE ON FE.EQUIP_ID = ICM.EQUIP_ID
+        INNER JOIN TB_OFFICE_ORG_MAPP_MST OMM ON FE.V_OFFICE_ID = OMM.OFFICE_ID AND FE.SVC_NET_CD=OMM.SVC_NET_CD
+        INNER JOIN TB_OFFICE_MST OFM ON FE.V_OFFICE_ID = OFM.OFFICE_ID
+        INNER JOIN (
+            SELECT 
+                    O4.ORG_ID AS HEAD_ORG_ID, O4.ORG_NM AS HEAD_ORG_NM, O4.ORG_DESC AS HEAD_ORG_DESC
+                , O5.ORG_ID AS NSC_ORG_ID, O5.ORG_NM AS NSC_ORG_NM, O5.ORG_DESC AS NSC_ORG_DESC
+                , O6.ORG_ID AS TEAM_ORG_ID, O6.ORG_NM AS TEAM_ORG_NM, O6.ORG_DESC AS TEAM_ORG_DESC
+            FROM MVW_EQUIP_ORG_MST O4
+            INNER JOIN MVW_EQUIP_ORG_MST O5 ON O4.ORG_ID = O5.HIGHER_ORG_ID 
+            INNER JOIN MVW_EQUIP_ORG_MST O6 ON O5.ORG_ID = O6.HIGHER_ORG_ID
+            WHERE O4.HIGHER_ORG_ID ='000001'
+        ) ORG ON OMM.ORG_ID =ORG.TEAM_ORG_ID
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="search_cls != null and search_cls != ''">
+                    AND ICM.CLS_CD = #{search_cls}
+                </if>
+                <if test="search_model != null and search_model != ''">
+                    <if test="search_input != null and search_input != ''">
+                        <choose>
+                            <when test ="search_model.equals('idccenter')">
+                                AND ICM.IDC_CENTER_NM = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('netnum')">
+                                AND ICM.AS_NUM = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('llnum')">
+                                AND ICM.LL_NUM = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('equipalias')">
+                                AND FE.EQUIP_ALIAS = #{search_input}
+                            </when>
+                            <when test ="search_model.equals('masterip')">
+                                AND FE.MASTER_IP = #{search_input}
+                            </when>
+                        </choose>
+                    </if>
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <!-- MODAL - CP 사업자 선택  -->
+    <select id="selectModalContentProvider" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+             ICM.CP_ID
+            ,ICM.CP_NM
+            ,ICM.CP_TYPE_CD, DECODE(ICM.CP_TYPE_CD, '1', '국내','2', '해외') AS CP_TYPE_NM
+            ,ICM.MNG_ORG_ID
+            ,ICM.MNG_USER_ID
+            ,ICM.MOBILE_PHONE_NUM
+            ,ICM.EMAIL
+            ,ICM.CONTENT
+            ,ICM.REG_TIME
+            ,ICM.REG_USER_ID
+            ,ICM.CHNG_TIME
+            ,ICM.CHNG_USER_ID
+        FROM TB_CP_LIST_MST ICM
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="search_cp_type != null and search_cp_type != ''">
+                    AND ICM.CP_TYPE_CD = #{search_cp_type}
+                </if>
+                <if test="search_cp_nm != null and search_cp_nm != ''">
+                    AND ICM.CP_NM  '%' || #{search_cp_nm} || '%'
+                </if>
+            </trim>
+        </where>
+        <!-- INNER JOIN TB_EQUIP_MST FE ON FE.EQUIP_ID = ICM.EQUIP_ID
+        INNER JOIN TB_OFFICE_ORG_MAPP_MST OMM ON FE.V_OFFICE_ID = OMM.OFFICE_ID AND FE.SVC_NET_CD=OMM.SVC_NET_CD
+        INNER JOIN TB_OFFICE_MST OFM ON FE.V_OFFICE_ID = OFM.OFFICE_ID
+        INNER JOIN (
+            SELECT 
+                    O4.ORG_ID AS HEAD_ORG_ID, O4.ORG_NM AS HEAD_ORG_NM, O4.ORG_DESC AS HEAD_ORG_DESC
+                , O5.ORG_ID AS NSC_ORG_ID, O5.ORG_NM AS NSC_ORG_NM, O5.ORG_DESC AS NSC_ORG_DESC
+                , O6.ORG_ID AS TEAM_ORG_ID, O6.ORG_NM AS TEAM_ORG_NM, O6.ORG_DESC AS TEAM_ORG_DESC
+            FROM MVW_EQUIP_ORG_MST O4
+            INNER JOIN MVW_EQUIP_ORG_MST O5 ON O4.ORG_ID = O5.HIGHER_ORG_ID 
+            INNER JOIN MVW_EQUIP_ORG_MST O6 ON O5.ORG_ID = O6.HIGHER_ORG_ID
+            WHERE O4.HIGHER_ORG_ID ='000001'
+        ) ORG ON OMM.ORG_ID =ORG.TEAM_ORG_ID -->
+    </select>
+
+    <!-- MODAL - I/F 선택  -->
+    <select id="selectModalInterface" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            ORG.TEAM_ORG_DESC
+            , OFM.OFFICE_NM
+            , FE.EQUIP_ALIAS 
+            , FE.MASTER_IP 
+            , FE.EQUIP_ID
+            , FI.IF_NM 
+            , FI.IF_DESC
+            , FI.SVC_CONTRACT_NUM AS LL_NUM
+            , (SELECT FACILITY_IF_USG_NM FROM TB_FACILITY_IF_CD FCD WHERE FACILITY_IF_CD = FI.SVC_NET_CD||FI.IF_USG_CD AND ROWNUM=1) AS IF_GRP_NM
+        FROM TB_IF_MST FI
+        INNER JOIN TB_EQUIP_MST FE ON FE.EQUIP_ID = FI.EQUIP_ID
+        INNER JOIN TB_OFFICE_ORG_MAPP_MST OMM ON FE.V_OFFICE_ID = OMM.OFFICE_ID AND FE.SVC_NET_CD=OMM.SVC_NET_CD
+        INNER JOIN TB_OFFICE_MST OFM ON FE.V_OFFICE_ID = OFM.OFFICE_ID
+        INNER JOIN (
+            SELECT 
+                  O4.ORG_ID AS HEAD_ORG_ID, O4.ORG_NM AS HEAD_ORG_NM, O4.ORG_DESC AS HEAD_ORG_DESC
+                , O5.ORG_ID AS NSC_ORG_ID, O5.ORG_NM AS NSC_ORG_NM, O5.ORG_DESC AS NSC_ORG_DESC
+                , O6.ORG_ID AS TEAM_ORG_ID, O6.ORG_NM AS TEAM_ORG_NM, O6.ORG_DESC AS TEAM_ORG_DESC
+            FROM MVW_EQUIP_ORG_MST O4
+            INNER JOIN MVW_EQUIP_ORG_MST O5 ON O4.ORG_ID = O5.HIGHER_ORG_ID 
+            INNER JOIN MVW_EQUIP_ORG_MST O6 ON O5.ORG_ID = O6.HIGHER_ORG_ID
+            WHERE O4.HIGHER_ORG_ID ='000001'
+        ) ORG ON OMM.ORG_ID =ORG.TEAM_ORG_ID
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM TB_CP_CIRCUIT_MST CC
+            WHERE CC.EQUIP_ID = FI.EQUIP_ID 
+                AND CC.IF_NM = FI.IF_NM 
+        ) 
+        <if test="search_equip_alias != null and search_equip_alias != ''">
+            AND FE.EQUIP_ALIAS LIKE '%' || #{search_equip_alias} || '%'
+        </if>
+        <if test="search_ll_num != null and search_ll_num != ''">
+            AND FI.SVC_CONTRACT_NUM LIKE '%' || #{search_ll_num} || '%'
+        </if>
+        AND ROWNUM <![CDATA[ <= ]]> 20
+    </select>
+
+    <!-- MODAL - I/F 선택  -->
+    <select id="selectNeCatYdProcess" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+              NVL(MY.PROCESS_CD, 1) PROCESS_CD
+            , DECODE(NVL(MY.PROCESS_CD,1), '1','미적용', '적용') PROCESS_NM
+            , CY.MODELNAMESCODE 
+            , CY.MODELNAME 
+            , CY.POLLINGYN 
+            , DECODE(CY.POLLINGYN,'Y','수집','미수집') POLLINGYN_NM
+            , CY.MFRSCODE
+            , NVL((SELECT VENDOR_NM FROM TB_VENDOR_CD V WHERE VENDOR_CD = NVL(CY.MFRSCODE,MM.MAKER_VENDOR_CD)), CY.MFRSCODE) MFRSNAME
+            , CY.NECATCISCODE
+            , CY.CHANGEDT
+            , NVL(MY.CHNG_TIME, MY.CREATE_TIME) CHNG_TIME
+            , MM.REG_TIME AS NMS_REG_TIME
+            , MY.USER_ID
+            , (SELECT USER_NM FROM TB_USER_MST WHERE USER_ID=MY.USER_ID) USER_NM
+            , DECODE(MM.EQUIP_MDL_NM,NULL, '미수용','수용') AS NMS_MDL_YN
+            , MM.EQUIP_MDL_NM AS NMS_MDL_NM
+            , (SELECT COUNT(1) FROM TB_EQUIP_MST FE 
+                WHERE FE.EQUIP_MDL_CD = CY.MODELNAMESCODE) AS NMS_EQUIP_COUNT
+            , DESCRIPTION                
+        FROM TB_NMS_NECAT_YD CY
+        LEFT OUTER JOIN TB_EQUIP_MDL_MST MM ON CY.MODELNAMESCODE = MM.EQUIP_MDL_CD 
+        LEFT OUTER JOIN TB_MDL_YD MY ON CY.MODELNAMESCODE = MY.EQUIP_MDL_CD
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="search_process != null and search_process != ''">
+                    AND NVL(MY.PROCESS_CD,'1') = #{search_process}
+                </if>
+                <if test="search_vendor != null and search_vendor != ''">
+                    AND EXISTS (
+                        SELECT 1 
+                        FROM TB_VENDOR_CD V 
+                        WHERE VENDOR_CD = NVL(CY.MFRSCODE, MM.MAKER_VENDOR_CD) 
+                          AND VENDOR_CD LIKE '%' || #{search_vendor} || '%'
+                    )
+                </if>                
+                <if test="search_model_nm != null and search_model_nm != ''">
+                    AND CY.MODELNAME  '%' || #{search_model_nm} || '%'
+                </if>
+            </trim>
+        </where>        
+    </select>
+
+    <!-- CP 사업자 정보 조회 - 사업자명 중복체크 -->
+    <select id="selectCpOverlapCheck" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT COUNT(CP_NM) AS CP_COUNT
+        FROM TB_CP_LIST_MST
+        WHERE CP_NM = #{CP_NM}
+    </select>
+
+    <!-- CP 사업자 정보 조회 - CP 사업자 정보 등록 -->
+    <insert id="insertCpInfoData" parameterType="hashmap">
+        INSERT
+        INTO TB_CP_LIST_MST
+        (
+            CP_TYPE_CD
+            , CP_ID
+            , CP_NM
+            , MNG_ORG_ID
+            , MNG_USER_ID
+            , MOBILE_PHONE_NUM
+            , EMAIL
+            , CONTENT
+            , REG_TIME
+            , REG_USER_ID
+        )
+        VALUES (
+            #{CP_TYPE_CD}
+            , SQ_CP_LIST_MST.NEXTVAL
+            , #{CP_NM}
+            , #{MNG_ORG_ID}
+            , #{MNG_USER_ID}
+            , #{MOBILE_PHONE_NUM}
+            , #{EMAIL}
+            , #{CONTENT}
+            , SYSDATE
+            , #{USER_ID}
+        )
+    </insert>
+
+
+    <!-- CP 사업자 정보 조회 - CP 사업자 정보 수정 -->
+    <insert id="updateCpInfoData" parameterType="hashmap">
+         UPDATE TB_CP_LIST_MST
+            <set>
+                CP_TYPE_CD = #{CP_TYPE_CD}
+                , CP_NM = #{CP_NM}
+                , MNG_ORG_ID = #{MNG_ORG_ID}
+                , MNG_USER_ID = #{MNG_USER_ID}
+                , MOBILE_PHONE_NUM = #{MOBILE_PHONE_NUM}
+                , EMAIL = #{EMAIL}
+                , CONTENT = #{CONTENT}
+                , CHNG_TIME = SYSDATE
+                , CHNG_USER_ID = #{USER_ID}
+            </set>
+            WHERE CP_ID = #{CP_ID}
+    </insert>
+
+    <!-- CP 사업자 회선 정보 조회 - CP 사업자 회선 정보  등록 -->
+    <insert id="insertCpCircuitInfoData" parameterType="hashmap">
+        INSERT
+        INTO TB_CP_CIRCUIT_MST
+        (
+            CP_ID
+            , EQUIP_ID
+            , IF_NM
+            , LL_NUM
+            , REG_TIME
+            , REG_USER_ID
+        )
+        VALUES (
+            #{CP_ID}
+            , #{EQUIP_ID}
+            , #{IF_NM}
+            , #{LL_NUM}
+            , SYSDATE
+            , #{USER_ID}
+        )
+    </insert>
+
+    <!-- CP 사업자 회선 정보 조회 - CP 사업자 회선 정보  수정 -->
+    <insert id="updateCpCircuitInfoData" parameterType="hashmap">
+        UPDATE TB_CP_CIRCUIT_MST
+        <set>
+            EQUIP_ID = #{EQUIP_ID}
+            , IF_NM = #{IF_NM}
+            , LL_NUM = #{LL_NUM}
+            , CHNG_TIME = SYSDATE
+            , CHNG_USER_ID = #{USER_ID}
+        </set>
+        WHERE CP_ID = #{CP_ID}
+    </insert>
+
+    <!-- IDC 사업자 회선 정보 조회 - IDC 사업자 회선 정보  등록/수정 -->
+    <insert id="updateIdcCircuitInfoData" parameterType="hashmap">
+        MERGE INTO TB_IDC_CIRCUIT_MST
+        USING DUAL ON (EQUIP_ID = #{EQUIP_ID} AND IF_NM = #{IF_NM})
+        WHEN MATCHED THEN 
+            UPDATE SET 
+                 CLS_CD = #{CLS_NM}
+                , IDC_CENTER_NM = #{IDC_CENTER_NM}
+                , AS_NUM = #{AS_NUM}
+                , LL_NUM = #{LL_NUM}
+                , CHNG_TIME = SYSDATE
+                , CHNG_USER_ID = #{USER_ID}
+        WHEN NOT MATCHED THEN 
+            INSERT 
+            (
+                CLS_CD
+                , EQUIP_ID
+                , IF_NM
+                , IDC_CENTER_NM
+                , AS_NUM
+                , LL_NUM
+                , REG_TIME
+                , REG_USER_ID
+            )
+            VALUES (
+                #{CLS_NM}
+                , #{EQUIP_ID}
+                , #{IF_NM}
+                , #{IDC_CENTER_NM}
+                , #{AS_NUM}
+                , #{LL_NUM}
+                , SYSDATE
+                , #{USER_ID}
+            )
+    </insert>
+
+    <!-- CP 사업자 정보 조회 - CP 사업자 정보 삭제 -->
+    <delete id="deleteCpInfoData" parameterType="hashmap">
+        DELETE 
+        FROM TB_CP_LIST_MST
+        WHERE CP_ID = #{CP_ID}
+    </delete>
+
+    <!-- CP 사업자 회선 정보 조회 - CP 사업자 회선 정보 삭제 -->
+    <delete id="deleteCpCircuitInfoData" parameterType="hashmap">
+        DELETE 
+        FROM TB_CP_CIRCUIT_MST
+        WHERE CP_ID = #{CP_ID}
+    </delete>
+
+    <!--  IDC 사업자 회선 정보 조회 - IDC 사업자 정보 삭제 -->
+    <delete id="deleteIdcCircuitInfoData" parameterType="hashmap">
+        DELETE 
+        FROM TB_IDC_CIRCUIT_MST
+        WHERE EQUIP_ID = #{EQUIP_ID} AND IF_NM = #{IF_NM}
+    </delete>
+
+    <update id="mergeNeCatYdProcess" parameterType="hashmap">
+        MERGE INTO TB_MDL_YD MY
+        USING DUAL ON (MY.EQUIP_MDL_CD =  #{MODELNAMESCODE})
+        WHEN MATCHED THEN 
+            UPDATE SET 
+                CHNG_TIME = SYSDATE
+                , PROCESS_CD = #{PROCESS_CD}
+                , USER_ID = #{USER_ID}
+                , DESCRIPTION = #{DESCRIPTION}
+        WHEN NOT MATCHED THEN 
+            INSERT (
+                EQUIP_MDL_CD
+                , EQUIP_MDL_NM
+                , RESRC_COLLECT_YN_CD
+                , MAKER_VENDOR_CD
+                , K9_CD
+                , CREATE_TIME
+                , CHNG_TIME
+                , PROCESS_CD
+                , USER_ID
+                , DESCRIPTION             
+            ) VALUES (
+                #{MODELNAMESCODE}
+                , #{MODELNAME}
+                , #{POLLINGYN}
+                , #{MFRSCODE}
+                , #{NECATCISCODE}
+                , SYSDATE
+                , SYSDATE
+                , #{PROCESS_CD}
+                , #{USER_ID}
+                , #{DESCRIPTION}
+            )
+    </update>
+    <update id="insertEquipModelMst" parameterType="hashmap">
+        MERGE INTO TB_EQUIP_MDL_MST MM
+        USING DUAL ON (MM.EQUIP_MDL_CD =  #{MODELNAMESCODE})
+        WHEN NOT MATCHED THEN 
+            INSERT (
+                EQUIP_MDL_CD
+                , EQUIP_MDL_NM
+                , RESRC_COLLECT_YN_CD
+                , MAKER_VENDOR_CD
+                , REG_TIME
+            ) VALUES (
+                #{MODELNAMESCODE}
+                , #{MODELNAME}
+                , #{POLLINGYN}
+                , #{MFRSCODE}
+                , SYSDATE
+            )
+    </update> 
+</mapper>

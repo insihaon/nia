@@ -1,0 +1,1027 @@
+@import url("../pages/main/monitoringTT/template_dialog/batch_processing_template/view.css");
+
+md-dialog {
+    max-height: 100% !important;
+}
+
+div.toolbar > button.whiteBtn{
+    /*background-color: white;*/
+    border-radius: 5px;
+    height: 20px;
+    margin: -8px 6px -5px 6px;
+    font-size: 0.75em;
+    font-weight: 900;
+}
+
+div.testBtnArea .testBtn{
+    margin: 0px;
+    padding: 0px;
+    min-width: 45px;
+    max-width: 45px;
+}
+
+.md-button.mapBtn{
+    font-weight: 900;
+    color: #4e4d4d;
+    font-size: 11px;
+    min-width: 75px;
+
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+div.divider-mini {
+    width: 1px !important;
+    height: 10px !important;
+    margin: 15px 10px 0px 10px !important;
+    background: #bababa !important;
+}
+
+div.map-area{
+    padding-right: 20px;
+    padding-bottom: 20px;
+    background-color: #1f335d !important
+}
+
+.underline {
+    /*border-bottom: dashed 1px #ccc;*/
+    height: 60px;
+}
+
+.btn-alarm-toggle{
+    position: relative;
+    margin: -16px auto -20px auto;
+    width: 5px;
+}
+.md-button.md-fab.md-mini{
+    background-color: white;
+    color: black;
+    z-index: 11;
+    width: 2.3rem;
+    height: 0rem;
+    line-height: 0rem;
+    opacity: 0.7;
+}
+.md-button.md-fab.md-mini:hover{
+    background-color: white;
+    color: black;
+    opacity: 1;
+}
+.md-button.md-fab:not([disabled]).md-focused{
+    background-color: white;
+    color: black;
+    opacity: 1;
+}
+
+#more-info {
+    height: 0px;
+    overflow: hidden;
+    transition: height 0.5s;
+    /*background: url('/images/background/fibre-1515964_1280.jpg') !*no-repeat*!;*/
+    opacity: 0.7;
+    color: #FFF;
+}
+
+div.influencecircuit-table{
+    /*opacity: 0.7;*/
+    /*color: #FFF;*/
+    /*position: absolute;*/
+    /*z-index: 1;*/
+    /*background-color: white;*/
+
+    /*2019-08-19*/
+    /*width: calc(100% - 1092px);*/
+    width: calc(100% - 815px);
+    height: 10px;
+    position: absolute;
+}
+
+.fab {
+    border: none;
+    background-color: rgba(68, 68, 68, 0.7);
+    /*padding: 25px;*/
+    padding: 9px 10px 12px 10px;
+    position: absolute;
+    /*left: 80%;*/
+    /*top: 20%;*/
+    right: 20px;
+    top: 20px;
+
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 1px grey;
+    box-sizing: border-box;
+    width: 0;
+    height: 0;
+    z-index: 1;
+    font-size: 12px;
+}
+.fab .fa {
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+}
+.fab.is-expanding {
+    animation: expand 0.5s ease-in;
+}
+.fab:not(.expanded):hover{
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.fab .expand-close:hover{
+    font-size: 14px;
+    margin-right: -2px;
+    margin-top: 7px;
+}
+
+.fab.expanded {
+    width: calc(100% - 40px);
+    min-width: 400px;
+    height: 140px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.8);
+    /*left: 10%;*/
+    /*top: 20%;*/
+    right: 20px;
+    top: 20px;
+    cursor: auto;
+    padding: 0;
+}
+.fab.is-closing {
+    animation: expand 0.5s ease-out reverse;
+}
+
+@keyframes expand {
+    33% {
+        width: 0;
+        height: 0;
+        /*right: 55%;*/
+        /*top: 40%;*/
+        right: 40px;
+        top: 40px;
+    }
+    100% {
+        width: calc(100% - 40px);
+        min-width: 400px;
+        height: 140px;
+        border-radius: 3px;
+        background-color: rgba(255, 255, 255, 0.8);
+        /*left: 10%;*/
+        /*top: 20%;*/
+        right: 20px;
+        top: 20px;
+    }
+}
+.expand-close {
+    cursor: pointer;
+    float: right;
+    margin-top: 8px;
+}
+
+.expand-close-pos {
+    position: absolute;
+    right: -19px;
+    z-index: 1;
+}
+.expand-close-hide {
+    display: none;
+}
+
+
+
+div.alarmArea{
+    height:300px;
+    z-index: 10;
+    margin: 10px 20px;
+    background-color: rgba(250,250,250,0);
+    overflow: auto;
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+div.alarmArea > div.alarmContens{
+    margin-left: 20px;
+}
+
+div.alarmInfo md-input-container.md-block > label{
+    font-size: 0.8rem;
+}
+
+div.alarmInfo md-input-container.md-block > input{
+    font-size: 0.8rem;
+    color: #009688 !important;
+}
+
+md-input-container.md-default-theme .md-placeholder, md-input-container .md-placeholder, md-input-container.md-default-theme label, md-input-container label,
+md-input-container.md-default-theme:not(.md-input-invalid).md-input-has-value label, md-input-container:not(.md-input-invalid).md-input-has-value label {
+    /*color: rgba(0,0,0,1) !important;*/
+}
+
+md-input-container{
+    margin: 16px 0 0 0;
+    padding: 0 0;
+}
+
+md-input-container .md-errors-spacer {
+    display:none;
+}
+
+md-input-container > label {
+    margin: 0;
+}
+div.alarmInfo{
+    margin-left: 20px;
+}
+
+div.alarmInfo > div{
+    margin-top: 12px;
+}
+
+div#alarmDetailBox {
+    min-width: 360px;
+}
+
+div#alarmListBox {
+    width:780px;
+    margin-right: 20px;
+}
+div.listAlarm {
+    margin-top: -5px;
+    margin-left: 20px;
+    width:780px;
+}
+
+
+div.subTitle > div.section-indicator{
+    display: block;
+    border-left: 4px solid #d62525;
+    height: 18px;
+    float: left;
+    margin: 3px 10px 0px 20px;
+}
+div.subTitle > span.section-title{
+    color: #212529;
+    font-size: 0.9em;
+    /*font-family: Arial Black,meiryo,HY견고딕;*/
+    /*font-family: ;*/
+    font-weight: 900;
+}
+
+md-input-container.search{
+    margin: 0px 20px 15px 0px;
+}
+md-input-container > md-section-indicator{
+    color: #6495ed;
+}
+md-input-container.search > input,
+md-input-container.search > input::placeholder{
+    font-size: 0.8rem;
+}
+
+.md-subheader.md-default-theme, .md-subheader{
+    font-size: 0.8em;
+    color: rgba(0,0,0,1) !important;
+}
+
+/*<editor-fold desc="# spritter 관련">*/
+/**
+.split-panes
+{
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin:0;
+    position: absolute;
+}
+
+.split-panes > .split-handler
+{
+    background: transparent;
+    position: absolute;
+    z-index: 999;
+    height:2000vh;
+    -webkit-box-shadow: inset 2px 2px 1px 0px rgba(255, 255, 255, 0.2), 1px 2px 4px 0px rgba(0,0,0,0.4);
+    -moz-box-shadow: inset 1px 2px 2px 0px rgba(255, 255, 255, 0.2), 1px 2px 4px 0px rgba(0,0,0,0.4);
+    box-shadow: inset 1px 2px 2px 0px rgba(255, 255, 255, 0.2), 1px 2px 4px 0px rgba(0,0,0,0.4);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#222931), color-stop(100%,#181D21));
+}
+
+!* Horizontal *!
+
+.split-panes.horizontal > .split-handler
+{
+    width: 1em;
+    top: 0px;
+    left: 50%;
+    bottom: 0px;
+    cursor: ew-resize;
+}
+
+.split-panes.horizontal > .split-pane1,
+.split-panes.horizontal > .split-pane2
+{
+    position: absolute;
+    height:100%;
+}
+
+.split-panes.horizontal > .split-pane1
+{
+    width: 50%;
+}
+
+.split-panes.horizontal > .split-pane2
+{
+    left: 50%;
+    right: 0px;
+}
+
+!* Vertical *!
+
+.split-panes.vertical > .split-handler
+{
+    height: 1em;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    cursor: ns-resize;
+}
+
+.split-panes.vertical > .split-pane1,
+.split-panes.vertical > .split-pane2
+{
+    position: absolute;
+    width: 100%;
+}
+
+.split-panes.vertical > .split-pane1
+{
+    height: 100%;
+}
+
+.split-panes.vertical > .split-pane2
+{
+    top: 50%;
+    bottom: 0px;
+}*/
+/*</editor-fold>*/
+
+#map-info {
+    /*
+    height: calc(100% - 38px);
+    min-height: calc(100% - 38px);
+    max-height: calc(100% - 38px);
+    */
+    position: relative;
+    background-color: #00bcd4;
+}
+
+/*토폴로지 begin*/
+.componentWapper {
+    background-color: #222222;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+
+    width: 100%;
+    /*height: 100%;*/
+    /*height: calc(100vh - 44px - 38px - 276px);*/
+    /*min-height: calc(100vh - 44px - 38px - 276px);*/
+    /*max-height: calc(100vh - 44px - 38px - 276px);*/
+
+    transition: height 0.2s linear;
+}
+
+#topologyElementId {
+    height: calc(100% - 300px);;
+}
+
+.text-label {
+    color: #fff;
+    font-family: "맑은고딕", "Fira Mono", Monaco, "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    margin: 0 0 0 0;
+    pointer-events:none;
+}
+
+.node-label, .link-label, .link-alarm-label {
+    color: #fff;
+    font-family: "맑은고딕", "Fira Mono", Monaco, "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    font-size: 12px;
+    margin: 0 0 0 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 25px;
+    padding: 1px 5px;
+    /*max-width: 150px;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;*/
+}
+
+.unit-tag {
+    background: transparent !important;
+}
+
+.unit-tag pre {
+    display: block inherit !important;
+    /*font-family: monospace;*/
+    font-size: inherit !important;
+    color: inherit !important;
+    /*margin: 1em 0px;*/
+    overflow: inherit !important;
+}
+
+.node-label.label-top {
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
+
+.link-alarm-label {
+    max-width: 200px;
+    word-break: break-all;
+}
+
+.node-tag {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: "NanumGothic", "맑은고딕", "Fira Mono", Monaco, "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    font-size: 12px;
+    margin: 0 0 0 0;
+    pointer-events: none;
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 0;
+    padding: 1px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.node-tag.no-background {
+    background: transparent;
+}
+
+.node-tag .icon-tag {
+    margin: 0;
+    padding: 0;
+}
+
+.link-label {
+    color: white;
+    background: transparent;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.link-alarm-label{
+    color: white;
+    background: rgba(255, 0, 0, 0.5);
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.layer-label {
+    color: #bee1ff;
+    font-family: "Arial Black", "Fira Mono", Monaco, "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0 0 0 0;
+    pointer-events:none;
+    background: rgba(0, 0, 0, 0);
+    border-radius: 25px;
+    padding: 5px 5px;
+    z-index: auto;
+}
+
+.my-tooltip {
+
+    visibility: visible;
+    opacity: 0.8;
+
+    content: attr(tooltip); /* magic! */
+    z-index: 1000;
+
+    /* most of the rest of this is opinion */
+    font-family: '맑은고딕', Helvetica, sans-serif;
+    text-align: left;
+    font-size: 12px;
+
+    /*
+    Let the content set the size of the tooltips
+    but this will also keep them from being obnoxious
+    */
+    min-width: 3em;
+    max-width: 30em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    /* visible design of the tooltip bubbles */
+    padding: 1ch 1.5ch;
+    border-radius: .3ch;
+    box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
+    /*background: #333;*/
+    /*color: #fff;*/
+}
+
+/* expand Alarm List */
+div.map3d div.alarmExpandBtn > button,
+div.mapCable div.alarmExpandBtn > button{
+    background-color: #1f325c;
+    height: 40px;
+    min-height: 25px;
+    font-family: 'NanumSquare';
+    font-size: 12px;
+    min-width: 40px;
+    font-weight: 600;
+    border-radius:10px 10px 0 0 !important;
+    transform:rotate(-0.03deg) translateY(12px);
+    transition: all 0.3s ease;
+}
+
+div.map3d div.alarmExpandBtn > button.increase:hover,
+div.mapCable div.alarmExpandBtn > button.increase:hover{
+    background-color: #274073;
+    transform:rotate(-0.03deg) translateY(3px);
+    color:#FFFFFF;
+}
+
+div.map3d div.alarmExpandBtn > button.decrease:hover,
+div.mapCable div.alarmExpandBtn > button.decrease:hover{
+    background-color: #274073;
+    transform: rotate(-0.03deg) translateY(17px) !important;
+    color:#FFFFFF;
+}
+
+/*body,*/
+md-content.alarm-content {
+    /*background-color: #f5f5f5 !important;*/
+    background-color: #fff !important;
+    overflow: hidden;
+}
+
+md-content.seqContens{
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+body > md-toolbar {
+    z-index: 3;
+}
+
+md-toolbar.md-table-toolbar.alternate {
+    color: #1e88e5;
+    background-color: #e3f2fd;
+}
+
+md-toolbar.md-table-toolbar.alternate .md-toolbar-tools {
+    font-size: 16px;
+}
+
+md-card:first-child {
+    padding: 8px 8px 8px 24px;
+}
+
+.checkboxes > md-checkbox {
+    margin: 0;
+    padding: 16px;
+    min-width: 300px;
+    flex: 0 0 auto;
+}
+
+/*<editor-fold desc="#Alarm Table Customizing 2018.11.09">*/
+
+table.alarm-table.md-table tbody.md-body > tr.md-row, table.alarm-table.md-table tfoot.md-foot > tr.md-row ,
+table.seq-table.md-table tbody.md-body > tr.md-row, table.alarm-table.md-table tfoot.md-foot > tr.md-row {
+    height: 24px;
+}
+table.seq-table.md-table thead{
+    display: block;
+    width: 788px;
+    /*max-width: 788px;*/
+}
+
+table.alarm-table.md-table thead.md-head > tr.md-row,
+table.seq-table.md-table thead.md-head > tr.md-row{
+    height: 38px !important;
+}
+
+md-table-pagination.md-table-pagination.ng-isolate-scope {
+    height: 38px;
+}
+
+/*md-content.alarm-content._md {
+    height: calc(276px - 90px);
+}*/
+
+tr > th > md-icon > svg {
+    height: 16px;
+    margin: 4px auto;
+    width: 16px;
+}
+
+div#alarmListWapper {
+    /*min-height: 276px;*/
+    height: 276px;
+    transition: height 0.2s linear;
+}
+
+/*md-table-container {
+    min-height: 165px;
+}*/
+
+.slim-cell{
+    height: 2.2em;
+    /*max-width: 20em;*/
+    /*white-space: nowrap;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+}
+
+.map3d-legend-color_swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    margin-top: 1px;
+}
+
+.alarm-level-box.critical,
+.map3d-legend-color_swatch.critical {
+    background-color: #EF6060;
+}
+
+.alarm-level-box.major,
+.map3d-legend-color_swatch.major {
+    background-color: #FCA000;
+}
+
+.alarm-level-box.minor,
+.map3d-legend-color_swatch.minor {
+    background-color: #FED600;
+}
+
+.alarm-level-box.warning,
+.map3d-legend-color_swatch.warning {
+    background-color: #63B1FF;
+}
+
+.alarm-level-box.clear,
+.map3d-legend-color_swatch.clear {
+    background-color: #78BE22;
+}
+
+.map3d-legend-color_label {
+    padding-right: 15px;
+    width: 40px;
+    text-align: center;
+}
+
+/* Borders between colors */
+.map3d-legend-color.border-left .map3d-legend-color_label:not(:first-child) {
+    /*border-left: 1px solid #c0c0c0;*/
+    /*padding-left: 5px;*/
+}
+
+.map3d-legend-color.border-left .map3d-legend-color_swatch {
+    margin-right: 5px;
+}
+
+table.map3d-legend-color.border-left {
+    /*margin-top: 5px;*/
+    margin-left: 20px;
+    width: 320px;
+    height: 36px;
+    border-left: 0 !important;
+    background-color: #ffffff;
+    z-index: 2;
+}
+
+td.map3d-legend-color_label {
+    font-size: 11px;
+    color: #fff;
+    padding-top: 4px;
+}
+
+.alarm-level-box {
+    width : 20px;
+    height: 10px;
+    display: inline-block;
+    /*background: #FF0000;*/
+}
+table.alarm-table.md-table{
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    height: 175px;
+}
+
+table.alarm-table thead{
+    display: block;
+}
+table.alarm-table tbody{
+    display: block;
+    height: 125px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+table.alarm-table tr.relatedRow:not(.clearedRow){
+    background: #f5d8d8;
+}
+table.alarm-table tr.clearedRow{
+    background: #e8ffe7;
+}
+table.alarm-table th.md-column,
+table.alarm-table td.md-cell,
+table.seq-table th.md-column,
+table.seq-table td.md-cell{
+    font-size: 11px !important;
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+}
+table.alarm-table td.md-cell div.over-cell,
+table.seq-table td.md-cell div.over-cell{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+}
+
+table.alarm-table div.overflow-action:hover,
+table.seq-table div.overflow-action:hover{
+    overflow: visible !important;
+    width: auto;
+    display: inline-block;
+    background-color: #f5f5f5;
+    position: relative;
+    outline: solid 1px #adadad;
+    max-width: 1000px !important;
+    padding-right: 5px;
+    cursor: text;
+    z-index: 1;
+}
+table.seq-table div.overflow-action:hover{
+    background-color: #d7d7d7;
+    z-index: 1;
+}
+table.alarm-table tr.relatedRow:not(.clearedRow) div.overflow-action:hover{
+    background-color: #f5d8d8;
+}
+table.alarm-table tr.clearedRow div.overflow-action:hover{
+    background-color: #e8ffe7;
+}
+
+table.alarm-table td.md-cell:not(:last-child) div.overflow-action:hover:before,
+table.seq-table td.md-cell:not(:last-child) div.overflow-action:hover:before{
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    height: 120%;
+    /*width: 70%;*/
+    /* percentage of the element width*/
+    border-left: 2px solid #f5f5f5;
+    border-top: 2px solid #f5f5f5;
+    border-bottom: 2px solid #f5f5f5;
+}
+table.alarm-table tr.relatedRow:not(.clearedRow) td.md-cell:not(:last-child) div.overflow-action:hover:before{
+    border-left: 2px solid #f5d8d8;
+    border-top: 2px solid #f5d8d8;
+    border-bottom: 2px solid #f5d8d8;
+}
+table.alarm-table tr.clearedRow td.md-cell:not(:last-child) div.overflow-action:hover:before{
+    border-left: 2px solid #e8ffe7;
+    border-top: 2px solid #e8ffe7;
+    border-bottom: 2px solid #e8ffe7;
+}
+table.seq-table td.md-cell:not(:last-child) div.overflow-action:hover:before,
+table.seq-table tr.relatedRow td.md-cell:not(:last-child) div.overflow-action:hover:before{
+    border-left: 2px solid #d7d7d7;
+    border-top: 2px solid #d7d7d7;
+    border-bottom: 2px solid #d7d7d7;
+}
+
+table.alarm-table td.md-cell:last-child div.overflow-action:hover,
+table.seq-table td.md-cell:last-child div.overflow-action:hover{
+    float: right;
+    background-color: #e8e8e8;
+    padding-left: 5px;
+}
+
+table.alarm-table.md-table:not(.md-row-select) td.md-cell:nth-child(n+2):nth-last-child(n+2),
+table.alarm-table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+2){
+    padding: 0 36px 0 0;
+}
+
+table.alarm-table th.md-column:nth-child(1), /* alarmno */
+table.alarm-table td.md-cell:nth-child(1){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table th.md-column:nth-child(2),  /* alarmlevel */
+table.alarm-table td.md-cell:nth-child(2){
+    min-width: 120px;
+    max-width: 120px;
+    text-align: right;
+}
+table.alarm-table th.md-column:nth-child(3),  /* sysname */
+table.alarm-table td.md-cell:nth-child(3){
+    min-width: 180px;
+    max-width: 180px;
+}
+table.alarm-table th.md-column:nth-child(4),  /* equiptype */
+table.alarm-table td.md-cell:nth-child(4){
+    min-width: 150px;
+    max-width: 150px;
+}
+table.alarm-table th.md-column:nth-child(5),  /* alarmtime */
+table.alarm-table td.md-cell:nth-child(5){
+    min-width: 160px;
+    max-width: 160px;
+}
+table.alarm-table th.md-column:nth-child(6),  /* receivetime */
+table.alarm-table td.md-cell:nth-child(6){
+    min-width: 160px;
+    max-width: 160px;
+}
+table.alarm-table th.md-column:nth-child(7),  /* alarmloc */
+table.alarm-table td.md-cell:nth-child(7){
+    min-width: 180px;
+    max-width: 180px;
+}
+table.alarm-table th.md-column:nth-child(8),  /* alarmmsg */
+table.alarm-table td.md-cell:nth-child(8){
+    min-width: 200px;
+    max-width: 200px;
+}
+table.alarm-table th.md-column:nth-child(9),  /* unit */
+table.alarm-table td.md-cell:nth-child(9){
+    min-width: 120px;
+    max-width: 120px;
+}
+table.alarm-table th.md-column:nth-child(10),  /* clusterno */
+table.alarm-table td.md-cell:nth-child(10){
+    min-width: 100px;
+    max-width: 100px;
+}
+
+/* PF 알람 리스트 */
+table.alarm-table.pf-alarm th.md-column:nth-child(1), /* sysname */
+table.alarm-table.pf-alarm td.md-cell:nth-child(1){
+    min-width: 180px;
+    max-width: 180px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(2),  /* port */
+table.alarm-table.pf-alarm td.md-cell:nth-child(2){
+    min-width: 120px;
+    max-width: 120px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(3),  /* unit */
+table.alarm-table.pf-alarm td.md-cell:nth-child(3){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(4),  /* tmper */
+table.alarm-table.pf-alarm td.md-cell:nth-child(4){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(5),  /* rxcur */
+table.alarm-table.pf-alarm td.md-cell:nth-child(5){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(6),  /* rxmin */
+table.alarm-table.pf-alarm td.md-cell:nth-child(6){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(7),  /* rxmax */
+table.alarm-table.pf-alarm td.md-cell:nth-child(7){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(8),  /* rxave */
+table.alarm-table.pf-alarm td.md-cell:nth-child(8){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(9),  /* txcur */
+table.alarm-table.pf-alarm td.md-cell:nth-child(9){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(10),  /* txmin */
+table.alarm-table.pf-alarm td.md-cell:nth-child(10){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(11),  /* txmax */
+table.alarm-table.pf-alarm td.md-cell:nth-child(11){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(12),  /* txave */
+table.alarm-table.pf-alarm td.md-cell:nth-child(12){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.pf-alarm th.md-column:nth-child(13),  /* ocrtime */
+table.alarm-table.pf-alarm td.md-cell:nth-child(13){
+    min-width: 160px;
+    max-width: 160px;
+}
+
+/* TRAFFIC 알람 리스트 */
+table.alarm-table.traffic-table th.md-column:nth-child(1), /* status */
+table.alarm-table.traffic-table td.md-cell:nth-child(1){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(2),  /* alarm_type */
+table.alarm-table.traffic-table td.md-cell:nth-child(2){
+    min-width: 150px;
+    max-width: 150px;
+    text-align: center;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(3),  /* alarmlevel */
+table.alarm-table.traffic-table td.md-cell:nth-child(3){
+    min-width: 150px;
+    max-width: 150px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(4),  /* receivetime */
+table.alarm-table.traffic-table td.md-cell:nth-child(4){
+    min-width: 200px;
+    max-width: 200px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(5),  /* faulttime */
+table.alarm-table.traffic-table td.md-cell:nth-child(5){
+    min-width: 200px;
+    max-width: 200px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(6),  /* sysname */
+table.alarm-table.traffic-table td.md-cell:nth-child(6){
+    min-width: 200px;
+    max-width: 200px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(7),  /* bps_in */
+table.alarm-table.traffic-table td.md-cell:nth-child(7){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(8),  /* BPS OUT */
+table.alarm-table.traffic-table td.md-cell:nth-child(8){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(9),  /* ppsin */
+table.alarm-table.traffic-table td.md-cell:nth-child(9){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(10),  /* ppsout */
+table.alarm-table.traffic-table td.md-cell:nth-child(10){
+    min-width: 100px;
+    max-width: 100px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(11),  /* interface_id */
+table.alarm-table.traffic-table td.md-cell:nth-child(11){
+    min-width: 200px;
+    max-width: 200px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(12),  /* interface_name */
+table.alarm-table.traffic-table td.md-cell:nth-child(12){
+    min-width: 200px;
+    max-width: 200px;
+}
+table.alarm-table.traffic-table th.md-column:nth-child(13),  /* fltbpsin_anomaly */
+table.alarm-table.traffic-table td.md-cell:nth-child(13){
+    min-width: 160px;
+    max-width: 160px;
+}
+
+
+md-virtual-repeat-container.alarm-container {
+    height: 100%;
+}
+.md-virtual-repeat-container.alarm-container .md-virtual-repeat-scroller {
+    position: fixed;
+    margin-top: auto;
+    margin-bottom: 52px;
+    height: 168px;
+}
+
+md-virtual-repeat-container.md-virtual-repeat-container.alarm-container.md-orient-vertical {
+    width: 100%;
+    overflow-x: auto;
+}
+
+div.alarm-count{
+    font-size: 18px;
+    font-weight: 900;
+    width: auto;
+    margin-right: 30px;
+    /*padding: 4px 0;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

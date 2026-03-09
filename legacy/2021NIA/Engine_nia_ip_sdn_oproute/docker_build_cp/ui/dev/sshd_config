@@ -1,0 +1,9 @@
+Port 22
+Protocol 2
+HostKey /etc/ssh/ssh_host_rsa_key
+LoginGraceTime 120
+PermitRootLogin yes
+PasswordAuthentication yes
+StrictModes yes
+PubKeyAuthentication yes
+UsePAM yes

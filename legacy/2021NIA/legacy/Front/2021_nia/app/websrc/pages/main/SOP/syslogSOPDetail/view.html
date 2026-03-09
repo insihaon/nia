@@ -1,0 +1,67 @@
+<md-dialog class="SOP-detail-dialog" id="syslogSopDetailDialog" ng-cloak style="width: 590px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">SYSLOG SOP 상세보기</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form>
+        <md-dialog-content style="overflow-x: hidden;">
+            <div class="SOP-detail-dialog-content">
+                <table class="SOP-detail-table">
+                    <tr>
+                        <td class="userInfoKind">알람번호</td>
+                        <td><input class="SOP-id w-75" ng-model="SOPDetailData.alarmno" disabled/></td>
+                        <td class="userInfoKind">장비명</td>
+                        <td><input class="SOP-name w-75" ng-model="SOPDetailData.node_nm" disabled/></td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">인터페이스</td>
+                        <td><input class="SOP-representative w-75" ng-model="SOPDetailData.alarmloc"  disabled/></td>
+                        <td class="userInfoKind">syslog 원본메시지</td>
+                        <td><input class="SOP-representative w-75" ng-model="SOPDetailData.etc"  disabled/></td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">처리상태</td>
+                        <td><input class="mac-address w-75" ng-model="SOPDetailData.status"  disabled/></td>
+                    </tr>
+                    <tr style="height: 30px;">
+                        <td colspan="4" class="userInfoKind">수정사항</td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">장애구분</td>
+                        <td>
+                            <md-select placeholder="{{SOPDetailData.faultClassify}}" class="mr-3" ng-model="operatorOpinion.faultClassify" style="width: 150px;">
+                                <md-option ng-value="item.fault_type" ng-repeat="item in sopCodeList['장애구분']" style="height: 45px; font-size: 13px;">{{ item.fault_type }}</md-option>
+                            </md-select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">장애유형</td>
+                        <td>
+                            <md-select placeholder="{{SOPDetailData.faultType}}" class="mr-3" ng-model="operatorOpinion.faultType" style="width: 150px;">
+                                <md-option ng-value="item.fault_type" ng-repeat="item in sopCodeList['장애유형']" style="height: 45px; font-size: 13px;">{{ item.fault_type }}</md-option>
+                            </md-select>
+                        </td>
+                    </tr>
+                    <tr style="height: 30px;">
+                        <td class="userInfoKind">조치내용</td>
+                        <td>
+                            <md-select placeholder="{{SOPDetailData.faultDetailContent}}" class="mr-3" ng-model="operatorOpinion.faultDetailContent" style="width: 150px;">
+                                <md-option ng-value="item.fault_type" ng-repeat="item in sopCodeList['조치내용']" style="height: 45px; font-size: 13px;">{{ item.fault_type }}</md-option>
+                            </md-select>
+                        </td>
+                </table>
+            </div>
+            <div class="modalFooter">
+                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="ALARMSave()" >수정</md-button> <!-- ng-disabled="(SOPDetailData.faultClassify == '') || (SOPDetailData.faultType == '') || (SOPDetailData.faultDetailContent == '')" -->
+                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="ALARMDelete()" >삭제</md-button>
+                <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()">닫기</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

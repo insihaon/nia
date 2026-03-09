@@ -1,0 +1,39 @@
+md-dialog.alarm-dialog md-select-value{
+    color: #000 !important;
+}
+.alarm-dialog .alarmContents .test-result-area {
+    margin: 20px;
+    height: 170px;
+    font-size: 14px;
+    overflow: auto;
+    padding: 7px;
+    border: 1px solid #011d5436;
+    box-shadow: 2px 2px 2px 0px #011d541f;
+}
+
+.alarm-dialog .alarmContents .info-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #011d54;
+    padding-top: 10px;
+}
+
+.alarm-dialog .alarmContents .info-detail {
+    font-size: 14px;
+    height: 60px;
+    padding-top: 15px;
+}
+
+.alarm-dialog .alarmContents .info-detail .background-red {
+    background-color: #e65353;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.alarm-dialog .alarmContents .info-detail md-input-container {
+    padding-right: 15px;
+}
+
+.alarm-dialog .alarmContents .info-detail md-input-container > label {
+    color: #000000a8;
+}

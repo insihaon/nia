@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.whoismgmt.dao.TbWhoisComplexDao">
+	<resultMap id="tbWhoisComplexVoResult" type="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisComplexVo">
+		<result column="NWHOIS_SEQ" property="tbWhoisVo.nwhoisSeq" jdbcType="BIGINT" />
+		<result column="SSVC_LINE_TYPE_CD" property="tbWhoisVo.ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="tbWhoisVo.ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="NLVL_MST_SEQ" property="tbWhoisVo.nlvlMstSeq" jdbcType="BIGINT" />
+		<result column="SASSIGN_TYPE_CD" property="tbWhoisVo.sassignTypeCd" jdbcType="CHAR" />
+		<result column="SASSIGN_TYPE_NM" property="tbWhoisVo.sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="SWHOISREQUESTID" property="tbWhoisVo.swhoisrequestid" jdbcType="VARCHAR" />
+		<result column="SAPPLICATIONNAME" property="tbWhoisVo.sapplicationname" jdbcType="VARCHAR" />
+		<result column="PIP_PREFIX" property="tbWhoisVo.pipPrefix" jdbcType="VARCHAR" />
+		<result column="SFIRST_ADDR" property="tbWhoisVo.sfirstAddr" jdbcType="VARCHAR" />
+		<result column="SLAST_ADDR" property="tbWhoisVo.slastAddr" jdbcType="VARCHAR" />
+		<result column="NFIRST_ADDR" property="tbWhoisVo.nfirstAddr" jdbcType="NUMERIC" />
+		<result column="NLAST_ADDR" property="tbWhoisVo.nlastAddr" jdbcType="NUMERIC" />
+		<result column="NCNT" property="tbWhoisVo.ncnt" jdbcType="NUMERIC" />
+		<result column="SREQUEST_CD" property="tbWhoisVo.srequestCd" jdbcType="VARCHAR" />
+		<result column="SREQUEST_NM" property="tbWhoisVo.srequestNm" jdbcType="VARCHAR" />
+		<result column="SWHOISRESULT_CD" property="tbWhoisVo.swhoisresultCd" jdbcType="VARCHAR" />
+		<result column="SWHOISRESULT_NM" property="tbWhoisVo.swhoisresultNm" jdbcType="VARCHAR" />
+		<result column="SWHOISRESULT_MSG" property="tbWhoisVo.swhoisresultMsg" jdbcType="VARCHAR" />
+		<result column="SKRNICMEMBER_ID" property="tbWhoisVo.skrnicmemberId" jdbcType="VARCHAR" />
+		<result column="SISP_NM" property="tbWhoisVo.sispNm" jdbcType="VARCHAR" />
+		<result column="SSAID" property="tbWhoisVo.ssaid" jdbcType="VARCHAR" />
+		<result column="SLLNM" property="tbWhoisVo.sllnm" jdbcType="VARCHAR" />
+		<result column="SNET_NM" property="tbWhoisVo.snetNm" jdbcType="VARCHAR" />
+		<result column="SSCRETE_YN" property="tbWhoisVo.sscreteYn" jdbcType="CHAR" />
+		<result column="SUSERORGGB" property="tbWhoisVo.suserorggb" jdbcType="VARCHAR" />
+		<result column="SNETTYPE" property="tbWhoisVo.snettype" jdbcType="VARCHAR" />
+		<result column="SSERVICEGB" property="tbWhoisVo.sservicegb" jdbcType="VARCHAR" />
+		<result column="SSVCLOC" property="tbWhoisVo.ssvcloc" jdbcType="VARCHAR" />
+		<result column="SHOSTNOW" property="tbWhoisVo.shostnow" jdbcType="VARCHAR" />
+		<result column="SUSEDTLNOW" property="tbWhoisVo.susedtlnow" jdbcType="VARCHAR" />
+		<result column="SHOST6MONTH" property="tbWhoisVo.shost6month" jdbcType="VARCHAR" />
+		<result column="SUSEDTL6MONTH" property="tbWhoisVo.susedtl6month" jdbcType="VARCHAR" />
+		<result column="SHOST12MONTH" property="tbWhoisVo.shost12month" jdbcType="VARCHAR" />
+		<result column="SUSEDTL12MONTH" property="tbWhoisVo.susedtl12month" jdbcType="VARCHAR" />
+		<result column="SSVCCOMMNET" property="tbWhoisVo.ssvccommnet" jdbcType="VARCHAR" />
+		<result column="SREMARK" property="tbWhoisVo.sremark" jdbcType="VARCHAR" />
+		<result column="DSEND_DT" property="tbWhoisVo.dsendDt" jdbcType="TIMESTAMP" />
+		<result column="DRECEIPT_DT" property="tbWhoisVo.dreceiptDt" jdbcType="TIMESTAMP" />
+		<result column="DRECEIPTOK_DT" property="tbWhoisVo.dreceiptokDt" jdbcType="TIMESTAMP" />
+		<result column="DREPLY_DT" property="tbWhoisVo.dreplyDt" jdbcType="TIMESTAMP" />
+		<result column="DREGOK_DT" property="tbWhoisVo.dregokDt" jdbcType="TIMESTAMP" />
+		<result column="SKRNICNO" property="tbWhoisVo.skrnicno" jdbcType="VARCHAR" />
+		<result column="SKRNICORGCODE" property="tbWhoisVo.skrnicorgcode" jdbcType="VARCHAR" />
+		<result column="SOLD_NET" property="tbWhoisVo.soldNet" jdbcType="VARCHAR" />
+		<result column="SOLD_TOT_SUBNET" property="tbWhoisVo.soldTotSubnet" jdbcType="VARCHAR" />
+		<result column="SOLD_TOT_HOST" property="tbWhoisVo.soldTotHost" jdbcType="VARCHAR" />
+		<result column="SOLD_COMMENT" property="tbWhoisVo.soldComment" jdbcType="VARCHAR" />
+		<result column="SNET_PLAN" property="tbWhoisVo.snetPlan" jdbcType="VARCHAR" />
+		<result column="STOT_SUBNET" property="tbWhoisVo.stotSubnet" jdbcType="VARCHAR" />
+		<result column="STOT_HOST" property="tbWhoisVo.stotHost" jdbcType="VARCHAR" />
+		<result column="SSVCNETWORK" property="tbWhoisVo.ssvcnetwork" jdbcType="VARCHAR" />
+		<result column="SCITY" property="tbWhoisVo.scity" jdbcType="VARCHAR" />
+		<result column="SCCLASSIP" property="tbWhoisVo.scclassip" jdbcType="VARCHAR" />
+		<result column="SCREATE_ID" property="tbWhoisVo.screateId" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="tbWhoisVo.dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="tbWhoisVo.smodifyId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="tbWhoisVo.dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SNETNAME" property="tbWhoisUserVo.snetname" jdbcType="VARCHAR" />
+		<result column="SORGNAME" property="tbWhoisUserVo.sorgname" jdbcType="VARCHAR" />
+		<result column="SADDR" property="tbWhoisUserVo.saddr" jdbcType="VARCHAR" />
+		<result column="SADDR_DETAIL" property="tbWhoisUserVo.saddrDetail" jdbcType="VARCHAR" />
+		<result column="SZIPCODE" property="tbWhoisUserVo.szipcode" jdbcType="VARCHAR" />
+		<result column="SEORGNAME" property="tbWhoisUserVo.seorgname" jdbcType="VARCHAR" />
+		<result column="SEADDR" property="tbWhoisUserVo.seaddr" jdbcType="VARCHAR" />
+		<result column="SEADDR_DETAIL" property="tbWhoisUserVo.seaddrDetail" jdbcType="VARCHAR" />
+		<result column="SADM_NAME" property="tbWhoisUserVo.sadmName" jdbcType="VARCHAR" />
+		<result column="SADM_ORGNAME" property="tbWhoisUserVo.sadmOrgname" jdbcType="VARCHAR" />
+		<result column="SADM_ADDR" property="tbWhoisUserVo.sadmAddr" jdbcType="VARCHAR" />
+		<result column="SADM_ADDR_DETAIL" property="tbWhoisUserVo.sadmAddrDetail" jdbcType="VARCHAR" />
+		<result column="SADM_ZIPCODE" property="tbWhoisUserVo.sadmZipcode" jdbcType="VARCHAR" />
+		<result column="SADM_ENAME" property="tbWhoisUserVo.sadmEname" jdbcType="VARCHAR" />
+		<result column="SADM_EORGNAME" property="tbWhoisUserVo.sadmEorgname" jdbcType="VARCHAR" />
+		<result column="SADM_EADDR" property="tbWhoisUserVo.sadmEaddr" jdbcType="VARCHAR" />
+		<result column="SADM_EADDR_DETAIL" property="tbWhoisUserVo.sadmEaddrDetail" jdbcType="VARCHAR" />
+		<result column="SADM_PHONE" property="tbWhoisUserVo.sadmPhone" jdbcType="VARCHAR" />
+		<result column="SADM_DPPHONE" property="tbWhoisUserVo.sadmDpphone" jdbcType="VARCHAR" />
+		<result column="SADM_FAX" property="tbWhoisUserVo.sadmFax" jdbcType="VARCHAR" />
+		<result column="SADM_EMAIL" property="tbWhoisUserVo.sadmEmail" jdbcType="VARCHAR" />
+		<result column="SFLAG" property="tbWhoisUserVo.sflag" jdbcType="VARCHAR" />
+		<result column="SADDRSEQ" property="tbWhoisUserVo.saddrseq" jdbcType="NUMERIC" />
+		<result column="SSERIALNO" property="tbWhoisUserVo.sserialno" jdbcType="VARCHAR" />
+		<result column="SADM_SERIALNO" property="tbWhoisUserVo.sadmSerialno" jdbcType="VARCHAR" />
+		<result column="SECITY" property="tbWhoisUserVo.secity" jdbcType="VARCHAR" />
+		<result column="SORGTYPE" property="tbWhoisUserVo.sorgtype" jdbcType="VARCHAR" />
+		<result column="SCUSTNAME" property="tbWhoisUserVo.scustname" jdbcType="VARCHAR" />
+		<result column="SIP_TYPE" property="tbWhoisVo.siptype" jdbcType="VARCHAR" />
+	</resultMap>
+		
+	<sql id="Base_Column_List">
+		A.NWHOIS_SEQ , A.SSVC_LINE_TYPE_CD , A.NLVL_MST_SEQ , A.SASSIGN_TYPE_CD 
+		, A.SWHOISREQUESTID , A.SAPPLICATIONNAME , A.PIP_PREFIX , A.SFIRST_ADDR 
+		, A.SLAST_ADDR , A.NFIRST_ADDR , A.NLAST_ADDR , A.NCNT , A.SREQUEST_CD 
+		, A.SWHOISRESULT_CD , A.SWHOISRESULT_MSG , A.SKRNICMEMBER_ID , A.SISP_NM , A.SSAID 
+		, A.SLLNM , A.SNET_NM , A.SSCRETE_YN , A.SUSERORGGB , A.SNETTYPE , A.SSERVICEGB 
+		, A.SSVCLOC , A.SHOSTNOW , A.SUSEDTLNOW , A.SHOST6MONTH , A.SUSEDTL6MONTH 
+		, A.SHOST12MONTH , A.SUSEDTL12MONTH , A.SSVCCOMMNET , A.SREMARK , A.DSEND_DT 
+		, A.DRECEIPT_DT , A.DRECEIPTOK_DT , A.DREPLY_DT , A.DREGOK_DT , A.SKRNICNO 
+		, A.SKRNICORGCODE , A.SOLD_NET , A.SOLD_TOT_SUBNET , A.SOLD_TOT_HOST 
+		, A.SOLD_COMMENT , A.SNET_PLAN , A.STOT_SUBNET , A.STOT_HOST , A.SSVCNETWORK 
+		, A.SCITY , A.SCCLASSIP , A.SCREATE_ID , A.DCREATE_DT , A.SMODIFY_ID 
+		, A.DMODIFY_DT, A.SIP_TYPE 
+		, B.SNETNAME , B.SORGNAME , B.SADDR , B.SADDR_DETAIL , B.SZIPCODE 
+		, B.SEORGNAME , B.SEADDR , B.SEADDR_DETAIL , B.SADM_NAME , B.SADM_ORGNAME 
+		, B.SADM_ADDR , B.SADM_ADDR_DETAIL , B.SADM_ZIPCODE , B.SADM_ENAME 
+		, B.SADM_EORGNAME , B.SADM_EADDR , B.SADM_EADDR_DETAIL , B.SADM_PHONE 
+		, B.SADM_DPPHONE , B.SADM_FAX , B.SADM_EMAIL , B.SFLAG , B.SADDRSEQ , B.SSERIALNO 
+		, B.SADM_SERIALNO , B.SECITY , B.SORGTYPE , B.SCUSTNAME
+	</sql>
+	
+	<sql id="Base_Column_List_Alias">
+		A.NWHOIS_SEQ , A.SSVC_LINE_TYPE_CD , A.NLVL_MST_SEQ , A.SASSIGN_TYPE_CD 
+		, A.SWHOISREQUESTID , A.SAPPLICATIONNAME , A.PIP_PREFIX , A.SFIRST_ADDR 
+		, A.SLAST_ADDR , A.NFIRST_ADDR , A.NLAST_ADDR , A.NCNT , A.SREQUEST_CD 
+		, A.SWHOISRESULT_CD , A.SWHOISRESULT_MSG , A.SKRNICMEMBER_ID , A.SISP_NM , A.SSAID 
+		, A.SLLNM , A.SNET_NM , A.SSCRETE_YN , A.SUSERORGGB , A.SNETTYPE , A.SSERVICEGB 
+		, A.SSVCLOC , A.SHOSTNOW , A.SUSEDTLNOW , A.SHOST6MONTH , A.SUSEDTL6MONTH 
+		, A.SHOST12MONTH , A.SUSEDTL12MONTH , A.SSVCCOMMNET , A.SREMARK , A.DSEND_DT 
+		, A.DRECEIPT_DT , A.DRECEIPTOK_DT , A.DREPLY_DT , A.DREGOK_DT , A.SKRNICNO 
+		, A.SKRNICORGCODE , A.SOLD_NET , A.SOLD_TOT_SUBNET , A.SOLD_TOT_HOST 
+		, A.SOLD_COMMENT , A.SNET_PLAN , A.STOT_SUBNET , A.STOT_HOST , A.SSVCNETWORK 
+		, A.SCITY , A.SCCLASSIP , A.SCREATE_ID , A.DCREATE_DT , A.SMODIFY_ID 
+		, A.DMODIFY_DT, A.SIP_TYPE  
+		, A.SNETNAME , A.SORGNAME , A.SADDR , A.SADDR_DETAIL , A.SZIPCODE 
+		, A.SEORGNAME , A.SEADDR , A.SEADDR_DETAIL , A.SADM_NAME , A.SADM_ORGNAME 
+		, A.SADM_ADDR , A.SADM_ADDR_DETAIL , A.SADM_ZIPCODE , A.SADM_ENAME 
+		, A.SADM_EORGNAME , A.SADM_EADDR , A.SADM_EADDR_DETAIL , A.SADM_PHONE 
+		, A.SADM_DPPHONE , A.SADM_FAX , A.SADM_EMAIL , A.SFLAG , A.SADDRSEQ , A.SSERIALNO 
+		, A.SADM_SERIALNO , A.SECITY , A.SORGTYPE , A.SCUSTNAME
+	</sql>
+	
+	<sql id="Append_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			AND A.SSAID = B.SSAID
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.nwhoisSeq)">
+				AND A.NWHOIS_SEQ = #{tbWhoisVo.nwhoisSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.ssvcLineTypeCd)">
+				AND A.SSVC_LINE_TYPE_CD = #{tbWhoisVo.ssvcLineTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.nlvlMstSeq)">
+				AND A.NLVL_MST_SEQ = #{tbWhoisVo.nlvlMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sassignTypeCd)">
+				AND A.SASSIGN_TYPE_CD = #{tbWhoisVo.sassignTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.swhoisrequestid)">
+				AND A.SWHOISREQUESTID = #{tbWhoisVo.swhoisrequestid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sapplicationname)">
+				AND A.SAPPLICATIONNAME = #{tbWhoisVo.sapplicationname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.pipPrefix)">
+				AND A.PIP_PREFIX = #{tbWhoisVo.pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sfirstAddr)">
+				AND A.SFIRST_ADDR = #{tbWhoisVo.sfirstAddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.slastAddr)">
+				AND A.SLAST_ADDR = #{tbWhoisVo.slastAddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.nfirstAddr)">
+				AND A.NFIRST_ADDR = #{tbWhoisVo.nfirstAddr, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.nlastAddr)">
+				AND A.NLAST_ADDR = #{tbWhoisVo.nlastAddr, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.ncnt)">
+				AND A.NCNT = #{tbWhoisVo.ncnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.srequestCd)">
+				AND A.SREQUEST_CD = #{tbWhoisVo.srequestCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.swhoisresultCd)">
+				AND A.SWHOISRESULT_CD = #{tbWhoisVo.swhoisresultCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.swhoisresultMsg)">
+				AND A.SWHOISRESULT_MSG = #{tbWhoisVo.swhoisresultMsg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.skrnicmemberId)">
+				AND A.SKRNICMEMBER_ID = #{tbWhoisVo.skrnicmemberId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sispNm)">
+				AND A.SISP_NM = #{tbWhoisVo.sispNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.ssaid)">
+				AND A.SSAID = #{tbWhoisVo.ssaid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sllnm)">
+				AND A.SLLNM = #{tbWhoisVo.sllnm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.snetNm)">
+				AND A.SNET_NM = #{tbWhoisVo.snetNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sscreteYn)">
+				AND A.SSCRETE_YN = #{tbWhoisVo.sscreteYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.suserorggb)">
+				AND A.SUSERORGGB = #{tbWhoisVo.suserorggb, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.snettype)">
+				AND A.SNETTYPE = #{tbWhoisVo.snettype, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sservicegb)">
+				AND A.SSERVICEGB = #{tbWhoisVo.sservicegb, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.ssvcloc)">
+				AND A.SSVCLOC = #{tbWhoisVo.ssvcloc, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.shostnow)">
+				AND A.SHOSTNOW = #{tbWhoisVo.shostnow, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.susedtlnow)">
+				AND A.SUSEDTLNOW = #{tbWhoisVo.susedtlnow, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.shost6month)">
+				AND A.SHOST6MONTH = #{tbWhoisVo.shost6month, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.susedtl6month)">
+				AND A.SUSEDTL6MONTH = #{tbWhoisVo.susedtl6month, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.shost12month)">
+				AND A.SHOST12MONTH = #{tbWhoisVo.shost12month, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.susedtl12month)">
+				AND A.SUSEDTL12MONTH = #{tbWhoisVo.susedtl12month, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.ssvccommnet)">
+				AND A.SSVCCOMMNET = #{tbWhoisVo.ssvccommnet, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.sremark)">
+				AND A.SREMARK = #{tbWhoisVo.sremark, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dsendDt)">
+				AND A.DSEND_DT = #{tbWhoisVo.dsendDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dreceiptDt)">
+				AND A.DRECEIPT_DT = #{tbWhoisVo.dreceiptDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dreceiptokDt)">
+				AND A.DRECEIPTOK_DT = #{tbWhoisVo.dreceiptokDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dreplyDt)">
+				AND A.DREPLY_DT = #{tbWhoisVo.dreplyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dregokDt)">
+				AND A.DREGOK_DT = #{tbWhoisVo.dregokDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.skrnicno)">
+				AND A.SKRNICNO = #{tbWhoisVo.skrnicno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.skrnicorgcode)">
+				AND A.SKRNICORGCODE = #{tbWhoisVo.skrnicorgcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.soldNet)">
+				AND A.SOLD_NET = #{tbWhoisVo.soldNet, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.soldTotSubnet)">
+				AND A.SOLD_TOT_SUBNET = #{tbWhoisVo.soldTotSubnet, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.soldTotHost)">
+				AND A.SOLD_TOT_HOST = #{tbWhoisVo.soldTotHost, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.soldComment)">
+				AND A.SOLD_COMMENT = #{tbWhoisVo.soldComment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.snetPlan)">
+				AND A.SNET_PLAN = #{tbWhoisVo.snetPlan, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.stotSubnet)">
+				AND A.STOT_SUBNET = #{tbWhoisVo.stotSubnet, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.stotHost)">
+				AND A.STOT_HOST = #{tbWhoisVo.stotHost, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.ssvcnetwork)">
+				AND A.SSVCNETWORK = #{tbWhoisVo.ssvcnetwork, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.scity)">
+				AND A.SCITY = #{tbWhoisVo.scity, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.scclassip)">
+				AND A.SCCLASSIP = #{tbWhoisVo.scclassip, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.screateId)">
+				AND A.SCREATE_ID = #{tbWhoisVo.screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dcreateDt)">
+				AND A.DCREATE_DT = #{tbWhoisVo.dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.smodifyId)">
+				AND A.SMODIFY_ID = #{tbWhoisVo.smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbWhoisVo.dmodifyDt)">
+				AND A.DMODIFY_DT = #{tbWhoisVo.dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="selectListTbWhoisComplexVo" resultMap="tbWhoisComplexVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisComplexVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_WHOIS A
+		 ,   BIF.TB_WHOIS_USER B
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbWhoisComplexVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisComplexVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_WHOIS A
+		 ,   BIF.TB_WHOIS_USER B
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListBatchWhoisComplexVo" resultMap="tbWhoisComplexVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisComplexVo">
+		SELECT <include refid="Base_Column_List_Alias" /> FROM (
+			SELECT
+			<include refid="Base_Column_List" />
+			<include refid="Append_Column_List"/>
+			FROM BIF.TB_WHOIS A
+			 ,   BIF.TB_WHOIS_USER B
+			<include refid="Append_From_Clause"/>
+			<include refid="List_Where_Clause" />
+			<include refid="Append_Where_Clause"/>
+			ORDER BY NWHOIS_SEQ
+		) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+	</select>
+	
+	<select id="countListBatchWhoisComplexVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisComplexVo">
+		SELECT count(1) FROM (
+			SELECT
+			<include refid="Base_Column_List" />
+			<include refid="Append_Column_List"/>
+			FROM BIF.TB_WHOIS A
+			 ,   BIF.TB_WHOIS_USER B
+			<include refid="Append_From_Clause"/>
+			<include refid="List_Where_Clause" />
+			<include refid="Append_Where_Clause"/>
+			ORDER BY NWHOIS_SEQ
+		) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+	</select>
+
+</mapper>

@@ -1,0 +1,83 @@
+md-dialog.link-list-dialog {
+    background-color: rgba(245,245,245,1);
+    max-width: 1350px;
+    max-height: 950px;
+    width: 1350px;
+    height: 950px;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+
+md-dialog.link-list-dialog div.link-list-dialog-container {
+    font-size: 11px;
+    height: calc(100% - 50px);
+}
+
+div.link-list-dialog-container md-card.link-card {
+    height: calc(100% - 40px);
+    min-height: 300px;
+}
+
+div.link-list-dialog-container div.link-list-search {
+    width: 100%;
+}
+
+div.link-list-dialog-container div.link-list-search div.link-list-search-info {
+    margin: 5px 0px 0px 0px;
+}
+
+div.link-list-dialog-container div.link-list-search div.link-list-search-info md-input-container.input-container {
+    margin: 0px 0px 0px 10px;
+    width: calc(100% - 930px);
+    min-width: 150px;
+}
+
+div.link-list-dialog-container div.link-list-search div.link-list-search-info md-input-container.input-container input {
+    font-size: 13px;
+}
+
+div.link-list-dialog-container div.link-list-search div.link-list-search-info button.btn-float {
+    float: right;
+    font-size: 11px;
+}
+
+div.link-list-dialog-container div.link-table{
+    overflow: auto;
+    height: calc(100vh - 280px);
+    min-height: 150px;
+}
+
+div.link-list-dialog-container div.link-table > table {
+    text-align: center;
+    overflow: visible;
+}
+
+div.link-list-dialog-container div.link-table > table th.md-column {
+    font-size: 14px;
+}
+
+div.link-list-dialog-container div.link-table table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.link-list-dialog-container div.link-table table > tbody > tr > td{
+    text-align: center;
+}
+
+div.link-list-dialog-container div.link-table > table > tbody > tr > td > span{
+    font-size: 13px;
+}
+
+div.link-list-dialog-container div.link-table > table > tbody > tr > td > span > a{
+    cursor: pointer;
+    color: #3d64ac;
+    text-decoration: underline;
+}
+
+md-dialog.link-list-dialog div.modalFooter{
+    width: 100%;
+    text-align: right;
+}

@@ -1,0 +1,272 @@
+div.selfProcessContainer{
+    color: #eee;
+    /* overflow-y: auto; */
+    margin-top: 5px;
+}
+
+div.selfProcessContainer div.group-contents{
+    border-color: #aaa;
+    height: auto;
+    border: 1px solid rgb(28, 43, 64);
+    display: flex;
+    flex-direction: column;
+}
+
+div.selfProcessContainer div.group-contents div.self-process-search{
+    /* background-color: #1c2b40; */
+    background-color: rgb(255, 255, 255);
+    margin: 5px 10px 10px 10px;
+    border-radius: 15px;
+    height: 45px;
+    min-height: 45px;
+    /* overflow-y: auto; */
+}
+
+div.selfProcessContainer div.group-contents div.self-process-search div.self-process-search-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: black;
+}
+
+
+div.selfProcessContainer div.group-contents div.self-process-search div.self-process-search-info .span{
+    font-size: 10px;
+}
+
+div.selfProcessContainer div.group-contents div.self-process-search div.self-process-search-info md-input-container {
+    min-width: 100px;
+}
+
+div.selfProcessContainer div.group-contents div.self-process-search div.self-process-search-info md-input-container > input{
+    font-size: 13px;
+}
+
+div.selfProcessContainer div.group-contents div.self-process-search div.self-process-search-btn{
+    text-align: right;
+}
+
+div.selfProcessContainer div.group-contents div.self-process-search div.self-process-search-info div.search-button-container .search-item.search-option-switch{
+    margin: 0 20px 0 20px;
+}
+
+div.selfProcessContainer div.chart-wrapper {
+    background-color: #1c2b40;
+    margin: 5px 10px 10px 10px;
+    border-radius: 15px;
+    padding: 15px;
+}
+div.selfProcessContainer div.table-wrapper {
+    background-color: #1c2b40;
+    margin: 5px 10px 10px 10px;
+    border-radius: 15px;
+    padding: 15px;
+    overflow: auto;
+}
+
+div.selfProcessContainer div.chart {
+    background-color: #f5f6f8;
+}
+
+div.selfProcessContainer div.table {
+    background-color: #181b1f;
+}
+
+div.selfProcessContainer div.chart * {
+    color: rgb(19, 18, 18);
+}
+
+div.selfProcessContainer div.table *:not(span)  {
+    border: 1px dotted white;
+}
+
+div.selfProcessContainer div.table tr {
+    height: auto !important;
+} 
+
+div.selfProcessContainer div.table td {
+    padding: auto 20px;
+}
+
+div.selfProcessContainer div.table td:nth-child(1) {
+    font-weight: 700;
+    font-size: 20px;
+    width: 50%;
+    text-align: center;
+    line-height: 40px;
+} 
+
+div.selfProcessContainer div.table td:nth-child(2) {
+    font-size: 17px;
+    width: 50%;
+    text-align: center;
+    line-height: 40px;
+} 
+
+div.selfProcessContainer div.selfProcess_secondContent .chartTitle{
+    color: rgb(244, 244, 247);
+    font-weight: 800;
+    background-color: rgb(28, 43, 64);
+    margin: 0;
+    justify-content: center;
+    display: flex;
+}
+div.selfProcessContainer div.selfProcess_secondContent div.chart-area{
+    background-color: rgb(28, 43, 64); 
+}
+
+div.selfProcessContainer .c3-axis-x text{
+    fill: white;
+}
+div.selfProcessContainer .c3-axis-x path{
+    stroke: white;
+}
+div.selfProcessContainer .c3-axis-y text{
+    fill: white;
+}
+div.selfProcessContainer .c3-axis-y path{
+    stroke: white;
+}
+
+div.selfProcessContainer .c3-legend-item text {
+    fill: white;
+}
+div.selfProcessContainer .c3-tooltip-container {
+    white-space: nowrap;
+}
+
+
+div.selfProcessContainer div.chart-title > md-select {
+    color: #eee;
+    background-color: #eee;
+    display: inline-block;
+    margin: 0 20px;
+    width: 150px;
+}
+
+div.selfProcessContainer md-select md-select-value {
+    color: #aaa !important;
+}
+div.table-container{
+    overflow-y: auto;
+    /* overflow-x: hidden; */
+    border-radius: 10px;
+    display: block !important;
+    background-color:rgb(31, 51, 93);
+    text-align: left;
+    float: left;
+    /* height: 400px; */
+}
+div.self-process-table{
+    width: 100%;
+}
+table.md-table{
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    border-radius: 11px;
+}
+/* 
+div.table-container::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    background-color: #9d9d9d;
+    border: 5px solid rgba(7, 7, 7, 0);
+    box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+    background-clip: padding-box;
+    height: 40px;
+} */
+
+table.md-table tbody.md-body > tr.self-process-table-row{
+    height: 70px;
+}
+table.md-table tbody.md-body > tr.self-process-table-row:hover{
+    cursor: pointer;
+    background-color: rgb(47, 70, 119)
+}
+table.md-table tbody.md-body > tr.self-process-table-row:hover td.md-cell{
+    font-weight: 800;
+}
+
+div.table-container div.self-process-table{
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+div.table-container div.self-process-table > table{
+    text-align-last: center;
+}
+
+div.table-container div.self-process-table > table th.md-column{
+    font-size: 14px;
+}
+
+div.table-container div.self-process-table > table > thead > tr > th{
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: rgb(31, 51, 93)
+}
+
+div.table-container div.self-process-table > table > tbody > tr > td{
+    text-align: center;
+    color: white;
+    transition: font-size 0.3s;
+    background-color: rgb(43, 71, 131)
+}
+div.table-container div.self-process-table > table > tbody > tr > td > md-button{
+    color: white;
+}
+
+/* div.table-container div.self-process-table > table > tbody > tr > td > span{
+    font-size: 13px;
+} */
+
+div.table-container div.self-process-table > table > tbody > tr > td > span > a{
+    text-decoration: underline;
+}
+
+.search-item.search-option-switch {
+    font-weight: 900;
+    font-size: 11px;
+    min-width: fit-content;
+    justify-content: center;
+    margin: 0;
+}
+
+.search-item.search-option-switch.toggleBtn {
+    cursor: default;
+}
+.search-item.search-option-switch.toggleBtn:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+.search-item.toggleBtn {
+    color: red;
+    font-weight: 900;
+    font-size: 11px;
+    min-width: fit-content;
+    justify-content: center;
+    margin: 0;
+}
+
+.search-item.toggleBtn.active {
+    color: blue;
+    font-weight: 900;
+    font-size: 11px;
+    min-width: fit-content;
+    justify-content: center;
+    margin: 0;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.2; }
+    100% { opacity: 1; }
+}
+
+.active.blink {
+    animation: blink 3s infinite;
+}

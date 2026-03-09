@@ -1,0 +1,26 @@
+.desc {
+    margin-left: 20px;
+}
+
+.desc > .device > div {
+    /* height: 60px; */
+    overflow: hidden;
+    overflow-wrap: break-word;
+    color: #cb5252; 
+    font-weight: bolder; 
+    font-size: 12px;
+}
+
+.desc > .device.from {
+    text-align: right !important;
+}
+
+.desc > .device.to {
+    text-align: left !important;
+}
+
+.ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

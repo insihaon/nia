@@ -1,0 +1,65 @@
+<md-dialog class="syslog-rule-detail-dialog" id="syslogRuleDetailDialog" ng-cloak style="width: 40%; height: auto;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">{{model.editType !== 'C' ? 'SYSLOG RULE 수정' : 'SYSLOG RULE 등록'}}</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form>
+        <md-dialog-content style="overflow-x: hidden;">
+            <div class="syslog-rule-detail-dialog-content">
+                <table class="nia-custom-table w-100">
+                    <tr>
+                        <td class="userInfoKind" ng-if="model.editType !== 'C'">RULE ID</td>
+                        <td ng-if="model.editType !== 'C'" ><input class="syslog-id" ng-model="model.condition.syslog_rule_id" disabled/></td>
+                        <td class="userInfoKind">RULE NAME</td>
+                        <td>
+                            <input class="syslog-name w-70" ng-model="model.condition.syslog_rule_nm" clear-btn />
+                            <md-button class="md-raised base-btn-2 nia-dark-button md-hide" ng-click="checkRuleName()" ng-disabled="model.condition.syslog_rule_nm === '' || !isDuplicate">중복 확인</md-button>
+                        </td>
+                    </tr>
+                    <tr style="height: 40px;">
+                        <td colspan="2" class="title">발생</td>
+                        <td colspan="2" class="title">제외</td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">keyword1</td>
+                        <td><input class="first-occur" ng-model="model.condition.occur_str1" clear-btn /></td>
+                        <td class="userInfoKind">keyword1</td>
+                        <td><input class="first-occur-except-str1" ng-model="model.condition.occur_except_str1" clear-btn /></td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">keyword2</td>
+                        <td><input class="second-occur" ng-model="model.condition.occur_str2" clear-btn /></td>
+                        <td class="userInfoKind">keyword2</td>
+                        <td><input class="second-occur-except-str2" ng-model="model.condition.occur_except_str2" clear-btn /></td>
+                    </tr>
+                    <tr>
+                        <td class="userInfoKind">keyword3</td>
+                        <td><input class="last-occur" ng-model="model.condition.occur_str3" clear-btn /></td>
+                        <td class="userInfoKind">keyword3</td>
+                        <td><input class="last-occur-except-str3" ng-model="model.condition.occur_except_str3" clear-btn /></td>
+                    </tr>
+                    <tr ng-if="model.editType !== 'C'">
+                        <td class="userInfoKind">사용 여부</td>
+                        <td>
+                            <md-select class="syslog-use-yn" ng-model="model.condition.use_yn" >
+                                <md-option ng-value="'사용'">사용</md-option>
+                                <md-option ng-value="'미사용'">미사용</md-option>
+                            </md-select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modalFooter">
+                <md-button class="md-raised base-btn-2 nia-dark-button md-hide" ng-click="syslogRuleSave()" ng-disabled="!isModified">저장</md-button>
+                <md-button class="md-raised base-btn-2 nia-dark-button md-hide" ng-style="{display: model.editType !== 'C' ? 'inline-block !important':'none'}" ng-click="syslogRuleDelete()">삭제</md-button>
+                <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()">취소</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

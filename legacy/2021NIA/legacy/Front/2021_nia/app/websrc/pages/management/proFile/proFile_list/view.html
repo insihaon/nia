@@ -1,0 +1,78 @@
+<md-dialog class="profile-list-dialog" id="proFileList" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">&nbsp;조치프로파일</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form>
+        <md-dialog-content>
+            <div layout="column" class="profile-list-dialog-content">
+                <md-card class="profile-card" style="margin: 20px;">
+                    <div layout="column" class="profile-list-search">
+                        <div class="profile-list-search-info">
+                            <span>제목</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="profile-title" ng-model="searchProfileData.profileTitle" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                            <span class="ml-2">네트워크</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="profile-explanation" ng-model="searchProfileData.networkType" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                            <span class="ml-2">장애대응</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="profile-explanation" ng-model="searchProfileData.processingTemplate" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                        </div>
+                        <div class="profile-list-search-btn">
+                            <md-button class="profile-list-search-btn" ng-click="exportExcel()" style="font-size: 11px;"><i class="fas fa-file-excel fa-lg" style="color: #008000; margin-right: 2px; font-size: 20px;"></i>엑셀저장</md-button>
+                            <md-button class="profile-list-search-btn" ng-click="handleSearch()" style="font-size: 11px;">
+                                <i class="fa fa-search fa-lg"></i>
+                            </md-button>
+                            <md-button class="search-option-switch clearBtn" ng-click="searchClear()" style="margin-right: 50px;">
+                                전체보기
+                            </md-button>
+                        </div>
+                    </div>
+                    <div layout="column" id="scrollable" class="profile-table">
+                        <table md-table>
+                            <thead md-head>
+                                <tr md-row>
+                                    <th md-column md-column-size="50" class="pr-0"><span>번호</span></th>
+                                    <th md-column md-column-size="250" class="pr-0"><span>제목</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>네트워크</span></th>
+                                    <th md-column md-column-size="150" class="pr-0"><span>장애대응</span></th>
+                                    <!--<th md-column md-column-size="100" class="pr-0">공사구분</th>-->
+                                    <th md-column md-column-size="250" class="pr-0"><span>자동처리기간</span></th>
+                                    <th md-column md-column-size="250" class="pr-0"><span>수정일</span></th>
+                                </tr>
+                            </thead>
+                            <tbody md-body>
+                                <tr md-row ng-repeat="item in selectProfileList">
+                                    <td md-cell md-column-size="50" class="pr-0">{{(($scope.historyPagingTable.selected-1)*$scope.historyPagingTable.limit)+ $index + 1}}</td>
+                                    <td md-cell md-column-size="250" class="pr-0"><a href='' ng-click="profileDetail(item)">{{item.profile_title}}</a></td>
+                                    <td md-cell md-column-size="100" class="pr-0">{{item.network_type}}</td>
+                                    <td md-cell md-column-size="150" class="pr-0">{{processingTemplateData(item.processing_template)}}</td>
+                                    <!--<td md-cell md-column-size="100" class="pr-0">{{item.construction_check}}</td>-->
+                                    <td md-cell md-column-size="250" class="pr-0">{{changeData(item)}}</td>
+                                    <td md-cell md-column-size="250" class="pr-0">{{item.chng_datetime}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <md-table-pagination class="mt-2" md-limit="historyPagingTable.limit"
+                                         md-limit-options="[30,50,100,200]" md-page="historyPagingTable.selected"
+                                         md-total="{{selectProfileList[0].ProFileTotalCount || 0}}" md-page-select="true" md-boundary-links="true">
+                    </md-table-pagination>
+                </md-card>
+            </div>
+            <div class="modalFooter">
+                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="proFileAdd()">등록</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

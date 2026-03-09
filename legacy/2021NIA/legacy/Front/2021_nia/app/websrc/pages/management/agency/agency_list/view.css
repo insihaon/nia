@@ -1,0 +1,79 @@
+md-dialog.agency-list-dialog {
+    background-color: rgba(245,245,245,1);
+    max-width: 1350px;
+    max-height: 950px;
+    width: 1350px;
+    height: 950px;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+
+md-dialog.agency-list-dialog div.agency-list-dialog-content{
+    font-size: 11px;
+    height: calc(100% - 50px);
+}
+
+div.agency-list-dialog-content md-card.agency-card {
+    height: calc(100% - 40px);
+    min-height: 300px;
+}
+
+div.agency-list-dialog-content div.agency-list-search div.agency-list-search-info md-input-container.input-container {
+    margin: 0px 0px 0px 10px;
+    width: calc(100% - 910px);
+    min-width: 150px;
+}
+
+div.agency-list-dialog-content div.agency-list-search div.agency-list-search-info md-input-container.input-container input {
+    font-size: 13px;
+}
+
+div.agency-list-dialog-content div.agency-list-search div.agency-btn-container {
+    text-align: right;
+}
+
+div.agency-list-dialog-content div.agency-list-search div.agency-btn-container button.btn-float {
+    font-size: 11px;
+}
+
+div.agency-list-dialog-content div.agency-table{
+    overflow: auto;
+    height: calc(100vh - 280px);
+    min-height: 150px;
+}
+
+div.agency-list-dialog-content div.agency-table > table {
+    text-align: center;
+    overflow: visible;
+}
+
+div.agency-list-dialog-content div.agency-table > table th.md-column {
+    font-size: 14px;
+}
+
+div.agency-list-dialog-content div.agency-table table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.agency-list-dialog-content div.agency-table table > tbody > tr > td{
+    text-align: center;
+}
+
+div.agency-list-dialog-content div.agency-table > table > tbody > tr > td > span{
+    font-size: 13px;
+}
+
+div.agency-list-dialog-content div.agency-table > table > tbody > tr > td > span > a{
+    cursor: pointer;
+    color: #3d64ac;
+    text-decoration: underline;
+}
+
+md-dialog.agency-list-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}
+

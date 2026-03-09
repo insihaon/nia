@@ -1,0 +1,61 @@
+md-dialog.agency-add-dialog div.agency-add-title span.title{
+    font-size: 25px;
+    margin: 0px 0px 0px 10px;
+}
+
+md-dialog.agency-add-dialog div.agency-add-title button.md-icon-button{
+    float: right;
+}
+
+md-dialog.agency-add-dialog div.agency-add-dialog-content{
+    display: grid;
+}
+
+md-dialog.agency-add-dialog table.agency-add-table tr {
+    height: 55px;
+    border-bottom: 1px dotted #5c5c5c29;
+}
+md-dialog.agency-add-dialog table.agency-add-table tr:last-child {
+    border-bottom: none;
+}
+md-dialog.agency-add-dialog table.agency-add-table td.userInfoKind {
+    text-align: center;
+    padding-right: 20px;
+    padding-left: 20px;
+    border-right: 1px dotted #5c5c5c29;
+    border-left: 1px dotted #5c5c5c29;
+    background-color: #c1d3f624;
+    font-size: 0.8em;
+}
+
+md-dialog.agency-add-dialog table.agency-add-table td.userInfoKind2 {
+    border-right: 1px dotted #5c5c5c29;
+}
+
+md-dialog.agency-add-dialog table.agency-add-table tr > td > div > md-checkbox > div.md-label {
+    font-size: 1em;
+}
+
+md-dialog.agency-add-dialog table.agency-add-table tr > td > input{
+    margin-left: 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+}
+md-dialog.agency-add-dialog table.agency-add-table tr > td > input:focus {
+    border-bottom: 1.5px solid rgba(17, 16, 62, 0.75);
+}
+
+md-dialog.agency-add-dialog table.agency-add-table tr > td > input:disabled {
+    background-color: #fff;
+}
+
+md-dialog.agency-add-dialog table.agency-add-table tr > td > md-select{
+    margin: 0px 0px 0px 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+}
+
+md-dialog.agency-add-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}

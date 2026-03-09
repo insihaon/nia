@@ -1,0 +1,72 @@
+md-dialog.profile-list-dialog {
+    background-color: rgba(245,245,245,1);
+    max-width: 1350px;
+    max-height: 710px;
+    width: 1350px;
+    height: 930px;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+
+md-dialog.profile-list-dialog div.profile-list-dialog-content{
+    font-size: 11px;
+    height: calc(100% - 50px);
+}
+
+div.profile-list-dialog-content md-card.profile-card {
+    height: calc(100% - 40px);
+    min-height: 300px;
+}
+
+div.profile-list-dialog-content md-card.profile-card div.profile-list-search div.profile-list-search-info md-input-container {
+    width: calc(100% - 1150px);
+    min-width: 150px;
+}
+
+div.profile-list-dialog-content md-card.profile-card div.profile-list-search div.profile-list-search-info md-input-container > input{
+    font-size: 13px;
+}
+
+div.profile-list-dialog-content md-card.profile-card div.profile-list-search div.profile-list-search-btn{
+    text-align: right;
+}
+
+div.profile-list-dialog-content div.profile-table{
+    overflow: auto;
+    height: calc(100vh - 280px);
+    min-height: 150px;
+}
+
+div.profile-list-dialog-content div.profile-table > table{
+    text-align-last: center;
+    overflow: visible;
+}
+
+div.profile-list-dialog-content div.profile-table > table th.md-column{
+    font-size: 14px;
+}
+
+div.profile-list-dialog-content div.profile-table > table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.profile-list-dialog-content div.profile-table > table > tbody > tr > td{
+    text-align: center;
+}
+
+div.profile-list-dialog-content div.profile-table > table > tbody > tr > td > span{
+    font-size: 13px;
+}
+
+div.profile-list-dialog-content div.profile-table > table > tbody > tr > td > span > a{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+md-dialog.profile-list-dialog > form > md-dialog-content div.modalFooter{
+    width: 100%;
+    text-align: right;
+}

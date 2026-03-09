@@ -1,0 +1,39 @@
+{
+    "nodes": [
+        {"id": "0", "device_name": "Guro1_COM(201)", "device_type": "0", "mac": "55-66-77-88-99-00", "fx": 309.922058522975, "fy": 365.89117239334166},
+        {"id": "1", "device_name": "Baran_GR1-BS2(210)", "device_type": "1", "fx": 544.7629192850823, "fy": 365.72564078445293},
+        {"id": "2", "device_name": "Asan_GR1-BS2(701)", "device_type": "1", "fx": 779.7099231304896, "fy": 365.7885310938336},
+        {"id": "3", "device_name": "Gongju_GR1-BS2(702)", "device_type": "1", "fx": 1014.5915011371314, "fy": 365.6325515583684},
+        {"id": "4", "device_name": "Buyeo_GR1-BS2(703)", "device_type": "1", "fx": 1250.3662876822118, "fy": 365.93808000120487},
+        {"id": "5", "device_name": "Geumsan_GR1-BS2(1505Bay)", "device_type": "1", "fx": 1391.994876796691, "fy": 546.2889375749246},
+        {"id": "6", "device_name": "Jangsu_GR1-BS2(801)", "device_type": "1", "fx": 1248.6250786847577, "fy": 730.2220922491955},
+        {"id": "7", "device_name": "Hapcheon_GR1-BS2(682)", "device_type": "1", "fx": 1014.8731081057172, "fy": 730.1710434880315},
+        {"id": "8", "device_name": "DongJinju_GR1-BS2(681)", "device_type": "1", "fx": 779.911011504161, "fy": 729.6831755736544},
+        {"id": "9", "device_name": "DongMasan_GR1-BS2(663)", "device_type": "1", "fx": 545.0164051507811, "fy": 729.1805735121712},
+        {"id": "10", "device_name": "Busan2_COM(1215)", "device_type": "0", "fx": 311.02780087594704, "fy": 728.8849018744907}
+    ],
+    "links": [
+        {"id": "1", "source_id": "0", "target_id": "1", "direction": "-3-", "link_type" : "line"},
+        {"id": "2", "source_id": "1", "target_id": "2", "direction": "-3-"},
+        {"id": "3", "source_id": "2", "target_id": "3", "direction": "-3-"},
+        {"id": "4", "source_id": "3", "target_id": "4", "direction": "-3-"},
+        {"id": "5", "source_id": "4", "target_id": "5", "direction": "-3-"},
+        {"id": "6", "source_id": "5", "target_id": "6", "direction": "-3-"},
+        {"id": "7", "source_id": "6", "target_id": "7", "direction": "-3-", "link_type" : "line"},
+        {"id": "8", "source_id": "7", "target_id": "8", "direction": "-3-"},
+        {"id": "9", "source_id": "8", "target_id": "9", "direction": "-3-", "link_type" : "line"},
+        {"id": "10", "source_id": "9", "target_id": "10", "direction": "-3-", "link_type" : "line"},
+
+        {"id": "11", "source_id": "10", "target_id": "9", "direction": "-16-", "link_type" : "line"},
+        {"id": "12", "source_id": "9", "target_id": "8", "direction": "-16-"},
+        {"id": "13", "source_id": "8", "target_id": "7", "direction": "-16-"},
+        {"id": "14", "source_id": "7", "target_id": "6", "direction": "-16-"},
+        {"id": "15", "source_id": "6", "target_id": "5", "direction": "-16-"},
+        {"id": "16", "source_id": "5", "target_id": "4", "direction": "-16-"},
+        {"id": "17", "source_id": "4", "target_id": "3", "direction": "-16-"},
+        {"id": "18", "source_id": "3", "target_id": "2", "direction": "-16-"},
+        {"id": "19", "source_id": "2", "target_id": "1", "direction": "-16-"},
+        {"id": "20", "source_id": "1", "target_id": "0", "direction": "-16-"}
+    ]
+}
+

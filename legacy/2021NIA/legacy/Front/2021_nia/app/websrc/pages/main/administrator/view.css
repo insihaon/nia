@@ -1,0 +1,32 @@
+md-dialog.alarm-dialog md-select-value{
+    color: #000 !important;
+}
+div.table-wapper{
+    overflow: auto;
+    height: calc(100vh - 280px);
+    min-height: 150px;
+}
+
+div.table-wapper > table{
+    text-align-last: center;
+    overflow: visible;
+}
+
+div.table-wapper > table th.md-column{
+    font-size: 14px;
+}
+
+div.table-wapper > table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.table-wapper > table > tbody > tr > td{
+    text-align: center;
+}
+
+div.table-wapper > table > tbody > tr > td > span{
+    font-size: 13px;
+}

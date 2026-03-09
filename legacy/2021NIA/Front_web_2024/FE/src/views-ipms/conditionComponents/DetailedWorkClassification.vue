@@ -1,0 +1,64 @@
+<template>
+  <fragment>
+    <th>
+      상세작업분류
+    </th>
+    <td>
+      <el-select
+        v-model="value"
+        collapse-tags
+        size="small"
+        @change="handleChange()"
+      >
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+    </td>
+  </fragment>
+</template>
+<script>
+import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
+
+const routeName = 'DetailedWorkClassification'
+
+export default {
+  name: routeName,
+  extends: Base,
+  mixins: [commonFunctionMixin],
+  data() {
+    return {
+      name: routeName,
+      src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'nipHistTaskCd',
+      value: '',
+      options: [
+        { value: '', label: '전체' },
+        { value: 1, label: '생성' },
+        { value: 2, label: '수정' },
+        { value: 3, label: '삭제' },
+        { value: 4, label: '병합' },
+        { value: 5, label: '분할' },
+        { value: 6, label: '배정' },
+        { value: 7, label: '반납' },
+        { value: 8, label: '서비스배정' },
+        { value: 9, label: '할당' },
+        { value: 10, label: '해지' },
+        { value: 11, label: '할당예약' },
+        { value: 12, label: '할당예약해지' },
+      ],
+    }
+  },
+  methods: {
+  }
+}
+</script>
+<style lang="scss" scoped>
+.el-select {
+  width: 100%;
+}
+</style>

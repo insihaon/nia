@@ -1,0 +1,11 @@
+{
+    "nodes": [
+        {"id": "s1", "ip": "192.168.2.33", "vlan": 1, "flag": 0, "netmask": "255.255.255.0", "device_name": "device_0", "device_type": "1", "mac": "55-66-77-88-99-00", "gateway": "0.0.0.0", "alarm": "3"},
+        {"id": "s4", "ip": "192.168.2.99", "vlan": 1, "flag": 0, "netmask": "255.255.255.0", "device_name": "device_4", "device_type": "3", "mac": "44-55-66-77-88-99", "gateway": "0.0.0.0", "alarm": "2"}
+    ],
+    "links": [
+        {"source_id": "s1", "target_id": "s4", "source_port_disp": "4", "target_port_disp": "3", "speed": "1024MB/s"},
+        {"source_id": "s1", "target_id": "s4", "source_port_disp": "3", "target_port_disp": "11", "status": 0},
+        {"source_id": "s1", "target_id": "s4", "source_port_disp": "2", "target_port_disp": "1", "status": -1}
+    ]
+}

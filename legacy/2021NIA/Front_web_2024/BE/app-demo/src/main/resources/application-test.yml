@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  servlet:
+    context-path: 
+  
+spring:
+  profiles:
+    active: test
+    dev: false
+
+  datasource2nd:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: ENC(UXGRvr/LfDzJ07K6bscashjghvY08lnMFk9F4dRsqeQdIdRb5gT6bQlx1My3panNO+v2wQFPtUS9R4khfRu76g==)
+    username: ENC(dF2qMl+R9Hkl5UuvpLeI8A==)
+    password: ENC(jJyszOsTmqoyuMkPlzgWbyFotJjXFd2l)
+    dataSource-name: datahub
+    enabled: true
+
+file:
+  upload-dir: ./external
+

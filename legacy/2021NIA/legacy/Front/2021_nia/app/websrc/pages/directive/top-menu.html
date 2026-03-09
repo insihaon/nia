@@ -1,0 +1,79 @@
+<div class="top-menu-area">
+    <div class="header" style="background-color: #1c2b40 !important; height: 65px;">
+        <!-- Simple UI Toggle -->
+        <div style="position: absolute; width: 10px; height: 10px; left: 0; top: 0; z-index: 10;" ng-right-click="simpleUiToggle()"></div>
+        <div class="headerLogo" ng-click="openMonitoring()"> <!-- style="text-shadow: 3px 3px 3px #2f2b2b;" -->
+            <span class="headerImage" style="margin-right: 5px; margin-top:7px;"></span>
+            <span style="color: #FFFFFF; font-size: 24px; top: 8px; position: absolute;">NIA</span>
+            <span style="color: #FFFFFF; font-size: 24px; top: 8px; margin-left: 45px; position: absolute;">KOREN</span>
+            <span style="cursor:default; display:inline-block; transform:rotate(-0.03deg); color: #a1bbdc; font-weight:normal; font-size: 14px; top: 35px; position: absolute;" ng-right-click="restTest()" ng-sgl-click="postTest()">KOREN 기반 자율형 네트워크</span>
+            <span class="sysversion" style="left: 190px; top: 17px;">v{{'1.000'}}</span>
+            <!--<span style="font-size: 0.65em; color: #7cf1db; margin-left: 60px; top: 26px; position: absolute; left: 168px;">Momentary Breakoff Analyzer</span>-->
+        </div>
+
+        <div class="nav">
+            <ul>
+                <li><span>성능 감시</span>
+                    <ul>
+                        <li ng-click="openByCountryStatisticsSkill()"><span>국가별 트래픽 분석 및 Top N</span></li>
+                        <li ng-click="openByAgencyStatisticsSkill()"><span>이용기관별 트래픽 분석 및 Top N</span></li>
+                        <li ng-click="openByApplicationStatisticsSkill()"><span>어플리케이션별 트래픽 분석 및 Top N</span></li>
+                        <li ng-click="openEquipByPort()"><span>장비 포트별 in/out 트래픽 감시 및 이력 조회 기능</span></li>
+                        <li ng-click="openEquipAmountUsed()"><span>장비 사용량 감시 및 이력 조회 기능</span></li>
+                        <li ng-click="openunverifiedTrafficList()"><span>미확인 트래픽 정의</span></li>
+                        <!-- <li ng-click="openOptimalRouteSetting()"><span>우회 경로 및 복원 이력 조회</span></li> -->
+                        <!-- <li ng-click="openOptimalRouteCount()"><span>전체 E2E경로 조회</span></li> -->
+                    </ul>
+                </li>
+                <li><span>장애 감시</span>
+                    <ul>
+                        <li ng-click="openSOP()"><span>SOP 이력 조회 기능</span></li>
+                        <li ng-click="openAlarmManagement()"><span>장애 현황 및 이력 관리 기능</span></li>
+                        <li ng-click="openSyslogDialog()"><span>SYSLOG 이력 조회 기능</span></li>
+                        <li ng-click="openSyslogRuleManagement()"><span>SYSLOG RULE 관리 기능</span></li>
+                    </ul>
+                </li>
+                <li><span>운용 현황 화면</span>
+                    <ul>
+                        <li ng-click="openMonitoring()"><span>관제화면</span></li>
+                        <li ng-click="openAiMonitor()"><span>AI모니터링</span></li>
+                        <li ng-click="openServerMonitor()"><span>서버모니터링</span></li>
+                        <li ng-click="openDashboard()"><span>운용 현황 통계</span></li>
+                        <li ng-click="openSelfProcessMonitor()"><span>자가처리 관제화면</span></li>
+                    </ul>
+                </li>
+                
+                <li ng-click="openAIProcess()" ng-hide="!tools.debug"><span>AI 장애 대응</span></li>
+                <li ng-click="openProFile()"><span>프로파일</span></li>
+                <li ng-click="openDateSetting()"><span>데이터 스냅샷</span></li>
+                <!--<li ng-click="statego(tools.store.viewType.ai_process.type); tools.store.aiPageNum = '1'"><span>자가구성</span></li>-->
+                <!--<li ng-click="statego(tools.store.viewType.ai_process.type); tools.store.aiPageNum = '2'"><span>자가회복</span></li>-->
+                <!--<li ng-click="statego(tools.store.viewType.ai_process.type); tools.store.aiPageNum = '3'"><span>이력조회</span></li>-->
+
+                <li ng-click="openUserSetting()"><span>사용자 관리</span></li>
+                <li ng-click="openAdmin($event)" ng-show="tools.store.hasGrant(tools.constants.UserGrant.ADMIN.value)"><span>관리자</span></li>
+                <li ng-click="openNode()"><span>노드관리</span></li>
+                <li ng-click="openLink()"><span>링크관리</span></li>
+                <li ng-click="openAgency()"><span>이용기관</span></li>
+            </ul>
+        </div>
+
+
+        <div class="rightItem">
+            <ul>
+                <li class="search" style="border: none;"> <!-- ng-if="tools.isDesktopMode()"-->
+                    <input type="text" placeholder="Search" ng-model="tools.store.ticketAllSearch" ng-model-options="{debounce:100}"/>
+                </li>
+                <li class="userinfo" layout="column">
+                    <span class="topTime image_dark_Converter" style="width: 225px; opacity: 0.8;">2019.06.10 MON AM 09:00:00</span>
+                    <span class="userName teamName" style="color: #e2e2e2; text-align: left;">
+                        <i class="fa fa-address-book-o fa-500px" style="margin-right: 5px;"></i>
+                        {{tools.store.userName}}&nbsp;
+                        &nbsp;<a href="" ng-click="openUserSetting()" style="font-size: 11px; color: #11c7c7;">상세정보</a>
+                        &nbsp;<a href="" ng-click="logout()" style="font-size: 11px; color: rgba(255,80,51,0.64);">로그아웃</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

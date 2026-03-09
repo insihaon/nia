@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://203.255.249.31:3306/optroute
+    username: optroute
+    password: optroutepw1004
+    #tomcat:
+    #  jmx-enabled: true
+
+  jwt:
+    secret: MmNmMDNiZmM2YzVmMjY2OWExNzIxMDc0MmZlZDliZTM4OWU1ZjM5M2Y3Y2MzNjll
+    
+  jpa:
+    database: mysql
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        '[format_sql]': true
+    # properties.hibernate.format_sql: true
+    #defer-datasource-initialization: true # as of Boot 2.5: 하이버네이트가 data.sql 로부터 스키마를 생성하게끔 명시하는 프로퍼티
+#   data:
+#     rest:
+#       base-path: /api
+#       default-media-type: application/json
+#     web:
+#       pageable:
+#         default-page-size: 20
+  mail:
+    host: 203.255.250.101
+    port: 25
+#    username: noti
+#    password: "!mezzonice@"
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          ssl:
+            enable: false
+
+server.port: 8080
+server.servlet.session.timeout: 24h # embedded tomcat 을 쓴다면 타임아웃 최소 시간이 1분임
+# management:
+#   endpoints:
+# #    TODO: Security vulnerable settings. Must be reviewed
+#     enabled-by-default: true
+#     web:
+#       exposure:
+#         include: "*"
+#         exclude: shutdown
+# management:
+#   endpoints:
+#     web:
+#       exposure:
+#         include: "*"
+#   endpoint:
+#     health:
+#       show-details: always
+#     shutdown:
+#       enabled: true
+
+# logging:
+#   level:
+#     root: info
+#     '[com.koren.ipsdn_app]': debug
+#     '[org.hibernate.SQL]': debug
+#     '[org.hibernate.type.descriptor.sql.BasicBinder]': trace
+#security:
+#  basic:
+#    enabled: false # security 기본인증 옵션 제거

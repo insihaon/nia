@@ -1,0 +1,29 @@
+<md-dialog class="aiProcess-dialog" id="aiProcessDialog" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()"> &nbsp;AI 장애 대응 </span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="height: 100%;">
+        <div layout="column" class="aiProcessContents">
+            <md-card class="aiProcess-card" style="margin: 15px;">
+                <md-tabs md-border-bottom="" md-stretch-tabs>
+                    <md-tab flex label="자가구성">
+                        <div ng-include ng-if="ticket.ticket_type != 'RT'" src="'pages/main/aiProcess_template/selfConfiguration_template/view.html'" ng-cloak layout-fill></div>
+                    </md-tab>
+                    <md-tab label="자가회복">
+                        <div ng-include ng-if="ticket.ticket_type == 'RT'" src="'pages/main/aiProcess_template/selfHealing_template/view.html'" ng-cloak layout-fill></div>
+                    </md-tab>
+                    <md-tab label="처리 이력" ng-if="ticket.ticket_type != 'FTT'">
+                        <div ng-include src="'pages/main/aiProcess_template/aiHistory_template/view.html'" ng-cloak layout-fill></div>
+                    </md-tab>
+                </md-tabs>
+            </md-card>
+        </div>
+    </md-dialog-content>
+</md-dialog>

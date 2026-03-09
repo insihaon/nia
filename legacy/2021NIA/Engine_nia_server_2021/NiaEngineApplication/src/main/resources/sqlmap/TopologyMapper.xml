@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.engine.mapper.TopologyMapper">
+
+
+    <resultMap id="TopologyObject" type="com.nia.engine.vo.TopologyObject">
+        <result property="alarmid"	           	 	column="ALARMID"/>
+        <result property="link_id"	           	 	column="LINK_ID"/>
+        <result property="nwType"	        		column="NW_TYPE"/>
+        <result property="oppSysname"	        	column="OPP_SYSNAME"/>
+        <result property="oppPtpName"	        	column="OPP_PTPNAME"/>
+        <result property="oppSlot"	       		 	column="OPP_SLOT"/>
+        <result property="oppPort"	       		 	column="OPP_PORT"/>
+    </resultMap>
+
+    <select id="selectAlarmMstList" resultMap="TopologyObject" parameterType="hashmap">
+        SELECT ALARMID, LINK_ID, NW_TYPE, OPP_SYSNAME, OPP_PTPNAME, OPP_SLOT, OPP_PORT
+        FROM RCA.TB_CLUSTER_AL_TOPOLOGY
+        WHERE ALARMID = #{alarmid}
+    </select>
+
+    <select id="selectTopology" resultType="com.nia.engine.vo.TopologyDataVo" parameterType="hashmap">
+        SELECT LINK_ID AS linkId, SYSNAMEA AS sysnamea, PTPNAMEA_BAU AS ptpnameaBau, PTPNAMEA_PAU AS ptpnameaPau
+        FROM NIA.TB_TOPOLOGY
+        WHERE
+        <if test="ptpNameBau != null">
+            (SYSNAMEZ = #{sysname} AND PTPNAMEZ_BAU != #{ptpNameBau})
+        </if>
+
+        <if test="ptpNamePau != null">
+            (SYSNAMEA = #{sysname} AND PTPNAMEA_PAU != #{ptpNamePau})
+        </if>
+    </select>
+
+    <select id="selectE2eTopology" resultType="com.nia.engine.vo.TopologyObject" parameterType="hashmap">
+        select opp_sysname as oppSysname, opp_port as oppPort from
+            ((select node_idz as opp_sysname, portz as opp_port from nia.tb_e2e_topology where node_ida = #{sysname} and porta = #{port})
+            union all
+            (select node_ida as opp_sysname, porta as opp_port from nia.tb_e2e_topology where node_idz = #{sysname} and portz = #{port})) a
+    </select>
+
+    <select id="selectBackboneTopology" resultType="com.nia.engine.vo.BackboneLinkVo" parameterType="hashmap">
+        SELECT SRC_NODE_NUM, SRC_NODE_ID, SRC_IF_NUM, SRC_IF_ID, DEST_NODE_NUM
+             , DEST_NODE_ID, DEST_IF_NUM, DEST_IF_ID, LINK_DESC, VLAN
+             , TAG, SRC_IP_ADDR, SRC_MAC_ADDR, DEST_IP_ADDR, DEST_MAC_ADDR
+             , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
+             , CIRCUIT_NUM
+          FROM RESOURCE.TB_BACKBONE_LINK
+          WHERE ((SRC_NODE_NUM = #{resid} AND SRC_IF_NUM = #{ifid}) OR (DEST_NODE_NUM = #{resid} AND DEST_IF_NUM = #{ifid}))
+    </select>
+</mapper>

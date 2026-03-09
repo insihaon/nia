@@ -1,0 +1,9 @@
+md-dialog.dateSetting-dialog div.modalContents {
+    width: 800px;
+    padding: 0;
+    font-size: 0.8em;
+}
+
+/*md-dialog.dateSetting-dialog div.modalContents.open-history{*/
+    /*width: 710px;*/
+/*}*/

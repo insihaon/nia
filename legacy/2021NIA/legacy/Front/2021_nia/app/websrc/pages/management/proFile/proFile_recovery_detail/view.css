@@ -1,0 +1,120 @@
+md-dialog.profile-recovery-detail-dialog {
+    max-width: 566px;
+    max-height: 793px;
+    width: 566px;
+    height: 793px;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+
+md-dialog.profile-recovery-detail-dialog md-dialog-content{
+    overflow: hidden;
+}
+
+md-dialog.profile-recovery-detail-dialog md-dialog-content .profile-recovery-detail-dialog-content{
+    height: calc(100% - 45px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr {
+    height: 55px;
+    border-bottom: 1px dotted #5c5c5c29;
+}
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr:last-child {
+    border-bottom: none;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table td.userInfoKind {
+    text-align: center;
+    padding-right: 20px;
+    padding-left: 20px;
+    border-right: 1px dotted #5c5c5c29;
+    border-left: 1px dotted #5c5c5c29;
+    background-color: #c1d3f624;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td {
+    font-size: 13px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > md-radio-group {
+    display: flex;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > md-radio-group > md-radio-button {
+    margin: 0px 0px 0px 10px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > md-radio-group > md-radio-button div > div.md-label {
+    padding-top: 4px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > md-input-container.input-container.profile-title-container  {
+    width: calc(100% - 40px);
+    min-width: 150px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > textarea {
+    width: calc(100% - 40px);
+    min-width: 150px;
+    height: 80px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > md-input-container.select-container {
+    min-width: 130px;
+    max-width: 130px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table tr > td > md-input-container.select-node-container {
+    min-width: 250px;
+    max-width: 250px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info {
+    height: calc(100vh - 810px);
+    min-height: 100px;
+    max-height: 127px;
+    overflow: auto;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info table{
+    text-align-last: center;
+    overflow: visible;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info table th.md-column {
+    font-size: 14px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info table > thead > tr{
+    height: 30px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info table > tbody > tr > td{
+    text-align: center;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info > table > tbody > tr > td > span{
+    font-size: 13px;
+}
+
+div.profile-recovery-detail-dialog-content table.profile-detail-table div.profile-recovery-detail-table-info > table > tbody > tr > td > span > a{
+    cursor: pointer;
+}
+
+md-dialog.profile-recovery-detail-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}
+

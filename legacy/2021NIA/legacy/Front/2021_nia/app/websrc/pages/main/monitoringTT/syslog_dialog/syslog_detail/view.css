@@ -1,0 +1,71 @@
+md-dialog.syslog-detail-dialog div.syslog-detail-title span.title{
+    font-size: 25px;
+    margin: 0px 0px 0px 10px;
+}
+
+md-dialog.syslog-detail-dialog div.syslog-detail-title button.md-icon-button{
+    float: right;
+}
+
+md-dialog.syslog-detail-dialog div.syslog-detail-dialog-content {
+    padding: 0;
+    font-size: 0.8em;
+}
+
+md-dialog.syslog-detail-dialog table.nia-custom-table tr {
+    height: 55px;
+    border-bottom: 1px dotted #5c5c5c29;
+}
+md-dialog.syslog-detail-dialog table.nia-custom-table tr:last-child {
+    border-bottom: none;
+}
+md-dialog.syslog-detail-dialog table.nia-custom-table td.userInfoKind {
+    text-align: center;
+    padding-right: 20px;
+    padding-left: 20px;
+    border-right: 1px dotted #5c5c5c29;
+    border-left: 1px dotted #5c5c5c29;
+    background-color: #c1d3f624;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+md-dialog.syslog-detail-dialog table.nia-custom-table td.title {
+    text-align: center;
+    font-weight: 800;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+
+md-dialog.syslog-detail-dialog table.nia-custom-table tr > td > textarea{
+    width: calc(100% - 40px);
+    min-width: 150px;
+    height: 80px;
+}
+md-dialog.syslog-detail-dialog table.nia-custom-table tr > td > input{
+    margin-left: 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+    word-wrap: break-word;
+    /* overflow-wrap: break-word; */
+}
+md-dialog.syslog-detail-dialog table.nia-custom-table tr > td > input:focus {
+    border-bottom: 1.5px solid rgba(17, 16, 62, 0.75);
+}
+
+md-dialog.syslog-detail-dialog table.nia-custom-table tr > td > input:disabled {
+    background-color: #fff;
+}
+
+md-dialog.syslog-detail-dialog table.nia-custom-table tr > td > md-select{
+    margin: 0px 0px 0px 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+}
+
+md-dialog.syslog-detail-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}
+

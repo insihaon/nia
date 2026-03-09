@@ -1,0 +1,3117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.korenrca.service.rca">
+
+<!-- <include refid="SQL_PAGE_BEFORE" /> -->
+    <sql id="SQL_PAGE_BEFORE">
+    <if test="COUNT_ALL != null">
+    select count(1) as total from (
+    </if>
+    </sql>
+
+<!-- <include refid="SQL_PAGE_AFTER" /> -->
+    <sql id="SQL_PAGE_AFTER">
+    <if test="COUNT_ALL != null">
+    ) AS COUNT_ALL
+    </if>
+    </sql>
+
+    <select id="SELECT_NIA_TICKET_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT
+        T.TICKET_ID AS TICKET_ID,
+        T.CLUSTER_NO AS CLUSTER_NO,
+        T.TICKET_TYPE AS TICKET_TYPE,
+        T.TICKET_GENERATION_TIME AS TICKET_GENERATION_TIME,
+        T.FAULT_TIME AS FAULT_TIME,
+        T.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE,
+        T.ROOT_CAUSE_CODE AS ROOT_CAUSE_CODE,
+        T.ROOT_CAUSE_DOMAIN AS ROOT_CAUSE_DOMAIN,
+        T.TOTAL_RELATED_ALARM_CNT AS TOTAL_RELATED_ALARM_CNT,
+        T.STATUS AS STATUS,
+        T.PARENT_TICKET_ID AS PARENT_TICKET_ID,
+        T.TICKET_RCA_RESULT_CODE AS TICKET_RCA_RESULT_CODE,
+        T.TICKET_RCA_RESULT_DTL_CODE AS TICKET_RCA_RESULT_DTL_CODE,
+        T.TICKET_RCA_RESULT_ORIG_DTL_CODE AS TICKET_RCA_RESULT_ORIG_DTL_CODE,
+        T.TICKET_UPDATE_TIME AS TICKET_UPDATE_TIME,
+        T.ZERO1_MODEL AS ZERO1_MODEL,
+        T.ZERO1_ENTROPY AS ZERO1_ENTROPY,
+        CASE WHEN T.TICKET_TYPE = 'PF' THEN
+        (
+            SELECT T2.SYSNAMEA
+            FROM rca.tb_rca_ticket_cable_mst T2
+            WHERE T2.TICKET_ID = T.TICKET_ID
+            ORDER BY T2.TICKET_CABLE_ID
+            LIMIT 1
+        )
+        ELSE AL.ROOT_CAUSE_SYSNAMEA
+        END AS ROOT_CAUSE_SYSNAMEA,
+        CASE WHEN T.TICKET_TYPE = 'PF' THEN
+        (
+            SELECT T2.SYSNAMEZ
+            FROM rca.tb_rca_ticket_cable_mst T2
+            WHERE T2.TICKET_ID = T.TICKET_ID
+            ORDER BY T2.TICKET_CABLE_ID DESC
+            LIMIT 1
+        )
+        ELSE COALESCE(AL.ROOT_CAUSE_SYSNAMEZ, AL.ROOT_CAUSE_SYSNAMEA)
+        END AS ROOT_CAUSE_SYSNAMEZ,
+        AL.ROOT_CAUSE_UNITA AS ROOT_CAUSE_UNITA,
+        AL.ROOT_CAUSE_UNITZ AS ROOT_CAUSE_UNITZ,
+        AL.ROOT_CAUSE_ALARM_NOA AS ROOT_CAUSE_ALARM_NOA,
+        AL.ROOT_CAUSE_ALARM_NOZ AS ROOT_CAUSE_ALARM_NOZ,
+        AL.ROOT_CAUSE_PORTA AS ROOT_CAUSE_PORTA,
+        AL.ROOT_CAUSE_PORTZ AS ROOT_CAUSE_PORTZ,
+        nodea.ip_addr AS ip_addra,
+        nodez.ip_addr AS ip_addrz,
+        CASE WHEN (
+            SELECT count(*) AS count
+            FROM resource.tb_backbone_link
+            WHERE src_node_id = AL.ROOT_CAUSE_SYSNAMEA AND dest_node_id =AL.ROOT_CAUSE_SYSNAMEZ
+        )   <![CDATA[ > ]]>   0 THEN TRUE
+        ELSE FALSE
+        END AS is_backbone,
+        CASE WHEN (
+            SELECT count(*)
+            FROM resource.tb_user_organ
+            WHERE node_id = AL.ROOT_CAUSE_SYSNAMEA
+        )   <![CDATA[ > ]]>   0 THEN TRUE
+        ELSE FALSE
+        END AS is_organ_link,
+        CASE WHEN (
+        SELECT count(*)
+        FROM resource.tb_user_organ
+        WHERE nren_name = AL.ROOT_CAUSE_SYSNAMEZ
+        )   <![CDATA[ > ]]>   0 THEN TRUE
+        ELSE FALSE
+        END AS is_organ_system,
+        cnt.child_count
+    FROM rca.tb_rca_ticket_current T
+    LEFT OUTER JOIN (
+        select t.ticket_id, ROOT_CAUSE_SYSNAMEA, ROOT_CAUSE_SYSNAMEZ, ROOT_CAUSE_UNITA, ROOT_CAUSE_UNITZ, ROOT_CAUSE_ALARM_NOA, ROOT_CAUSE_ALARM_NOZ, ROOT_CAUSE_PORTA, ROOT_CAUSE_PORTZ
+        from rca.tb_rca_ticket_current T
+        inner join (
+            SELECT AL_ID.ticket_id, AL.ROOT_CAUSE_SYSNAMEA, AL.ROOT_CAUSE_SYSNAMEZ, AL.ROOT_CAUSE_UNITA, AL.ROOT_CAUSE_UNITZ, AL.ROOT_CAUSE_ALARM_NOA, AL.ROOT_CAUSE_ALARM_NOZ, AL.ROOT_CAUSE_PORTA, AL.ROOT_CAUSE_PORTZ
+            FROM (
+                SELECT ticket_id, max(ticket_al_id) AS ticket_al_id
+                FROM rca.tb_rca_ticket_al_current
+                WHERE 1=1
+                <if test="TICKET_ID == null or TICKET_ID == ''">
+                    AND insert_time <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+                </if> 
+                GROUP BY ticket_id
+            ) AL_ID
+            LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL on al.ticket_id = al_id.ticket_id and  AL.ticket_al_id = AL_ID.ticket_al_id
+        ) al
+        on t.ticket_id = al.ticket_id
+        where 1=1
+        <if test="TICKET_ID == null or TICKET_ID == ''">
+            AND t.TICKET_GENERATION_TIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+        </if> 
+    ) al on t.ticket_id = al.ticket_id
+    LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = AL.ROOT_CAUSE_SYSNAMEA
+    LEfT OUTER JOIN resource.tb_node_mst nodez ON nodea.node_id = AL.ROOT_CAUSE_SYSNAMEZ
+    LEFT OUTER JOIN rca.tb_rca_ticket_cnt cnt ON T.ticket_id = cnt.ticket_id
+    WHERE 1=1
+        <if test="TICKET_ID == null or TICKET_ID == ''">
+            AND T.OCCUR = TRUE AND T.PARENT_TICKET_ID IS NULL
+            AND ticket_generation_time <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+        </if> 
+        <if test="TICKET_ID != null and TICKET_ID != ''">
+            AND t.ticket_id = #{TICKET_ID}
+        </if>
+    ORDER BY ticket_generation_time DESC, ticket_id desc
+    </select>
+
+
+    <select id="SELECT_NIA_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
+        WITH sub_ticket_alarm AS
+        ( SELECT T.*,
+                AL.ticket_al_id,
+                AL.root_cause_alarm_noa,
+                AL.root_cause_alarm_noz
+        FROM    RCA.TB_RCA_TICKET_CURRENT T
+        LEFT OUTER JOIN
+                ( SELECT SUB_AL.* ,
+                        ROW_NUMBER() OVER (PARTITION BY SUB_AL.TICKET_ID ORDER BY TICKET_AL_ID DESC) AS ORDER_NUM
+                FROM    RCA.TB_RCA_TICKET_AL_CURRENT SUB_AL ) AL ON T.TICKET_ID = AL.TICKET_ID AND AL.ORDER_NUM = 1
+        )
+        SELECT  T.ALARMNO AS ALARMNO,
+                T.CLUSTERNO AS CLUSTERNO,
+                T.TMP_CLUSTER_NO AS TMP_CLUSTER_NO,
+                T.SYSNAME AS SYSNAME,
+                T.EQUIPTYPE AS EQUIPTYPE,
+                T.ALARMTIME AS ALARMTIME,
+                T.RECEIVETIME AS RECEIVETIME,
+                T.ALARMLOC AS ALARMLOC,
+                T.ALARMMSG AS ALARMMSG,
+                T.UNIT AS UNIT,
+                T.ALARMLEVEL AS ALARMLEVEL,
+                T.CLUSTERNO_ORIGINAL AS CLUSTERNO_ORIGINAL,
+                T.CLEARTIME AS CLEARTIME,
+                T.PTPNAME AS PTPNAME,
+                T.SLOT AS SLOT,
+                T.PORT AS PORT,
+                CASE WHEN ta.root_cause_alarm_noa IS NULL AND ta.root_cause_alarm_noz IS NULL THEN true ELSE false
+                END RELATED_ALARM
+        FROM    rca.tb_alarm_cur_mst T
+        LEFT OUTER JOIN sub_ticket_alarm ta ON T.clusterno = ta.cluster_no
+        <where>
+            <if test="CLUSTERNO != null">
+                T.CLUSTERNO = #{CLUSTERNO}
+            </if>
+        </where>
+    </select>
+
+    <select id="SELECT_NIA_ALARM_MANAGEMAENT_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+     <include refid="SQL_PAGE_BEFORE" />
+        SELECT  tc.ticket_id,
+                tc.fault_time,
+                CASE WHEN tc.status = 'AUTO_FIN' THEN tc.ticket_update_time ELSE sop.handling_fin_time END AS handling_fin_time,
+                tc.ticket_type,
+                tc.ticket_rca_result_dtl_code,
+                tc.status ,
+                ta.root_cause_sysnamea,
+                ta.root_cause_porta,
+                ta.root_cause_sysnamez,
+                ta.root_cause_portz,
+                tc.parent_ticket_id 
+        FROM    rca.tb_rca_ticket_current tc
+        INNER JOIN rca.tb_rca_ticket_al_current ta ON tc.ticket_id = ta.ticket_id
+        LEFT OUTER JOIN nia.tb_sop sop             ON tc.ticket_id = sop.ticket_id
+        WHERE   1=1
+                <if test="TICKET_ID != null">
+                    AND tc.ticket_id = #{TICKET_ID}
+                </if> 
+                <if test="TICKET_TYPE != null">
+                    AND tc.ticket_type = #{TICKET_TYPE}
+                </if> 
+                <if test="OCCUR_START_DATE == null and OCCUR_END_DATE == null and DEADLINE_START_DATE == null and DEADLINE_END_DATE == null">
+                    AND tc.fault_time <![CDATA[ > ]]> rca.fc_get_minus_day(7)
+                </if>
+                <if test="OCCUR_START_DATE != null">
+                    AND tc.fault_time <![CDATA[ >= ]]> #{OCCUR_START_DATE}::timestamp
+                </if>
+                <if test="OCCUR_END_DATE != null">
+                    AND tc.fault_time <![CDATA[ <= ]]> #{OCCUR_END_DATE}::timestamp
+                </if>
+                <if test="DEADLINE_START_DATE != null">
+                    AND CASE WHEN tc.status = 'AUTO_FIN' THEN tc.ticket_update_time ELSE sop.handling_fin_time END <![CDATA[ >= ]]> #{DEADLINE_START_DATE}::timestamp
+                </if>
+                <if test="DEADLINE_END_DATE != null">
+                    AND CASE WHEN tc.status = 'AUTO_FIN' THEN tc.ticket_update_time ELSE sop.handling_fin_time END <![CDATA[ <= ]]> #{DEADLINE_END_DATE}::timestamp
+                </if>
+        ORDER BY tc.ticket_id DESC
+                <if test="OFFSET != null">
+                    OFFSET #{OFFSET} LIMIT #{LIMIT}
+                </if>
+                <if test="LIMIT != null and OFFSET == null">
+                    LIMIT #{LIMIT}
+                </if>
+        <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_NIA_ALARM_MANAGEMAENT2_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  tc.ticket_id,
+                tc.fault_time,
+                CASE WHEN tc.status = 'AUTO_FIN' THEN tc.ticket_update_time ELSE sop.handling_fin_time END AS handling_fin_time,
+                tc.ticket_rca_result_dtl_code,
+                tc.status ,
+                ta.root_cause_sysnamea,
+                ta.root_cause_porta,
+                ta.root_cause_sysnamez,
+                ta.root_cause_portz,
+                tc.parent_ticket_id
+        FROM    rca.tb_rca_ticket_current tc
+        INNER JOIN rca.tb_rca_ticket_al_current ta ON tc.ticket_id = ta.ticket_id
+        LEFT OUTER JOIN nia.tb_sop sop             ON tc.ticket_id = sop.ticket_id
+        WHERE   1=1
+                <if test="TICKET_ID != null">
+                    AND tc.ticket_id = #{TICKET_ID}
+                </if>
+    </select>
+
+    <select id="SELECT_NIA_CABLE_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  pfm.sysname,
+                pfm.port,
+                pfm.unit,
+                pfm.tmper,
+                pfm.rxcur,
+                pfm.rxmin,
+                pfm.rxmax,
+                pfm.rxave,
+                pfm.txcur,
+                pfm.txmin,
+                pfm.txmax,
+                pfm.txave,
+                pfm.ocrtime
+        FROM    rca.tb_rca_ticket_current tc
+                LEFT OUTER JOIN rca.tb_rca_ticket_cable_mst cm ON tc.ticket_id = cm.ticket_id
+                LEFT OUTER JOIN nia.tb_performace_mst pfm      ON tc.fault_time = pfm.ocrtime 
+                        AND     ((cm.porta = pfm.port AND cm.sysnamea = pfm.sysname)
+                                OR 
+                                (cm.portz = pfm.port AND cm.sysnamez = pfm.sysname))
+        WHERE   tc.ticket_id = #{TICKET_ID}
+        AND     tc.ticket_generation_time > rca.fc_get_minus_day(30)
+        AND     pfm.ocrtime > rca.fc_get_minus_day(30)
+    </select>
+
+    <select id="SELECT_NIA_TOPOLOGY_CABLE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            trtr.routenum,
+            trtr.sysname
+        FROM nia.tb_roadm_trunk_repeater trtr
+        WHERE trunk_id = (SELECT tcat.link_id
+                          FROM rca.tb_cluster_al_topology tcat
+                          WHERE tcat.alarmno = (
+                              SELECT AL.root_cause_alarm_noa
+                              FROM rca.tb_rca_ticket_current T
+                                       LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_id = T.ticket_id
+                                      AND AL.ticket_al_id = (
+                                          SELECT max(ticket_al_id)
+                                          FROM rca.tb_rca_ticket_al_current
+                                          WHERE ticket_id = #{TICKET_ID}
+                                      )
+                              WHERE T.ticket_id = #{TICKET_ID}
+                          )
+        )
+    </select>
+
+    <select id="SELECT_NIA_PF_TOPOLOGY_CABLE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT sysnamea, sysnamez
+        FROM rca.tb_rca_ticket_cable_mst
+        WHERE ticket_id = #{TICKET_ID}
+    </select>
+
+    <!--이상 트래픽-->
+    <select id="SELECT_NIA_ABNORMAL_TRAFFIC_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            '11213' AS ticket_id ,
+            'INIT' AS status,
+            'ABNORMAL_TRAFFIC' AS alarm_type,
+            '7' AS alarmlevel,
+            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as receivetime,
+            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as faulttime,
+            R.STRRESNAME AS sysname,
+            I.STRIFNAME AS interface_name,
+            P.FLTBPSIN AS bpsin,
+            P.FLTBPSOUT AS bpsout,
+            P.FLTPPSIN AS ppsin,
+            P.FLTPPSOUT AS ppsout
+        FROM IP_YD.XE_CVNMS_PERF_IF P
+                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE R ON P.STRRESID = R.STRRESID
+                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE_IF I ON P.STRRESID = I.STRRESID  AND P.STRIFID = I.STRIFID
+                 LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM ON PM.NODE_NUM = I.STRRESID AND PM.IF_NUM = I.STRIFID
+                 LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON PM.NODE_ID=UO.NODE_ID AND PM.IF_ID = UO.IF_ID
+        WHERE P.insert_time between '2021-11-22 10:58:00' and '2021-11-22 10:58:01'
+          and R.STRRESNAME = 'jeju-n9k'
+          and uo.NREN_ID = 'UO00000347'
+    </select>
+
+    <select id="SELECT_NIA_ABNORMAL_TRAFFIC2_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT DISTINCT
+            #{TICKET_ID} AS ticket_id ,
+            'INIT' AS status,
+            'ABNORMAL_TRAFFIC' AS alarm_type,
+            '7' AS alarmlevel,
+            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as receivetime,
+            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as faulttime,
+            R.STRRESNAME AS sysname,
+            PM.if_id AS interface_id,
+            I.STRIFNAME AS interface_name,
+            P.FLTBPSIN AS bpsin,
+            P.FLTBPSOUT AS bpsout,
+            P.FLTPPSIN AS ppsin,
+            P.FLTPPSOUT AS ppsout,
+            CASE WHEN R.STRRESNAME LIKE '%-7712%' THEN '7712/5812'
+                 WHEN R.STRRESNAME LIKE '%-5812%' THEN '7712/5812'
+                 WHEN STRRESNAME LIKE '%-n9k%' THEN 'ngk'
+                 ELSE '' END AS equiptype,
+            P.fltbpsin_anomaly,
+            P.fltbpsout_anomaly
+        FROM rca.tb_anomalous_traffic P
+                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE R ON P.STRRESID = R.STRRESID
+                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE_IF I ON P.STRRESID = I.STRRESID  AND P.STRIFID = I.STRIFID
+                 LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM ON PM.NODE_NUM = I.STRRESID AND PM.IF_NUM = I.STRIFID
+                 LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON PM.NODE_ID=UO.NODE_ID AND PM.IF_ID = UO.IF_ID
+        WHERE P.ticket_id = #{TICKET_ID}
+    </select>
+
+    <!--유해 트래픽-->
+    <select id="SELECT_NIA_BAD_TRAFFIC_LIST" parameterType="hashmap" resultType="hashmap">
+    -- 2022-12-06 사용안함
+        SELECT
+            '11214' AS ticket_id,
+            'INIT' AS status,
+            'BAD_TRAFFIC' AS alarm_type,
+            '7' AS alarmlevel,
+            DATEREGDATE as receivetime,
+            DATEREGDATE as faulttime,
+            STRRESNAME AS sysname,
+            strprotocol AS protocol_num,
+            STRS_IP AS src_ip,
+            STRS_PORT AS src_port,
+            STRD_IP AS dst_ip,
+            STRD_PORT AS dst_port,
+            strbytes_col AS byte_count,
+            strcounts AS traffic_count
+        FROM IP_YD.XE_SFLOW_LOG
+        WHERE DATEREGDATE between '2021-11-22 13:49:52' and '2021-11-22 13:49:54'
+          AND strresip = '116.89.161.14'
+          AND strs_ip in ('211.114.64.142','211.114.64.17','211.114.66.79','59.18.30.17','59.18.30.76','59.18.35.211')
+          AND strs_port in ('443')
+    </select>
+
+    <select id="SELECT_NIA_BAD_TRAFFIC2_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            #{TICKET_ID} AS ticket_id,
+            'INIT' AS status,
+            'BAD_TRAFFIC' AS alarm_type,
+            '7' AS alarmlevel,
+            DATEREGDATE as receivetime,
+            DATEREGDATE as faulttime,
+            STRRESNAME AS sysname,
+            strprotocol AS protocol_num,
+            STRS_IP AS src_ip,
+            STRS_PORT AS src_port,
+            STRD_IP AS dst_ip,
+            STRD_PORT AS dst_port,
+            strbytes_col AS byte_count,
+            strcounts AS traffic_count,
+            CASE WHEN STRRESNAME LIKE '%-7712%' THEN '7712/5812'
+                 WHEN STRRESNAME LIKE '%-5812%' THEN '7712/5812'
+                 WHEN STRRESNAME LIKE '%-n9k%' THEN 'ngk'
+                 ELSE '' END AS equiptype
+        FROM rca.tb_noxious_traffic
+        WHERE ticket_id = #{TICKET_ID}
+    </select>
+
+    <select id="SELECT_NIA_IP_SDN_LINK_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  *
+    FROM    ( SELECT tl.id,
+                    snm.node_num AS snode_num,
+                    snm.node_nm AS node_nm,
+                    sn.id AS sdn_snode_id,
+                    spm.if_num AS sif_num,
+                    si.id AS sdn_sif_id,
+                    si.if_name AS sif_name ,
+                    rnm.node_num AS rnode_num,
+                    rnm.node_nm AS rnode_nm,
+                    rn.id AS sdn_rnode_id,
+                    rpm.if_num AS rif_num,
+                    ri.id AS sdn_rif_id,
+                    ri.if_name AS rif_name
+            FROM    ip_sdn.tb_link tl
+            INNER JOIN ip_sdn.tb_interface si   ON tl.sif_id = si.id
+            INNER JOIN ip_sdn.tb_interface ri   ON tl.rif_id = ri.id
+            INNER JOIN resource.tb_port_mst spm ON spm.if_id = lower(si.if_name)
+            INNER JOIN resource.tb_port_mst rpm ON rpm.if_id = lower(ri.if_name)
+            INNER JOIN ip_sdn.tb_node sn        ON si.node_id = sn.id
+            INNER JOIN ip_sdn.tb_node rn        ON ri.node_id = rn.id
+            INNER JOIN resource.tb_node_mst snm ON sn.id = snm.ip_sdn_id::INT
+            INNER JOIN resource.tb_node_mst rnm ON rn.id = rnm.ip_sdn_id::INT
+            WHERE   spm.node_num = snm.node_num
+            AND     rpm.node_num = rnm.node_num ) k
+    WHERE   k.node_nm = 'jeju-5812'
+    AND     k.sif_name = 'xe5'
+    AND     k.rnode_nm = 'gwangju-5812'
+    AND     k.rif_name = 'xe5'
+    </select>
+
+    <select id="SELECT_NIA_BYCOUNTRY_TRAFFIC_TOP_NVT_LIST" parameterType="hashmap" resultType="hashmap">
+            SELECT  src_country_code ,
+                    scc.country_name AS src_country_name ,
+                    dst_country_code ,
+                    dcc.country_name AS dst_country_name ,
+                    packet_bytes,
+                    rank_order
+            FROM    ( SELECT src_country_code ,
+                            dst_country_code ,
+                            SUM(packet_bytes) packet_bytes ,
+                            row_number () over (ORDER BY case when src_country_code is null and src_country_code is null then 0
+                                                    else 2 end desc, SUM(packet_bytes) DESC) rank_order
+                    FROM    gather.tb_mdb_sflow_traffic_day dt
+                    WHERE   1=1 
+                        and dt.collect_timestamp <![CDATA[ > ]]> rca.fc_get_minus_day(5)
+                    GROUP BY src_country_code ,
+                            dst_country_code ) dt
+            INNER JOIN gather.tb_country_code scc ON scc.iso_alpha2 = dt.src_country_code
+            INNER JOIN gather.tb_country_code dcc ON dcc.iso_alpha2 = dt.dst_country_code
+            WHERE   1=1
+            <if test="SRC_COUNTRY_CODE != null">
+                AND src_country_code = #{SRC_COUNTRY_CODE}
+            </if>
+            <if test="DST_COUNTRY_CODE != null">
+                AND dst_country_code = #{DST_COUNTRY_CODE}
+            </if>
+            <choose>
+                <when test="TOP_N == null">
+                AND rank_order <![CDATA[ < ]]> 101
+                </when>
+                <otherwise>
+                AND rank_order <![CDATA[ <= ]]> #{TOP_N}
+                </otherwise>
+            </choose>
+    </select>
+   
+    <select id="SELECT_NIA_COUNTRY_CODE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  country_name AS name,
+                iso_alpha2 AS code
+        FROM    gather.tb_country_code
+        ORDER BY country_name COLLATE "ko_KR.utf8" ASC
+    </select>
+    
+    <select id="SELECT_NIA_BYAGENCY_TRAFFIC_TOP_NVT_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  src_ip,
+            src_nren_id,
+            src_nren_name,
+            src_country_code,
+            dst_ip,
+            dst_nren_id,
+            dst_nren_name,
+            dst_country_code,
+            packet_bytes,
+            row_number
+    FROM    ( SELECT src_ip,
+                    src_nren_id,
+                    src_nren_name ,
+                    src_country_code,
+                    dst_ip,
+                    dst_nren_id,
+                    dst_nren_name ,
+                    dst_country_code ,
+                    SUM(packet_bytes) packet_bytes ,
+                    row_number() over (ORDER BY case when src_nren_id is null and dst_nren_id is null then 0
+                                                 else 2 end desc, SUM(packet_bytes) DESC) row_number
+            FROM    gather.tb_mdb_sflow_traffic_day dt
+            WHERE   1=1 
+                    and dt.collect_timestamp <![CDATA[ > ]]> rca.fc_get_minus_day(5)
+                    <if test="SRC_AGENCY_ID != null">
+                        AND src_nren_id = #{SRC_AGENCY_ID}
+                    </if>
+                    <if test="DST_AGENCY_ID != null">
+                        AND dst_nren_id = #{DST_AGENCY_ID}
+                    </if>
+                    <if test="SRC_AGENCY_IP != null">
+                        AND src_ip = #{SRC_AGENCY_IP}
+                    </if>
+                    <if test="DST_AGENCY_IP != null">
+                        AND dst_ip = #{DST_AGENCY_IP}
+                    </if>
+            GROUP BY src_ip,
+                    src_nren_id,
+                    src_nren_name ,
+                    src_country_code
+                    , dst_ip,
+                    dst_nren_id,
+                    dst_nren_name ,
+                    dst_country_code 
+            ) dt
+     WHERE   1=1
+            <choose>
+                <when test="TOP_N == null">
+                    AND row_number <![CDATA[ < ]]> 101
+                </when>
+                <otherwise>
+                    AND row_number <![CDATA[ <= ]]> #{TOP_N}
+                </otherwise>
+            </choose>
+    </select>
+
+    <select id="SELECT_NIA_AGENCY_CODE_LIST" parameterType="hashmap" resultType="hashmap">
+        select nren_name as name, nren_id as id 
+        from resource.tb_user_organ tcc 
+        ORDER BY nren_name collate "ko_KR.utf8" 
+    </select>
+
+    <select id="SELECT_NIA_BYAPP_TRAFFIC_TOP_NVT_LIST" parameterType="hashmap" resultType="hashmap">
+   SELECT  src_protocol,
+            src_port,
+            dst_protocol,
+            dst_port,
+            packet_bytes,
+            rank_order
+    FROM    ( SELECT src_protocol,
+                    src_port,
+                    dst_protocol,
+                    dst_port,
+                    SUM(packet_bytes) packet_bytes ,
+                    row_number() over (ORDER BY
+                    CASE
+                            WHEN src_protocol IS NULL
+                            AND     dst_protocol IS NULL
+                            THEN 0
+                            ELSE 2
+                    END DESC, SUM(packet_bytes) DESC) rank_order
+            FROM    gather.tb_mdb_sflow_traffic_day dt
+            WHERE   1=1
+                    and dt.collect_timestamp <![CDATA[ > ]]> rca.fc_get_minus_day(5)
+                    <if test="SRC_APPLICATION_CODE != null">
+                        AND src_port = #{SRC_APPLICATION_CODE}
+                    </if>
+                    <if test="SRC_PORT != null">
+                        AND src_port like '%' || #{SRC_PORT} || '%'
+                    </if>
+                    <if test="DST_APPLICATION_CODE != null">
+                        AND dst_port = #{DST_APPLICATION_CODE}
+                    </if>
+                    <if test="DST_PORT != null">
+                        AND dst_port like '%' || #{DST_PORT} || '%'
+                    </if>
+            GROUP BY src_protocol,
+                    src_port ,
+                    dst_protocol,
+                    dst_port ) dt
+    WHERE   1=1
+            <choose>
+                <when test="TOP_N == null">
+                AND rank_order <![CDATA[ < ]]> 101
+                </when>
+                <otherwise>
+                AND rank_order <![CDATA[ <= ]]> #{TOP_N}
+                </otherwise>
+            </choose>
+    </select>
+
+   <select id="SELECT_NIA_APPLICATION_CODE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  port_num AS code ,
+            protocol AS name
+    FROM    gather.tb_default_port_number
+    WHERE protocol IS NOT NULL
+    ORDER BY protocol COLLATE "ko_KR.utf8"
+    </select>
+
+    <insert id="INSERT_NIA_OPTIMAL_ROUTE_LIST">
+        insert into nia.tb_ipsdn_handling_hist
+            (
+            handling_time,
+            ticket_id,
+            user_id,
+            result,
+            handling_type,
+            link_id,
+            sourcedate
+            )
+        values
+            (
+              NOW(),
+              #{TICKET_ID},
+              #{USER_ID},
+              #{RESULT},
+              #{HANDLING_TYPE},
+              #{LINK_ID},
+              to_char(now(), 'YYYY-MM-DD')
+            )
+    </insert>
+
+    <select id="SELECT_NODEFACTOR_ONE" parameterType="hashmap" resultType="hashmap">
+    SELECT  to_char(measured_datetime, 'YYYY-MM-DD HH:MI:SS') as measured_datetime,
+            TRUNC(cpu_predicted::numeric, 3) * 100 as cpu_predicted,
+            TRUNC(mem_predicted::numeric, 3) * 100  as mem_predicted
+    FROM    rca.tb_nodefactor_ai_result 
+    WHERE   strresid = ( SELECT DISTINCT node_num FROM resource.tb_node_mst WHERE node_id = #{NODE})
+    AND     measured_datetime = #{FAULT_TIME}::TIMESTAMP
+    </select>
+
+    <select id="SELECT_NIA_OPTIMAL_ROUTE_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+    SELECT  *
+    FROM  nia.tb_ipsdn_handling_hist
+    WHERE 1=1
+        <if test="START_DATE != null">
+        AND handling_time <![CDATA[ > ]]> #{START_DATE}::timestamp 
+        </if>
+        <if test="END_DATE != null">
+        AND handling_time <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+        </if>
+    ORDER BY handling_time DESC
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+
+    <select id="SELECT_NIA_E2E_NODE_ONE" parameterType="hashmap" resultType="hashmap">
+    SELECT  k.id AS id,
+            k.snode_id AS snode_id,
+            k.rnode_id AS rnode_id,
+            k.usaged AS usaged,
+            k.snode_num AS snode_num,
+            k.snode_nm AS snode_nm,
+            k.rnode_num AS rnode_num,
+            k.rnode_nm AS rnode_nm
+	FROM    ( SELECT e.id,
+	                e.snode_id,
+	                e.rnode_id,
+	                e.usaged,
+	                n1.node_num AS snode_num,
+	                n1.node_nm AS snode_nm,
+	                n2.node_num AS rnode_num,
+	                n2.node_nm AS rnode_nm
+	        FROM    ip_sdn.tb_e2e_node e
+	        INNER JOIN resource.tb_node_mst n1 ON e.snode_id = n1.ip_sdn_id
+	        INNER JOIN resource.tb_node_mst n2 ON e.rnode_id = n2.ip_sdn_id ) k
+	WHERE   k.snode_nm = #{ROOT_CAUSE_SYSNAMEA} AND k.rnode_nm = #{ROOT_CAUSE_SYSNAMEZ}
+    </select>
+
+    <select id="SELECT_NIA_INOUT_TRAFFIC_BYPORT_NEW_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+    WITH TRAFFIC_DATA AS
+                ( SELECT NM.NODE_NUM, NM.NODE_NM, N.ID AS SDN_NODE_ID, PM.IF_NUM, I.ID AS SDN_IF_ID, I.IF_NAME, LT.TX_BIT_RATE, LT.RX_BIT_RATE, LT.TX_PKT_RATE, LT.RX_PKT_RATE, LT.MEASURED_DATETIME
+                FROM    IP_SDN.TB_LINK_TRAFFIC LT
+                INNER JOIN IP_SDN.TB_INTERFACE I   ON LT.IF_ID = I.ID
+                INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.IF_ID = LOWER(I.IF_NAME)
+                INNER JOIN IP_SDN.TB_NODE N        ON I.NODE_ID = N.ID
+                INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
+                WHERE   PM.NODE_NUM = NM.NODE_NUM 
+                    <if test="START_DATE == null and END_DATE == null">
+                    AND LT.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '10 min' AND NOW()::timestamp
+                    </if>
+                    <if test="START_DATE != null">
+                    AND LT.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp 
+                    </if>
+                    <if test="END_DATE != null">
+                    AND LT.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+                    </if>
+                    <if test="EQUIPMENT != null">
+                        AND nm.NODE_NM = #{EQUIPMENT}
+                    </if>
+                    <if test="INTERFACE != null">
+                        AND I.IF_NAME = #{INTERFACE}
+                    </if>
+                )
+        SELECT  T.NODE_NUM, T.NODE_NM AS NODE_NAME, T.SDN_NODE_ID, T.IF_NUM, T.SDN_IF_ID, T.IF_NAME, T.DIRECTION, T.RX_BIT_RATE, T.RX_PKT_RATE, T.TX_BIT_RATE, T.TX_PKT_RATE, T.MEASURED_DATETIME ,
+                CASE WHEN (SELECT 1
+                                        FROM    RCA.TB_ANOMALOUS_1MI_TRAFFIC
+                                        WHERE   STRRESID = T.NODE_NUM AND STRIFID = T.IF_NUM AND MEASURED_DATETIME = T.MEASURED_DATETIME 
+                                            <if test="START_DATE == null and END_DATE == null">
+                                            AND MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '10 min' AND NOW()::timestamp
+                                            </if>
+                                            <if test="START_DATE != null">
+                                            AND MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp 
+                                            </if>
+                                            <if test="END_DATE != null">
+                                            AND MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+                                            </if>
+                            ) =1 THEN TRUE ELSE FALSE
+                END AI_RESULT
+        FROM   ( SELECT NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'IN' AS DIRECTION, RX_BIT_RATE, RX_PKT_RATE, 0 AS TX_BIT_RATE, 0 AS TX_PKT_RATE, MEASURED_DATETIME
+                FROM    TRAFFIC_DATA
+                UNION ALL
+                SELECT  NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'OUT' AS DIRECTION, 0 AS RX_BIT_RATE, 0 AS RX_PKT_RATE, TX_BIT_RATE, TX_PKT_RATE, MEASURED_DATETIME
+                FROM    TRAFFIC_DATA ) T
+        ORDER BY MEASURED_DATETIME DESC
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_NIA_INOUT_TRAFFIC_BYPORT_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+        <include refid="SQL_PAGE_BEFORE" />
+        SELECT  nm.node_num AS node_num,
+                nm.node_nm AS node_name,
+                n.id AS sdn_node_id,
+                pm.if_num AS if_num,
+                i.if_name AS if_name,
+                lt.tx_bit_rate AS tx_bit_rate,
+                lt.rx_bit_rate AS rx_bit_rate,
+                lt.tx_pkt_rate AS tx_pkt_rate,
+                lt.rx_pkt_rate AS rx_pkt_rate,
+                lt.measured_datetime AS measured_datetime
+        FROM    ip_sdn.tb_link_traffic lt
+        INNER JOIN ip_sdn.tb_interface i   ON lt.if_id = i.id
+        INNER JOIN resource.tb_port_mst pm ON pm.if_id = lower(i.if_name)
+        INNER JOIN ip_sdn.tb_node n        ON i.node_id = n.id
+        INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
+        WHERE   pm.node_num = nm.node_num 
+            <if test="START_DATE != null">
+            AND lt.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp 
+            </if>
+            <if test="END_DATE != null">
+            AND lt.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+            </if>
+            <if test="EQUIPMENT != null">
+                AND nm.NODE_NM = #{EQUIPMENT}
+            </if>
+            <if test="INTERFACE != null">
+                AND i.IF_NAME = #{INTERFACE}
+            </if>
+            ORDER BY MEASURED_DATETIME DESC
+            <if test="OFFSET != null">
+                OFFSET #{OFFSET} LIMIT #{LIMIT}
+            </if>
+            <if test="LIMIT != null and OFFSET == null">
+                LIMIT #{LIMIT}
+            </if>
+        <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_NIA_EQUIP_AMOUNT_USED_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+        <include refid="SQL_PAGE_BEFORE" />
+            SELECT  a.node_num AS node_num,
+                    a.sdn_node_id AS sdn_node_id,
+                    a.node_nm AS node_nm,
+                    trunc(a.cpu_usage::numeric,3) * 100 as cpu_usage,
+                    trunc(a.mem_usage::numeric,3) * 100 as mem_usage,
+                    a.measured_datetime AS measured_datetime,
+                    CASE WHEN tn.strresid IS NOT NULL THEN true ELSE false
+                    END AS ai_result
+            FROM   ( SELECT nm.node_num,
+                            n.id AS sdn_node_id,
+                            nm.node_nm,
+                            nf.cpu_usage,
+                            nf.mem_usage,
+                            nf.measured_datetime
+                    FROM    ip_sdn.tb_nodefactor nf
+                    INNER JOIN ip_sdn.tb_node n        ON nf.node_id = n.id
+                    INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
+                    WHERE   1=1 
+                        <if test="START_DATE == null and END_DATE == null">
+                        AND nf.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
+                        </if>
+                        <if test="START_DATE != null">
+                        AND nf.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp
+                        </if>
+                        <if test="END_DATE != null">
+                        AND nf.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp
+                        </if>
+                        <if test="EQUIPMENT != null">
+                        AND nm.NODE_NM = #{EQUIPMENT}
+                        </if>
+                        <if test="CPU != null">
+                        AND nf.cpu_usage::text LIKE #{CPU} || '%'
+                        </if>
+                        <if test="MEM != null">
+                        AND nf.mem_usage::text LIKE #{MEM} || '%'
+                        </if>
+                        ORDER BY MEASURED_DATETIME DESC
+                        <if test="OFFSET != null">
+                            OFFSET #{OFFSET} LIMIT #{LIMIT}
+                        </if>
+                        <if test="LIMIT != null and OFFSET == null">
+                            LIMIT #{LIMIT}
+                        </if>
+                    ) a
+            LEFT OUTER JOIN rca.tb_nodefactor tn 
+                ON tn.strresid = a.node_num 
+                    AND tn.measured_datetime = a.measured_datetime
+        <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_NIA_EQUIP_AMOUNT_USED_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  nm.node_num AS node_num,
+                n.id AS sdn_node_id,
+                nm.node_nm AS node_nm,
+                TRUNC(nf.cpu_usage::numeric, 3) * 100 as cpu_usage,
+                TRUNC(nf.mem_usage::numeric, 3) * 100  as mem_usage,
+                nf.measured_datetime AS measured_datetime
+        FROM    ip_sdn.tb_nodefactor nf
+        INNER JOIN ip_sdn.tb_node n        ON nf.node_id = n.id
+        INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
+        WHERE 1=1
+        <if test="START_DATE != null">
+        AND nf.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp 
+        </if>
+        <if test="END_DATE != null">
+        AND nf.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+        </if>
+        <if test="NODE != null">
+        AND nm.NODE_NM = #{NODE}
+        </if>
+        ORDER BY MEASURED_DATETIME DESC
+    </select>
+
+    <select id="SELECT_NIA_DASHBOARD_ONE" parameterType="hashmap" resultType="hashmap">
+        SELECT  SUM(trans_perf_cnt) AS trans_perf_cnt,
+                SUM(trans_alarm_cnt) AS trans_alarm_cnt,
+                SUM(ip_resource_cnt) AS ip_resource_cnt,
+                SUM(ip_alarm_cnt) AS ip_alarm_cnt,
+                SUM(ip_perf_cnt) AS ip_perf_cnt,
+                SUM(ip_sflow_cnt) AS ip_sflow_cnt,
+                SUM(ticket_rt_cnt) AS ticket_rt_cnt,
+                SUM(ticket_att_cnt) AS ticket_att_cnt,
+                SUM(ticket_ntt_cnt) AS ticket_ntt_cnt,
+                SUM(ticket_pf_cnt) AS ticket_pf_cnt,
+                SUM(link_total_resource_cnt) AS link_total_resource_cnt,
+                SUM(link_total_alarm_cnt) AS link_total_alarm_cnt,
+                SUM(link_ip_perf_cnt) AS link_ip_perf_cnt,
+                SUM(link_trans_perf_cnt) AS link_trans_perf_cnt
+        FROM    nia.tb_opsts
+        WHERE 1=1
+        <if test="START_DATE != null">
+            AND opsts_time <![CDATA[ >= ]]> #{START_DATE}
+        </if>
+        <if test="END_DATE != null">
+            AND opsts_time <![CDATA[ <= ]]> #{END_DATE}
+        </if>
+        <if test="MONTH != null">
+            AND opsts_time <![CDATA[ = ]]> #{MONTH}
+        </if>
+        <choose>
+            <when test="DATA_TYPE == null">
+                AND opsts_gb = 'DAY'
+            </when>
+            <otherwise>
+                AND opsts_gb = #{DATA_TYPE}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="SELECT_NIA_ALARM_EQUIPTYPE_COUNT_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        T.EQUIPTYPE,
+        COUNT(T.EQUIPTYPE) AS equip_count
+        FROM rca.tb_alarm_cur_mst T
+        <where>
+            <if test="CLUSTERNO != null">
+                T.CLUSTERNO = #{CLUSTERNO}
+            </if>
+        </where>
+        GROUP BY T.EQUIPTYPE
+    </select>
+
+    <select id="SELECT_USER_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            U.NAME
+            , U.EMAIL
+            , U.AGENCY_NAME
+            <if test="IS_ALL == true">
+                ,U.ID
+                , U.PW
+                , U.LVL
+                , U.LAST_LOGIN
+                , U.PHONE_NUMBER
+            </if>
+        FROM nia.tb_user U
+        <where>
+            <if test="NAME != null">
+                U.NAME LIKE '%' || #{NAME} || '%'
+            </if>
+            <if test="LVL_VALUE != null">
+                AND U.lvl <![CDATA[ & ]]> #{LVL_VALUE}!= 0
+            </if>
+            <if test="AGENCY_NAME != null">
+                AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
+            </if>
+        </where>
+        <!-- <if test="IS_ORGAN_LINK == true">
+        UNION
+        SELECT
+            COALESCE( (SELECT name FROM nia.tb_user WHERE email = O.email) , O.customer_id ) AS NAME,
+            O.email AS email ,
+            COALESCE( (SELECT AGENCY_NAME FROM nia.tb_user WHERE email = O.email) , O.nren_name ) AS AGENCY_NAME
+        FROM resource.tb_user_organ O
+        WHERE node_id = #{NODE_ID}
+        </if> -->
+        <if test="IS_ALL == true">
+            ORDER BY last_login desc
+        </if>
+        <if test="IS_ALL != true">
+            ORDER BY NAME desc
+        </if>
+    </select>
+
+    <select id="SELECT_USER_DATA" parameterType="hashmap" resultType="hashmap">
+        SELECT A.ID,
+        A.PW,
+        A.NAME,
+        A.LVL,
+        A.LAST_LOGIN ,
+        A.PHONE_NUMBER,
+        A.email,
+        A.AGENCY_NAME
+        FROM nia.tb_user A
+        where A.ID = #{LOGIN_ID}
+    </select>
+
+    <delete id="DELETE_USER" parameterType="hashmap">
+        DELETE FROM  nia.tb_user A
+        WHERE A.ID = #{LOGIN_ID}
+    </delete>
+
+    <update id="UPDATE_USER_GRANT_LIST">
+        UPDATE nia.tb_user A
+        SET     lvl = #{LVL_VALUE}
+        WHERE A.NAME = #{NAME} AND A.ID = #{ID}
+    </update>
+
+    <select id="SELECT_SOP_CODE_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+        SELECT seq, user_id, fault_gb, fault_type, reg_time
+        FROM nia.tb_sop_code
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="USER_ID != null">
+                    AND user_id like '%' || #{USER_ID} || '%'
+                </if>
+                <if test="FAULT_GB != null">
+                    AND fault_gb like '%' || #{FAULT_GB} || '%'
+                </if>
+                <if test="FAULT_TYPE != null">
+                    AND fault_type like '%' || #{FAULT_TYPE} || '%'
+                </if>
+                <if test="START_DATE != null">
+                    AND reg_time <![CDATA[ > ]]> #{START_DATE}::timestamp
+                </if>
+                <if test="END_DATE != null">
+                    AND reg_time <![CDATA[ <= ]]> #{END_DATE}::timestamp
+                </if>
+            </trim>
+        </where>
+        ORDER BY reg_time DESC
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <insert id="INSERT_SOP_CODE">
+    INSERT
+    INTO    nia.tb_sop_code
+    (
+            user_id, fault_gb, fault_type, reg_time
+    )
+    VALUES
+    (
+            #{USER_ID}, #{FAULT_GB}, #{FAULT_TYPE}, now()
+    )
+    </insert>
+
+    <update id="UPDATE_SOP_CODE">
+    UPDATE nia.tb_sop_code
+    SET     user_id=#{USER_ID},
+            fault_gb=#{FAULT_GB},
+            fault_type=#{FAULT_TYPE}
+    <where>
+        seq= #{SEQ}
+    </where>
+    </update>
+
+    <delete id="DELETE_SOP_CODE">
+    DELETE FROM nia.tb_sop_code
+    <where>
+        seq= #{SEQ}
+    </where>
+    </delete>
+
+    <select id="SELECT_SOP_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE"/>
+        SELECT  SOP.SOP_ID ,
+                SOP.TICKET_ID ,
+                SOP.TICKET_TYPE ,
+                CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽'
+                WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽'
+                WHEN SOP.TICKET_TYPE = 'NFTT' THEN '장비 과부하 장애'
+                WHEN SOP.TICKET_TYPE = 'FTT' THEN '비장애'
+                ELSE '장애' END AS TICKETTYPE,
+                SOP.TICKET_RESULT ,
+                SOP.STATUS ,
+                SOP.REQUEST_TIME ,
+                SOP.RECEIVE_TIME ,
+                SOP.DETAIL ,
+                SOP.fault_classify ,
+                SOP.fault_type ,
+                SOP.fault_detail_content ,
+                SOP.etc_content ,
+                SOP.ai_accuracy ,
+                al.ROOT_CAUSE_SYSNAMEA ,
+                al.ROOT_CAUSE_SYSNAMEZ ,
+                al.ROOT_CAUSE_PORTA ,
+                al.ROOT_CAUSE_PORTZ ,
+                NODEA.IP_ADDR AS IP_ADDRA ,
+                NODEZ.IP_ADDR AS IP_ADDRZ ,
+                TC.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE ,
+                TC.FAULT_TIME AS FAULT_TIME ,
+                SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
+                SOP.HANDLING_ACK_TIME AS HANDLING_ACK_TIME ,
+                SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
+                SOP.HANDLING_FIN_TIME AS HANDLING_FIN_TIME ,
+                COUNT(1) over () totalCount
+        FROM    ( SELECT ticket_id,
+                        MAX(ticket_al_id) AS ticket_al_id
+                FROM    rca.tb_rca_ticket_al_current tac
+                WHERE   1=1
+                <if test="TICKET_ID != null">
+                AND     tac.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+                </if>
+                <if test="START_DATE == null and END_DATE == null">
+                AND     tac.insert_time <![CDATA[ > ]]> now() - INTERVAL '7' day
+                </if>
+                <if test="START_DATE != null">
+                AND     tac.insert_time <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+                </if>
+                <if test="END_DATE != null">
+                AND     tac.insert_time <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                </if>
+                GROUP BY ticket_id ) AL_ID
+        INNER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_al_id = AL_ID.ticket_al_id
+        INNER JOIN rca.tb_rca_ticket_current TC    ON AL_ID.ticket_id = TC.ticket_id
+        INNER JOIN nia.tb_sop SOP                  ON SOP.ticket_id = AL_ID.ticket_id
+        LEFT OUTER JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
+        LEFT OUTER JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
+        WHERE 1=1
+        <if test="TICKET_TYPE != null">
+            AND TC.TICKET_TYPE IN (#{TICKET_TYPE})
+        </if>
+        <if test="ROOT_CAUSE_SYSNAMEA != null">
+            AND al.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
+        </if>
+        ORDER BY SOP.request_time DESC 
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET}
+        </if>
+        <if test="LIMIT != null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER"/>
+    </select>
+
+    <update id="UPDATE_NIA_SOP_LIST">
+        UPDATE nia.tb_sop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="FAULT_CLASSIFY != null">
+                fault_classify = #{FAULT_CLASSIFY},
+            </if>
+            <if test="FAULT_TYPE != null">
+                fault_type = #{FAULT_TYPE},
+            </if>
+            <if test="FAULT_DETAIL_CONTENT != null">
+                fault_detail_content = #{FAULT_DETAIL_CONTENT}
+            </if>
+        </trim>
+        WHERE  ticket_id = #{TICKET_ID}
+    </update>
+
+    <delete id="DELETE_SOP_LIST">
+        DELETE from nia.tb_sop
+        WHERE ticket_id = #{TICKET_ID}
+    </delete>
+
+    <update id="UPDATE_NIA_ALARM_LIST">
+        UPDATE nia.tb_syslog_sop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="FAULT_CLASSIFY != null">
+                fault_classify = #{FAULT_CLASSIFY},
+            </if>
+            <if test="FAULT_TYPE != null">
+                fault_type = #{FAULT_TYPE},
+            </if>
+            <if test="FAULT_DETAIL_CONTENT != null">
+                fault_detail_content = #{FAULT_DETAIL_CONTENT}
+            </if>
+        </trim>
+        WHERE  alarmno = #{ALARMNO}
+    </update>
+
+    <update id="UPDATE_TICKET_LIST">
+        UPDATE nia.tb_auto_treat_process_dtl
+        SET    proc_status = #{PROC_STATUS}, feedback_msg = #{CONTENT_TEXT}    
+        WHERE  ticket_id = #{TICKET_ID}
+    </update>
+    
+     <delete id="DELETE_ALARM_LIST">
+        DELETE from nia.tb_syslog_sop
+        WHERE alarmno = #{ALARMNO}
+    </delete>
+
+    <select id="SELECT_SEND_EMAIL_DATA" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            A.SOP_ID,
+            A.TICKET_ID,
+            B.MAIL_CONTENT
+        FROM nia.tb_sop A
+                 LEFT OUTER JOIN nia.tb_sop_mail B
+                   ON A.SOP_ID = B.SOP_ID
+        WHERE 1=1
+        <if test="TICKET_ID != null and TICKET_ID != ''">
+        ticket_id=#{TICKET_ID}
+        </if>
+        ORDER BY sop_id DESC LIMIT 1;
+    </select>
+
+    <select id="SELECT_SEND_DATA_SNAPSHOT_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            TITLE, START_TIME, END_TIME, EVENTNO
+        FROM rca.tb_fault_event
+        <if test="EVENT_GB != null">
+        WHERE event_gb=#{EVENT_GB}
+        </if>
+        ORDER BY EVENTNO::INT DESC
+    </select>
+
+    <delete id="DELETE_DATA_SNAPSHOT_LIST">
+        DELETE FROM rca.tb_fault_event
+        WHERE eventno = #{EVENT_NO}
+    </delete>
+
+
+    <update id="UPDATE_TSDN_SERVICE_DATA">
+        WITH UPSERT  AS
+        ( UPDATE nia.tb_tsdn_service_response_info
+        <set>
+            service_id = #{SERVICE_ID},
+            reserved_num = #{RESERVED_NUM},
+            ticket_id = #{TICKET_ID}::VARCHAR,
+            sop_id = #{SOP_ID}
+        </set>
+        WHERE   ticket_id = #{TICKET_ID}::VARCHAR RETURNING *
+        )
+        INSERT
+        INTO    rca.tb_tsdn_service_response_info
+        (
+        service_id,
+        reserved_num,
+        ticket_id,
+        sop_id
+        )
+        SELECT
+        #{SERVICE_ID}::VARCHAR,
+        #{RESERVED_NUM},
+        #{TICKET_ID}::VARCHAR,
+        #{SOP_ID}
+        WHERE NOT EXISTS(SELECT * FROM UPSERT)
+    </update>
+
+    <select id="SELECT_TICKET_ROOT_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        AL.TICKET_ID AS TICKET_ID
+        , AL.ROOT_CAUSE_SYSNAMEA AS ROOT_CAUSE_SYSNAMEA
+        , AL.ROOT_CAUSE_PORTA AS ROOT_CAUSE_PORTA
+        , AL.ROOT_CAUSE_SYSNAMEZ AS ROOT_CAUSE_SYSNAMEZ
+        , AL.ROOT_CAUSE_PORTZ AS ROOT_CAUSE_PORTZ
+        FROM rca.tb_rca_ticket_al_current AL
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="TICKET_ID != null">
+                    AND AL.TICKET_ID = #{TICKET_ID}::VARCHAR
+                </if>
+            </trim>
+        </where>
+    </select>
+    
+    <select id="SELECT_ANOMALOUS_ONE" parameterType="hashmap" resultType="hashmap">
+    SELECT  fltbpsin,
+            ROUND(fltbpsin_predict::        NUMERIC , 2) AS fltbpsin_predict,
+            ROUND(fltbpsin_threshold_upper::NUMERIC , 2) AS fltbpsin_threshold_upper,
+            ROUND(fltbpsin_threshold_lower::NUMERIC , 2) AS fltbpsin_threshold_lower,
+            fltbpsin_anomaly,
+            fltbpsout,
+            ROUND(fltbpsout_predict::        NUMERIC , 2) AS fltbpsout_predict,
+            ROUND(fltbpsout_threshold_upper::NUMERIC , 2) AS fltbpsout_threshold_upper,
+            ROUND(fltbpsout_threshold_lower::NUMERIC , 2) AS fltbpsout_threshold_lower,
+            fltbpsout_anomaly
+    FROM    rca.tb_anomalous_ai_result a
+    INNER JOIN resource.tb_port_mst p ON a.strresid = p.node_num AND a.strifid = p.if_num
+    WHERE   p.node_id= #{NODE}
+    AND     p.if_id = #{INTERFACE} 
+    AND     measured_datetime = #{FAULT_TIME}::TIMESTAMP
+    </select>
+
+    <select id="SELECT_ATT2_TRAFFIC_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  N.ID AS SDN_NODE_ID ,
+            NM.NODE_NUM AS STRRESID,
+            NM.NODE_NM AS STRRESNM ,
+            I.ID AS SDN_IF_ID,
+            I.IF_NAME AS STRIFNM ,
+            PM.IF_NUM AS STRIFID ,
+            LT.TX_BIT_RATE AS FLTBPSOUT,
+            LT.RX_BIT_RATE AS FLTBPSIN,
+            LT.TX_PKT_RATE AS FLTPPSOUT,
+            LT.RX_PKT_RATE AS FLTPPSIN ,
+            UO.NREN_ID,
+            UO.NREN_NAME,
+            LT.MEASURED_DATETIME,
+            LT.ID
+    FROM    IP_SDN.TB_LINK_TRAFFIC LT
+    INNER JOIN IP_SDN.TB_INTERFACE I          ON LT.IF_ID = I.ID
+    INNER JOIN RESOURCE.TB_PORT_MST PM        ON PM.IF_ID = LOWER(I.IF_NAME)
+    INNER JOIN IP_SDN.TB_NODE N               ON I.NODE_ID = N.ID
+    INNER JOIN RESOURCE.TB_NODE_MST NM        ON N.ID = NM.IP_SDN_ID::INT
+    LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON UO.NODE_ID = NM.NODE_ID AND     UO.IF_ID = PM.IF_ID
+    WHERE   PM.NODE_NUM = NM.NODE_NUM
+    AND     NM.NODE_NM = #{NODE}
+    AND     I.IF_NAME = #{INTERFACE}
+    AND     LT.MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' AND     #{FAULT_TIME}::TIMESTAMP + interval '10 min'
+    ORDER BY LT.ID;
+    </select>
+
+    <select id="SELECT_NTT_TRAFFIC_LIST" parameterType="hashmap" resultType="hashmap">
+        with dateregdate_data as (
+            select distinct dateregdate
+            from ip_yd.xe_sflow_log
+            where dateregdate between #{FAULT_TIME}::TIMESTAMP - interval '1 hour' AND #{FAULT_TIME}::TIMESTAMP + interval '1 hour'
+            and ( dateregdate = #{FAULT_TIME}::TIMESTAMP or dateregdate <![CDATA[ <= ]]> #{FAULT_TIME}::TIMESTAMP - interval '5 min' or dateregdate <![CDATA[ >= ]]> #{FAULT_TIME}::TIMESTAMP + interval '5 min' )
+            and strsenderip = ( select distinct strsenderip from rca.tb_noxious_traffic where ticket_id = #{TICKET_ID} )
+            order by dateregdate
+        )
+        select strresip, strresname, strs_ip, strs_port, strd_ip
+            , strd_port, strs_mac, strd_mac, strprotocol, stripv4tos
+            , strchannel, strsenderip, strin_interface, strout_interface
+            , case when a.dateregdate = b.dateregdate then b.strbytes_col
+                   else '0'
+                   end strbytes_col
+            , case when a.dateregdate = b.dateregdate then strcounts
+                   else '0'
+                   end strcounts
+            , a.dateregdate AS collect_time
+        from dateregdate_data a
+        left outer join (
+            select *
+            from ip_yd.xe_sflow_log
+            where dateregdate = #{FAULT_TIME}::TIMESTAMP
+              and strsenderip = ( select distinct strsenderip from rca.tb_noxious_traffic where ticket_id = #{TICKET_ID} )
+              and strs_ip  = #{START_NODE}
+              and strs_port = #{START_INTERFACE}
+              and strd_ip = #{END_NODE}
+              and strd_port = #{END_INTERFACE}
+        ) b on 1=1
+    </select>
+
+    <select id="SELECT_TRAFFIC_LIST2" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            list.collect_time::TIMESTAMP
+            , cp.inttimestamp
+            , node_id
+            , if_id
+            , node_num
+            , if_num
+            , intmin
+            , COALESCE(fltbpsin, 0) as fltbpsin /* 입력 bps */
+            , COALESCE(fltbpsout, 0) as fltbpsout /* 출력 bps */
+            , COALESCE(fltppsin, 0) as fltppsin /* 입력 pps */
+            , COALESCE(fltppsout, 0)  as fltppsout /* 출력 pps */
+            , COALESCE(fltusage, 0) as fltusage/* 사용율 */
+        FROM (
+             SELECT
+                 collect_time, node_id, if_id, node_num, if_num
+             FROM (
+                      SELECT to_timestamp(floor((extract('epoch' from (timeinterval - (interval '9 hours') + (interval '5' minute))) / 300)) * 300) collect_time
+                      FROM generate_series(date_trunc('min',#{FAULT_TIME}::timestamp - interval '1 hours'),date_trunc('min',#{FAULT_TIME}::timestamp + interval '1 hours' - interval '5 min'), '5 min'::interval) timeinterval
+                  ) tl
+                      INNER JOIN (
+                     SELECT
+                         pm.node_id , pm.if_id, nm.node_num , pm.if_num
+                     FROM resource.tb_node_mst nm
+                        INNER JOIN resource.tb_port_mst pm on nm.node_id =pm.node_id
+                 ) il on 1=1
+             WHERE 1=1
+             <if test="NODE != null">
+                and	 il.node_id = #{NODE}
+             </if>
+             <if test="INTERFACE != null">
+                and	 il.if_id like '%' || #{INTERFACE}
+             </if>
+         ) list
+        left outer join ip_yd.xe_cvnms_perf_if cp on to_timestamp(floor((extract('epoch' from (to_timestamp(cp.inttimestamp) + (interval '5' minute))) / 300)) * 300)  = list.collect_time and list.node_num = cp.strresid and list.if_num= cp.strifid
+    </select>
+
+    <!--
+	<select id="SELECT_TICKET_CUR_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT A.MBA_TICKET_ID AS TICKET_ID,
+               A.TICKET_RESULT_CODE AS TICKET_RESULT_CODE,
+               A.TICKET_RESULT_DTL_CODE AS TICKET_RESULT_DTL_CODE,
+               LOWER(A.DIRECTION) AS DIRECTION,
+               A.ROW_SIGNAL_LINE_CNT AS ROW_SIGNAL_LINE_CNT,
+               A.FAULT_TIME AS FAULT_TIME,
+               A.TICKET_GENERATION_TIME AS TICKET_GENERATION_TIME,
+               B.MONITORED_OBJECTA AS MONITORED_OBJECTA,
+               B.MONITORED_OBJECTZ AS MONITORED_OBJECTZ,
+               B.SYSNAMEA AS SYSNAMEA,
+               B.SYSNAMEZ AS SYSNAMEZ,
+               B.NESCODEA AS NESCODEA,
+               B.NESCODEZ AS NESCODEZ,
+               C.MONITORED_OBJECT AS MONITORED_OBJECT,
+               C.TRUNK_NAME AS TRUNK_NAME
+        FROM mba.tb_mba_ticket_mst A
+        LEFT OUTER JOIN mba.tb_mba_ticket_cable_mst B ON
+            A.MBA_TICKET_ID = B.MBA_TICKET_ID AND B.MBA_TICKET_CABLE_ID = '1'
+        LEFT OUTER JOIN mba.tb_opt_pwr_vector C ON B.MONITORED_OBJECTA = C.MONITORED_OBJECT
+        ORDER BY A.MBA_TICKET_CABLE_ID
+	</select>
+
+	<select id="SELECT_TICKET_ROOT_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
+    </select>
+
+    <update id="UPDATE_TICKET_TOPOLOGY">
+        WITH UPSERT  AS
+        ( UPDATE mba.tb_rca_ticket_topology
+        <set>
+            ticket_id = #{TICKET_ID}::VARCHAR,
+            update_time = NOW(),
+            contents = #{CONTENTS}
+        </set>
+        WHERE   ticket_id = #{TICKET_ID}::VARCHAR RETURNING *
+        )
+        INSERT
+        INTO    mba.tb_rca_ticket_topology
+        (
+            ticket_id,
+            update_time,
+            contents
+        )
+        SELECT
+            #{TICKET_ID}::VARCHAR,
+            NOW(),
+            #{CONTENTS}
+        WHERE NOT EXISTS(SELECT * FROM UPSERT)
+    </update>
+
+    <select id="SELECT_TICKET_TOPOLOGY" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            ticket_id,
+            update_time,
+            contents
+        FROM mba.tb_rca_ticket_topology
+        <where>
+            ticket_id = #{TICKET_ID}::VARCHAR
+        </where>
+    </select>
+
+    <delete id="DELETE_TICKET_TOPOLOGY">
+        DELETE FROM mba.tb_rca_ticket_topology
+        WHERE ticket_id = #{TICKET_ID}::VARCHAR
+    </delete>-->
+
+    <!-- @formatter:on -->
+    <select id="SELECT_NIA_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            row_number() over (ORDER BY node_num) rnum,
+            node.*
+        from (
+            select
+                tnm.node_num,
+                tnm.node_id,
+                tnm.node_nm,
+                tnm.model_num,
+                tnm.model_id,
+                code.code_nm,
+                tnm.ip_addr,
+                tnm.mac_addr,
+                tnm.admin_yn,
+                tnm.primary_gb,
+                tnm.snmp_ver,
+                tnm.snmp_community,
+                tnm.snmp_port,
+                tnm.latitude,
+                tnm.longitude,
+                tnm.netconf_port,
+                tnm.netconf_id,
+                tnm.netconf_pw,
+                tnm.netconf_type,
+                tnm.node_division,
+                tnm.vendor,
+                tnm.sflow_ip,
+                to_char(tnm.chng_datetime, 'YYYY-MM-DD HH:MI:SS') as chng_datetime,
+                count(1) over () as "NodeTotalCount"
+                from resource.tb_node_mst tnm
+                LEFT OUTER JOIN resource.tb_code code on (tnm.model_id = code.code_id)
+                where 1=1
+                <if test="NODE_NM != null">
+                    AND tnm.NODE_NM like '%' || #{NODE_NM} || '%'
+                </if>
+                <if test="MODEL_ID != null">
+                    AND code.CODE_NM like '%' || #{MODEL_ID} || '%'
+                </if>
+                <if test="IP_ADDR != null">
+                    AND tnm.IP_ADDR like '%' || #{IP_ADDR} || '%'
+                </if>
+                <if test="ADMIN_YN != null">
+                    AND tnm.ADMIN_YN like '%' || #{ADMIN_YN} || '%'
+                </if>
+                <if test="START_DATE != null">
+                    AND tnm.CHNG_DATETIME BETWEEN #{START_DATE} ::timestamp and #{END_DATE}::timestamp
+                </if>
+                ORDER BY chng_datetime ASC
+                <if test="OFFSET != null">
+                    OFFSET #{OFFSET}
+                </if>
+                <if test="LIMIT != null">
+                    LIMIT #{LIMIT}
+                </if>
+        ) AS node
+        ORDER BY node_num
+    </select>
+
+    <select id="SELECT_NIA_CODE_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            category_cd,
+            code_id,
+            code_nm
+        from resource.tb_code
+        where category_cd = #{CATEGORY_CD}
+    </select>
+
+    <insert id="INSERT_NIA_NODE_LIST">
+        insert into resource.tb_node_mst
+            (
+            node_num,
+            node_id,
+            node_nm,
+            model_num,
+            model_id,
+            ip_addr,
+            mac_addr,
+            admin_yn,
+            latitude,
+            longitude,
+            netconf_port,
+            netconf_id,
+            netconf_pw,
+            netconf_type,
+            chng_datetime,
+            reg_datetime,
+            data_source
+            )
+        values
+            (
+               (select resource.uf_generator_num('')),
+                #{NODE_ID},
+                #{NODE_NM},
+                #{MODEL_NAME},
+                #{MODEL_NAME},
+                #{IP_ADDR},
+                #{MAC_ADDR},
+                #{ADMIN_YN},
+                #{LATITUDE},
+                #{LONGITUDE},
+                #{NETCONF_PORT},
+                #{NETCONF_ID},
+                #{NETCONF_PW},
+                'netconf',
+                NOW(),
+                NOW(),
+                'web'
+            )
+    </insert>
+
+    <update id="UPDATE_NIA_NODE_LIST">
+        UPDATE resource.tb_node_mst
+        SET
+            node_nm = #{NODE_NM},
+            model_id = #{MODEL_ID},
+            latitude = #{LATITUDE},
+            longitude = #{LONGITUDE},
+            mac_addr = #{MAC_ADDR},
+            ip_addr = #{IP_ADDR},
+            admin_yn = #{ADMIN_YN},
+            chng_datetime = now(),
+            netconf_port = #{NETCONF_PORT},
+            netconf_id = #{NETCONF_ID},
+            netconf_pw = #{NETCONF_PW}
+        WHERE  node_num = #{NODE_NUM}
+          and node_id = #{NODE_ID}
+    </update>
+
+    <delete id="DELETE_NIA_NODE_LIST">
+        delete from resource.tb_node_mst
+        where  node_num = #{NODE_NUM}
+        and node_id = #{NODE_ID}
+    </delete>
+
+    <select id="SELECT_NIA_PORT_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            row_number() over () rnum,
+            *,
+            count(1) over () as "PortTotalCount"
+        from (
+             select distinct
+                 tpm.node_num,
+                 tpm.node_id,
+                 tpm.if_num,
+                 tpm.if_id,
+                 tpm.if_nm,
+                 tpm.if_index,
+                 tpm.if_type,
+                 coalesce(regexp_replace((reverse((regexp_match(reverse(tpm.if_nm), E'G[0-9]+'))[1])), 'G', ''), cast(cast(tpm.if_speed as bigint) / 1000000000 as bigint)::char) as if_speed,
+                 tpm.ip_addr,
+                 tpm.mac_addr,
+                 tpm.if_oper_status,
+                 coalesce(tpm.ip_prefix, ''),
+                 tpm.if_divistion,
+                 to_char(tpm.chng_datetime, 'YYYY-MM-DD HH:MI:SS') as chng_datetime
+             from resource.tb_port_mst tpm
+             where node_id = #{NODE_ID}
+             order by if_oper_status desc, chng_datetime desc
+        ) as port
+    </select>
+
+    <insert id="INSERT_NIA_PORT_LIST">
+        INSERT INTO resource.tb_port_mst
+        (
+         node_num,
+         node_id,
+         if_num,
+         if_id,
+         if_nm,
+         if_index,
+         if_desc,
+         if_type,
+         if_speed,
+         ip_addr,
+         mac_addr,
+         if_oper_status,
+         ip_prefix,
+         chng_datetime,
+         reg_datetime,
+         data_source
+        )
+        VALUES (
+            #{NODE_NUM},
+            #{NODE_ID},
+            (select substr(resource.uf_generator_num(''),0,12)),
+            #{IF_ID},
+            #{IF_NM},
+            #{if_index}::INTEGER,
+            #{IF_DESC},
+            #{IF_TYPE},
+            #{IF_SPEED},
+            #{IP_ADDR},
+            #{MAC_ADDR},
+            #{IF_OPER_STATUS},
+            #{IP_PREFIX},
+            now(),
+            now(),
+            'web'
+        )
+
+    </insert>
+
+    <update id="UPDATE_NIA_PORT_LIST">
+        update resource.tb_port_mst
+        set
+            if_oper_status = #{IF_OPER_STATUS},
+            if_type = #{IF_TYPE},
+            if_speed = #{IF_SPEED},
+            ip_addr = #{IP_ADDR},
+            data_source = 'web',
+            chng_datetime = now()
+        where node_num = #{NODE_NUM}
+          and node_id = #{NODE_ID}
+          and if_nm = #{IF_NM}
+    </update>
+
+    <delete id="DELETE_NIA_PORT_LIST">
+        delete from resource.tb_port_mst
+        where node_num = #{NODE_NUM}
+        and if_nm = #{IF_NM}
+    </delete>
+
+    <select id="SELECT_NIA_LINK_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            row_number() over () rnum
+            , *
+            , count(1) over () as "LinkTotalCount"
+        from (
+        select distinct
+        bl.src_node_num
+        , bl.src_node_id
+        , bl.src_if_num
+        , bl.src_if_id
+        , sp.if_nm as src_if_name
+        , bl.src_ip_addr
+        , bl.src_mac_addr
+        , bl.dest_node_num
+        , bl.dest_node_id
+        , bl.dest_if_num
+        , bl.dest_if_id
+        , dp.if_nm as dest_if_name
+        , bl.dest_ip_addr
+        , bl.dest_mac_addr
+        , bl.prefix
+        , bl.bandwidth
+        , bl.circuit_num
+        , bl.link_type
+        , bl.vlan "VLAN"
+        , bl.tag "TAG"
+        , bl.link_desc
+        , TO_CHAR(bl.chng_datetime, 'YYYY-MM-DD HH24:mi:SS') as chng_datetime
+        from resource.tb_backbone_link bl
+        left outer join resource.tb_port_mst sp on sp.node_id = bl.src_node_id and sp.if_id = bl.src_if_id
+        left outer join resource.tb_port_mst dp on dp.node_id = bl.dest_node_id and dp.if_id = bl.dest_if_id
+        where 1=1
+            <if test="SRC_NODE_ID != null">AND bl.src_node_id LIKE '%' || #{SRC_NODE_ID} || '%'
+            </if>
+            <if test="
+        SRC_IF_ID != null">
+                AND bl.src_if_id LIKE '%' || #{SRC_IF_ID} || '%'
+            </if>
+            <if test="DEST_NODE_ID != null">
+                AND bl.dest_node_id LIKE '%' || #{DEST_NODE_ID} || '%'
+            </if>
+            <if test="DEST_IF_ID != null">
+                AND bl.dest_if_id LIKE '%' || #{DEST_IF_ID} || '%'
+            </if>
+            <if test="LINK_DESC != null">
+                AND bl.link_desc LIKE '%' || #{LINK_DESC} || '%'
+            </if>
+        ) AS link
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET}
+        </if>
+        <if test="LIMIT != null">
+            LIMIT #{LIMIT}
+        </if>
+    </select>
+
+    <select id="SELECT_NIA_LINK_START_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+        select distinct pm.node_id--, pm.int_name
+        from resource.tb_port_mst pm
+        where not exists (
+            select 1
+            from resource.tb_backbone_link bl
+            where bl.src_node_id = pm.node_id and bl.src_if_id  = pm.if_id
+               or bl.dest_node_id = pm.node_id and bl.dest_if_id = pm.if_id
+            )
+        order by node_id
+    </select>
+
+    <select id="SELECT_NIA_LINK_IF_LIST" parameterType="hashmap" resultType="hashmap">
+        select distinct pm.node_id, pm.if_id , ip_addr , if_speed
+        from resource.tb_port_mst pm
+        where not exists (
+            select 1
+            from resource.tb_backbone_link bl
+            where bl.src_node_id = pm.node_id and bl.src_if_id  = pm.if_id
+               or bl.dest_node_id = pm.node_id and bl.dest_if_id = pm.if_id
+            )
+          and  pm.node_id = #{NODE_ID} and if_oper_status = 'up'
+        order by if_id
+    </select>
+
+    <select id="SELECT_NIA_LINK_END_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+        select distinct pm.node_id--, pm.int_name
+        from resource.tb_port_mst pm
+        where not exists (
+            select 1
+            from resource.tb_backbone_link bl
+            where bl.src_node_id = pm.node_id and bl.src_if_id  = pm.if_id
+               or bl.dest_node_id = pm.node_id and bl.dest_if_id = pm.if_id
+            )
+        and pm.node_id != #{NODE_ID}
+        order by node_id
+    </select>
+
+    <insert id="INSERT_NIA_LINK_LIST">
+        insert
+        into resource.tb_backbone_link
+        (
+            src_node_num,
+            src_node_id,
+            src_if_num,
+            src_if_id,
+            dest_node_num,
+            dest_node_id,
+            dest_if_num,
+            dest_if_id,
+            src_ip_addr,
+            dest_ip_addr,
+            bandwidth,
+            link_desc,
+            vlan,
+            tag,
+            chng_datetime,
+            reg_datetime,
+            data_source
+        )
+        values
+        (
+            (select resource.uf_generator_num('')),
+            #{SRC_NODE_ID},
+            (select resource.uf_generator_num('')),
+            #{SRC_IF_ID},
+            (select resource.uf_generator_num('')),
+            #{DEST_NODE_ID},
+            (select resource.uf_generator_num('')),
+            #{DEST_IF_ID},
+            #{SRC_IP_ADDR},
+            #{DEST_IP_ADDR},
+            #{BANDWIDTH},
+            #{LINK_DESC},
+            #{VLAN},
+            #{TAG},
+            now(),
+            now(),
+            'web'
+        )
+    </insert>
+
+    <delete id="DELETE_NIA_LINK_LIST">
+        delete from resource.tb_backbone_link
+        where src_node_id = #{SRC_NODE_ID}
+          and src_if_id = #{SRC_IF_ID}
+          and dest_node_id = #{DEST_NODE_ID}
+          and dest_if_id = #{DEST_IF_ID}
+    </delete>
+
+    <update id="UPDATE_NIA_LINK_LIST">
+        update resource.tb_backbone_link set
+            bandwidth = #{BANDWIDTH}
+            ,link_desc = #{LINK_DESC}
+            , vlan = #{VLAN}
+            , tag = #{TAG}
+            , chng_datetime = now()
+        where src_node_id = #{SRC_NODE_ID}
+          and src_if_id = #{SRC_IF_ID}
+          and dest_node_id = #{DEST_NODE_ID}
+          and dest_if_id = #{DEST_IF_ID}
+    </update>
+
+    <select id="SELECT_NIA_AGENCY_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            A.nren_id,
+            A.nren_name,
+            A.node_id,
+            A.if_id as node_int,
+            if.if_nm,
+            coalesce(regexp_replace((reverse((regexp_match(reverse(if.if_nm), E'G[0-9]+'))[1])), 'G', ''), cast(cast(A.bandwidth as bigint) / 1000000000 as bigint)::char) as bandwidth,
+            A.customer_id,
+            A.email,
+            row_number() over (ORDER BY nren_id) rnum,
+            count(1) over () as "AgencyTotalCount"
+        from resource.tb_user_organ A
+        left outer join (select distinct node_id, if_id, if_nm from resource.tb_port_mst) if on if.node_id = A.node_id and if.if_id = A.if_id
+        where 1=1
+        <if test="NREN_NAME != null and NREN_NAME != ''">
+            AND A.nren_name LIKE '%' || #{NREN_NAME} || '%'
+        </if>
+        <if test="NODE_ID != null and NODE_ID != ''">
+            AND A.node_id LIKE '%' || #{NODE_ID} || '%'
+        </if>
+        <if test="CUSTOMER_ID != null and CUSTOMER_ID != ''">
+            AND A.customer_id LIKE '%' || #{CUSTOMER_ID} || '%'
+        </if>
+        ORDER BY nren_id
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET}
+        </if>
+        <if test="LIMIT != null">
+            LIMIT #{LIMIT}
+        </if>
+    </select>
+
+    <select id="SELECT_AGENCY_NODE_ID_LIST" parameterType="hashmap" resultType="hashmap">
+        --         select distinct node_id from resource.tb_user_organ tuo
+        SELECT distinct
+            node_nm AS node_id
+            , 'IP' AS TYPE
+        FROM resource.tb_node_mst
+        ORDER BY node_nm ASC
+    </select>
+
+    <select id="SELECT_AGENCY_IF_ID_LIST" parameterType="hashmap" resultType="hashmap">
+--         select distinct if_id from resource.tb_user_organ tuo
+        select distinct if_id, if_speed
+        from resource.tb_port_mst
+        where node_id = #{NODE_NAME} and if_oper_status = 'up'
+        order by if_id
+    </select>
+
+    <insert id="INSERT_NIA_AGENCY_LIST">
+        INSERT INTO resource.tb_user_organ
+        (
+            nren_id,
+            nren_name,
+            node_id,
+            if_id,
+            bandwidth,
+            customer_id,
+            email
+        )
+        values
+        (
+            #{NREN_ID},
+            #{NREN_NAME},
+            #{NODE_ID},
+            #{IF_ID},
+            #{BANDWIDTH},
+            #{CUSTOMER_ID},
+            #{EMAIL}
+        )
+    </insert>
+
+    <update id="UPDATE_AGENCY_NODE_INT_LIST">
+        update resource.tb_user_organ
+        set
+            nren_name = #{NREN_NAME},
+            node_id = #{NODE_ID},
+            if_id = #{NODE_INT},
+            bandwidth = #{BANDWIDTH},
+            customer_id = #{CUSTOMER_ID},
+            email = #{EMAIL}
+        where nren_id = #{NREN_ID}
+    </update>
+
+    <delete id="DELETE_AGENCY_NODE_INT_LIST">
+        delete from resource.tb_user_organ
+        where nren_id = #{NREN_ID}
+        and nren_name = #{NREN_NAME}
+        and node_id = #{NODE_ID}
+    </delete>
+
+    <select id="SELECT_NIA_COUNTRY_IP_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+        select
+            country_name,
+            koica,
+            dac,
+            iso,
+            iso_alpha2,
+            iso_alpha3
+        from gather.tb_country_code
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="COUNTRY_NAME != null">
+                    AND country_name like '%' || #{COUNTRY_NAME} || '%' 
+                </if>
+                <if test="COUNTRY_CODE != null">
+                    AND koica like '%' || #{COUNTRY_CODE} || '%'
+                </if>
+            </trim>
+        </where>
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_NIA_AGENCY_IP_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+        select
+            ip.nren_id as nren_id,
+            ip.nren_name as nren_name,
+            ip.nren_ip as nren_ip
+        from resource.tb_user_organ uo
+        inner join resource.tb_user_organ_ip ip on uo.nren_id = ip.nren_id 
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="NREN_NAME != null">
+                    AND ip.nren_name like '%' || #{NREN_NAME} || '%' 
+                </if>
+                <if test="NREN_IP != null">
+                    AND ip.nren_ip like '%' || #{NREN_IP} || '%' 
+                </if>
+                <if test="NODE_ID != null">
+                    AND ip.nren_id in (SELECT nren_id FROM resource.tb_user_organ WHERE node_id = #{NODE_ID})
+                </if>
+            </trim>
+        </where>
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_NIA_AGENCY_IP_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            nren_id,
+            nren_name,
+            nren_ip
+        from resource.tb_user_organ_ip
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="NREN_ID != null and NREN_NAME != null">
+                    AND nren_id = #{NREN_ID} AND nren_name = #{NREN_NAME}
+                </if>
+                <if test="NODE_ID != null">
+                    AND nren_id in (SELECT nren_id FROM resource.tb_user_organ WHERE node_id = #{NODE_ID})
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <insert id="INSERT_NIA_AGENCY_IP">
+    INSERT INTO resource.tb_user_organ_ip
+    (nren_id, nren_name, nren_ip)
+    values
+    (
+        #{NREN_ID},
+        #{NREN_NAME},
+        #{UPDATE_NREN_IP}
+    )
+    </insert>
+
+    <update id="UPDATE_NIA_AGENCY_IP">
+    UPDATE resource.tb_user_organ_ip
+    <set>
+        nren_ip = #{UPDATE_NREN_IP}
+    </set>
+    <where>
+        AND nren_id = #{NREN_ID} 
+        AND nren_name = #{NREN_NAME}
+        AND nren_ip = #{NREN_IP}
+    </where>
+    </update>
+
+    <delete id="DELETE_NIA_AGENCY_IP">
+        DELETE FROM resource.tb_user_organ_ip
+        <where>
+            AND nren_id = #{NREN_ID} 
+            AND nren_name = #{NREN_NAME}
+            AND nren_ip = #{NREN_IP}
+        </where>
+    </delete>
+
+    <select id="SELECT_NIA_APP_IP_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+    SELECT  mapp_serial, port_num, ip_type, protocol, description
+    FROM    gather.tb_default_port_number
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                AND protocol IS NOT NULL
+            <if test="APP_NAME != null">
+                AND protocol like '%' || #{APP_NAME} || '%' 
+            </if>
+            <if test="PORT != null">
+                AND port_num like '%' || #{PORT} || '%' 
+            </if>
+        </trim>
+    </where>
+    ORDER BY protocol COLLATE "ko_KR.utf8" ASC
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <insert id="INSERT_NIA_APP_IP">
+    INSERT INTO gather.tb_default_port_number
+    ( 
+        port_num, 
+        ip_type, 
+        protocol, 
+        description
+    )
+    values
+    (
+        #{PORT_NUM},
+        null,
+        #{PROTOCOL},
+        #{DESCRIPTION}
+    )
+    </insert>
+
+    <update id="UPDATE_NIA_APP_IP">
+    UPDATE gather.tb_default_port_number
+    <set>
+        protocol=#{PROTOCOL},
+        <if test="DESCRIPTION != null">
+        description=${DESCRIPTION}
+        </if>
+    </set>
+    <where>
+        mapp_serial= #{MAPP_SERIAL}
+    </where>
+    </update>
+
+    <delete id="DELETE_NIA_APP_IP">
+        DELETE FROM gather.tb_default_port_number
+        <where>
+            mapp_serial= #{MAPP_SERIAL}
+        </where>
+    </delete>
+
+    <select id="SELECT_NIA_APP_IP_LIST_OLD" parameterType="hashmap" resultType="hashmap">
+        SELECT  mapp_serial ,
+                port_num ,
+                app_nm ,
+                description
+        FROM    gather.tb_port_app_mapp_mst
+    </select>
+    
+    <insert id="INSERT_NIA_AGENCY_IP_LIST">
+        INSERT INTO resource.tb_user_organ_ip
+        (
+            nren_id,
+            nren_name,
+            nren_ip
+        )
+        values
+        (
+            #{NREN_ID},
+            #{NREN_NAME},
+            #{NREN_IP}
+        )
+    </insert>
+
+    <delete id="DELETE_NIA_AGENCY_IP_LIST">
+        DELETE FROM resource.tb_user_organ_ip
+        <where>
+            AND nren_id = #{NREN_ID}
+            AND nren_name = #{NREN_NAME}
+            AND nren_ip = #{NREN_IP}
+        </where>
+    </delete>
+
+    <select id="SELECT_PROFILE_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            profile_num,
+            profile_title,
+            profile_desc,
+            network_type,
+            processing_template,
+            construction_check,
+            auto_process_check,
+            ticket_type,
+            process_type,
+            auto_recovery,
+            email_check,
+            to_char(auto_process_start_datetime, 'YYYY-MM-DD') as auto_process_start_datetime,
+            to_char(auto_process_end_datetime, 'YYYY-MM-DD') as auto_process_end_datetime,
+            to_char(chng_datetime, 'YYYY-MM-DD HH:MI:SS') as chng_datetime,
+            row_number() over (ORDER BY profile_num) rnum,
+            count(1) over () as "ProFileTotalCount"
+        from resource.tb_fault_process_profile
+        where 1=1
+        <if test="PROFILE_TITLE != null">
+            and profile_title LIKE '%' || #{PROFILE_TITLE} || '%'
+        </if>
+        <if test="NETWORK_TYPE != null">
+            and network_type LIKE '%' || #{NETWORK_TYPE} || '%'
+        </if>
+        <if test="PROCESSING_TEMPLATE != null">
+            and processing_template LIKE '%' || #{PROCESSING_TEMPLATE} || '%'
+        </if>
+        ORDER BY profile_num
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET}
+        </if>
+        <if test="LIMIT != null">
+            LIMIT #{LIMIT}
+        </if>
+    </select>
+
+    <select id="SELECT_PROFILE_RECOVERY_LIST" parameterType="hashmap" resultType="hashmap">
+        select distinct
+            profile_num,
+            node_id,
+            count(1) over () as "ProFileRecoveryTotalCount"
+        from resource.tb_fault_process_if
+        where profile_num = #{PROFILE_NUM}
+    </select>
+
+    <insert id="INSERT_PROFILE_NODE_NAME_LIST">
+        insert into resource.tb_fault_process_if
+        (
+            profile_num,
+            node_id,
+            chng_datetime,
+            reg_datetime
+        )
+        values
+        (
+            #{PROFILE_NUM},
+            #{NODE_ID},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <insert id="INSERT_PROFILE_LIST">
+        insert into resource.tb_fault_process_profile
+        (
+            profile_num,
+            profile_title,
+            profile_desc,
+            network_type,
+            processing_template,
+            auto_process_check,
+            <if test="AUTO_PROCESS_CHECK != true">
+                auto_process_start_datetime,
+            </if>
+            <if test="AUTO_PROCESS_CHECK != true">
+                auto_process_end_datetime,
+            </if>
+            ticket_type,
+            process_type,
+            chng_datetime,
+            reg_datetime,
+            auto_recovery,
+            email_check
+        )
+        values
+        (
+            #{PROFILE_NUM},
+            #{PROFILE_TITLE},
+            #{PROFILE_DESC},
+            #{NETWORK_TYPE},
+            #{PROCESSING_TEMPLATE},
+            #{AUTO_PROCESS_CHECK},
+            <if test="AUTO_PROCESS_CHECK != true">
+                #{AUTO_PROCESS_START_DATETIME}::timestamp,
+            </if>
+            <if test="AUTO_PROCESS_CHECK != true">
+                #{AUTO_PROCESS_END_DATETIME}::timestamp,
+            </if>
+            #{TICKET_TYPE},
+            #{PROCESS_TYPE},
+            now(),
+            now(),
+            #{AUTO_RECOVERY},
+            #{EMAIL_CHECK}
+        )
+    </insert>
+
+    <update id="UPDATE_PROFILE_LIST">
+        update
+            resource.tb_fault_process_profile
+        set
+            profile_title = #{PROFILE_TITLE},
+            profile_desc = #{PROFILE_DESC},
+            network_type = #{NETWORK_TYPE},
+            processing_template = #{PROCESSING_TEMPLATE},
+            auto_process_check = #{AUTO_PROCESS_CHECK},
+            <if test="AUTO_PROCESS_CHECK != true">
+                auto_process_start_datetime = #{AUTO_PROCESS_START_DATETIME} ::timestamp,
+            </if>
+            <if test="AUTO_PROCESS_CHECK != true">
+                auto_process_end_datetime = #{AUTO_PROCESS_END_DATETIME}::timestamp,
+            </if>
+            chng_datetime = now(),
+            auto_recovery = #{AUTO_RECOVERY},
+            email_check = #{EMAIL_CHECK},
+            ticket_type = #{TICKET_TYPE},
+            process_type = #{PROCESS_TYPE}
+        where profile_num = #{PROFILE_NUM}
+    </update>
+
+    <delete id="DELETE_PROFILE_NODE_NAME_LIST">
+        delete from resource.tb_fault_process_if
+        where profile_num = #{PROFILE_NUM}
+        and node_id = #{NODE_ID}
+    </delete>
+
+    <delete id="DELETE_PROFILE_LIST">
+        delete from resource.tb_fault_process_profile
+        where profile_num = #{PROFILE_NUM}
+    </delete>
+
+    <select id="SELECT_NODE_KEY_LIST" parameterType="hashmap" resultType="hashmap">
+        select resource.uf_generator_num('') as node_num
+    </select>
+
+    <select id="SELECT_NREN_KEY_LIST" parameterType="hashmap" resultType="hashmap">
+        select resource.uf_generator_id('UO') as nren_id
+    </select>
+
+    <select id="SELECT_PROFILE_KEY_LIST" parameterType="hashmap" resultType="hashmap">
+        select resource.uf_self_healing_profile_num('') as profile_key
+    </select>
+
+    <select id="SELECT_PROFILE_TICKET_TYPE_LIST" parameterType="hashmap" resultType="hashmap">
+        select distinct ticket_type from rca.tb_rca_ticket_type_list
+        where 1=1
+        <if test="TICKET_GB.equals('전송')">
+            and ticket_gb != 'SWITCH'
+        </if>
+        <if test="TICKET_GB.equals('IP')">
+            and ticket_gb = 'SWITCH'
+        </if>
+    </select>
+
+    <select id="SELECT_PROFILE_FAIL_TYPE_LIST" parameterType="hashmap" resultType="hashmap">
+        select fail_type from rca.tb_rca_ticket_type_list
+        where ticket_type = #{TICKET_TYPE}
+    </select>
+
+    <select id="SELECT_PROFILE_NODE_ID_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT * FROM (
+          SELECT
+              node_nm AS ROOT_CAUSE_SYSNAMEA
+              , 'IP' AS TYPE
+          FROM resource.tb_node_mst
+          UNION
+          SELECT
+              sysname AS ROOT_CAUSE_SYSNAMEA
+              , '전송' AS TYPE
+          FROM nia.tb_equip_mst
+          WHERE model != 'Utrans-6300p-H3'
+      ) AS node
+        ORDER BY ROOT_CAUSE_SYSNAMEA ASC
+    </select>
+
+    <select id="SELECT_PROFILE_NODE_ID_LIST2" parameterType="hashmap" resultType="hashmap">
+        WITH sub_ticket AS (
+            SELECT *
+            FROM rca.tb_rca_ticket_current
+        ),
+         sub_al AS (
+             SELECT AL.*
+             FROM (
+                      SELECT ticket_id, max(ticket_al_id) AS ticket_al_id
+                      FROM rca.tb_rca_ticket_al_current
+                      GROUP BY ticket_id
+                  ) AL_ID
+                      LEFT OUTER JOIN (SELECT * FROM rca.tb_rca_ticket_al_current) AL ON AL.ticket_al_id = AL_ID.ticket_al_id
+         )
+        select
+            T.TICKET_ID AS TICKET_ID,
+            T.CLUSTER_NO AS CLUSTER_NO,
+            T.TICKET_TYPE AS TICKET_TYPE,
+            T.TICKET_GENERATION_TIME AS TICKET_GENERATION_TIME,
+            T.FAULT_TIME AS FAULT_TIME,
+            T.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE,
+            T.ROOT_CAUSE_CODE AS ROOT_CAUSE_CODE,
+            T.ROOT_CAUSE_DOMAIN AS ROOT_CAUSE_DOMAIN,
+            T.TOTAL_RELATED_ALARM_CNT AS TOTAL_RELATED_ALARM_CNT,
+            T.STATUS AS STATUS,
+            T.PARENT_TICKET_ID AS PARENT_TICKET_ID,
+            T.TICKET_RCA_RESULT_CODE AS TICKET_RCA_RESULT_CODE,
+            T.TICKET_RCA_RESULT_DTL_CODE AS TICKET_RCA_RESULT_DTL_CODE,
+            T.TICKET_RCA_RESULT_ORIG_DTL_CODE AS TICKET_RCA_RESULT_ORIG_DTL_CODE,
+            T.TICKET_UPDATE_TIME AS TICKET_UPDATE_TIME,
+            CASE WHEN T.TICKET_TYPE = 'PF' THEN
+            (
+            SELECT T2.SYSNAMEA
+            FROM rca.tb_rca_ticket_cable_mst T2
+            WHERE T2.TICKET_ID = T.TICKET_ID
+            ORDER BY T2.TICKET_CABLE_ID
+            LIMIT 1
+            )
+            ELSE AL.ROOT_CAUSE_SYSNAMEA
+            END AS ROOT_CAUSE_SYSNAMEA,
+            CASE WHEN T.TICKET_TYPE = 'PF' THEN
+            (
+            SELECT T2.SYSNAMEZ
+            FROM rca.tb_rca_ticket_cable_mst T2
+            WHERE T2.TICKET_ID = T.TICKET_ID
+            ORDER BY T2.TICKET_CABLE_ID DESC
+            LIMIT 1
+            )
+            ELSE AL.ROOT_CAUSE_SYSNAMEZ
+            END AS ROOT_CAUSE_SYSNAMEZ,
+            AL.ROOT_CAUSE_UNITA AS ROOT_CAUSE_UNITA,
+            AL.ROOT_CAUSE_UNITZ AS ROOT_CAUSE_UNITZ,
+            AL.ROOT_CAUSE_ALARM_NOA AS ROOT_CAUSE_ALARM_NOA,
+            AL.ROOT_CAUSE_ALARM_NOZ AS ROOT_CAUSE_ALARM_NOZ,
+            AL.ROOT_CAUSE_PORTA AS ROOT_CAUSE_PORTA,
+            AL.ROOT_CAUSE_PORTZ AS ROOT_CAUSE_PORTZ,
+            nodea.ip_addr AS ip_addra,
+            nodez.ip_addr AS ip_addrz,
+            cnt.child_count AS child_count
+        FROM rca.tb_rca_ticket_current T
+         LEFT OUTER JOIN sub_al al on T.ticket_id = al.ticket_id
+         LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = AL.ROOT_CAUSE_SYSNAMEA
+         LEfT OUTER JOIN resource.tb_node_mst nodez ON nodea.node_id = AL.ROOT_CAUSE_SYSNAMEZ
+         LEFT OUTER JOIN rca.tb_rca_ticket_cnt cnt ON T.ticket_id = cnt.ticket_id
+        WHERE T.OCCUR = TRUE AND T.PARENT_TICKET_ID IS null
+        and T.STATUS != 'AUTO_FIN'
+        <if test="TICKET_GB.equals('전송')">
+            and T.ROOT_CAUSE_DOMAIN != 'SWITCH'
+        </if>
+        <if test="TICKET_GB.equals('IP')">
+            and T.ROOT_CAUSE_DOMAIN = 'SWITCH'
+        </if>
+        <if test="FAILURETYPE != null">
+            and T.ticket_rca_result_dtl_code = #{FAILURETYPE}
+        </if>
+
+    </select>
+
+    <select id="SELECT_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  100 + row_number() over () AS INDEX,
+            nm.node_id AS id ,
+            nm.node_nm AS device_name ,
+            nm.ip_addr AS ip_addr ,
+            '4' AS device_type
+    FROM    resource.tb_node_mst nm
+    WHERE   nm.node_id LIKE '%7712' OR nm.node_id LIKE '%5812'
+    UNION ALL
+    SELECT  row_number() over () AS INDEX,
+            em.tid AS id ,
+            em.sysname AS device_name ,
+            em.tid AS ip_addr ,
+            CASE model WHEN 'Utrans-6300p-H3' THEN '1' WHEN 'Utrans-6300p-V9' THEN '0' ELSE '2'
+            END AS device_type
+    FROM    nia.tb_equip_mst em
+    </select>
+
+    <select id="SELECT_LINK_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  100 + row_number() over () AS id ,
+            bl.src_node_id AS source_name ,
+            bl.src_node_id AS source_id ,
+            bl.src_if_id AS source_port_disp ,
+            bl.dest_node_id AS target_name ,
+            bl.dest_node_id AS target_id ,
+            bl.dest_if_id AS target_port_disp ,
+            '1' AS status ,
+            '' AS equip_type
+    FROM    resource.tb_backbone_link bl
+    INNER JOIN resource.tb_node_mst ns ON ns.node_id = bl.src_node_id
+    INNER JOIN resource.tb_node_mst nd ON nd.node_id = bl.dest_node_id
+    WHERE   ns.node_id LIKE '%7712' OR ns.node_id LIKE '%5812'
+    UNION ALL
+    SELECT  row_number() over () AS id ,
+            es.sysname AS source_name ,
+            es.tid AS source_id ,
+            tp.ptpnamea_bau AS source_port_disp ,
+            et.sysname AS target_name ,
+            et.tid AS target_id ,
+            tp.ptpnamea_bau AS target_port_disp ,
+            '1' AS status ,
+            tp.equip_type AS equip_type
+    FROM    NIA.tb_topology tp
+    INNER JOIN nia.tb_equip_mst es ON REPLACE (tp.sysnamea,'-SH1','') = es.tid
+    INNER JOIN nia.tb_equip_mst et ON REPLACE (tp.sysnamez,'-SH1','') = et.tid
+    ORDER BY id
+    </select>
+
+    <select id="SELECT_TOPOLOGY_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            row_number() over () AS index
+            , node.id
+            , node.device_name
+            , node.ip_addr
+            , node.device_type
+            , node.visible
+            , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as fx
+            , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as x
+            , coalesce(cast (node.fy as integer), 100) as fy
+            , coalesce(cast (node.fy as integer), 100) as y
+        from (
+            
+            SELECT DISTINCT ON (nm.node_id, nm.node_nm, nm.ip_addr)
+                 row_number() over () AS index
+                , nm.node_num
+                , nm.node_id AS id
+                 , nm.node_nm AS device_name
+                 , nm.ip_addr AS ip_addr
+                 , '4' as device_type
+                 , case when nm.admin_yn = 'W' then true
+                        else false end as visible
+                 , np.fx as fx  
+                 , np.fy  as fy
+            FROM resource.tb_node_mst nm
+                      LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = #{TYPE}
+            where np.fx is not null
+            <!-- UNION
+            SELECT
+                 row_number() over () AS index
+                , nm.node_num
+                , nm.node_id AS id
+                 , nm.node_nm AS device_name
+                 , nm.ip_addr AS ip_addr
+                 , '4' as device_type
+                 , case when nm.admin_yn = 'W' then true
+                 else false end as visible
+                 , np.fx as fx
+                 , np.fy as fy
+            FROM resource.tb_node_mst nm
+                  LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = #{TYPE}
+            where np.fx isnull 
+            -->
+            UNION 
+            SELECT distinct on (em.tid, em.sysname, em.model)
+                 row_number() over () AS index
+                 , null as node_num
+                 , em.tid AS id
+                 , em.sysname  AS device_name
+                 , em.tid AS ip_addr
+                 , CASE model
+                 WHEN 'Utrans-6300p-H3' THEN '1'
+                 WHEN 'Utrans-6300p-V9' THEN '0'
+                 ELSE '2'
+                 END AS device_type
+                 , true as visible
+                 , np.fx as fx
+                 , np.fy  as fy
+             FROM nia.tb_equip_mst em
+                  LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = em.tid AND np.topology_type= #{TYPE}
+            order by node_num
+        ) as node
+    </select>
+
+    <select id="SELECT_TOPOLOGY_LINK_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  row_number() over () AS id,
+                concat('link_', row_number() over ()) AS element_id,
+                link.*
+        FROM    ( SELECT bl.src_node_id AS source_name,
+                        bl.src_node_id AS source_id,
+                        row_number() over (partition BY bl.src_node_id ORDER BY bl.src_node_id, bl.src_if_id) source_dir,
+                        bl.src_if_id AS source_port_disp,
+                        bl.src_if_id AS source_pau,
+                        bl.dest_node_id AS target_name,
+                        bl.dest_node_id AS target_id,
+                        row_number() over (partition BY bl.dest_node_id ORDER BY bl.dest_node_id, bl.dest_if_id) target_dir,
+                        bl.dest_if_id AS target_port_disp,
+                        bl.dest_if_id AS target_pau,
+                        'UP' AS state,
+                        '' AS equip_type,
+                        '1' AS status
+                FROM    resource.tb_backbone_link bl
+                INNER JOIN resource.tb_node_mst ns ON ns.node_id = bl.src_node_id
+                INNER JOIN resource.tb_node_mst nd ON nd.node_id = bl.dest_node_id
+                WHERE   bl.dest_node_id NOT LIKE '%control%'
+                AND     bl.dest_node_id NOT LIKE '%n9k%'
+                UNION ALL
+                SELECT  es.sysname AS source_name,
+                        es.tid AS source_id,
+                        row_number() over (partition BY tp.sysnamea ORDER BY tp.sysnamea, tp.ptpnamea_bau) source_dir,
+                        tp.ptpnamea_bau AS source_port_disp,
+                        tp.ptpnamea_pau AS source_pau,
+                        et.sysname AS target_name,
+                        et.tid AS target_id,
+                        row_number() over (partition BY tp.sysnamez ORDER BY tp.sysnamez, tp.ptpnamea_bau) target_dir,
+                        tp.ptpnamea_bau AS target_port_disp,
+                        tp.ptpnamea_pau AS target_pau,
+                        'UP' AS state,
+                        tp.equip_type AS equip_type,
+                        '1' AS status
+                FROM    NIA.tb_topology tp
+                INNER JOIN nia.tb_equip_mst es ON REPLACE(tp.sysnamea, '-SH1', '') = es.tid
+                INNER JOIN nia.tb_equip_mst et ON REPLACE(tp.sysnamez, '-SH1', '') = et.tid
+                WHERE   tp.sysnamez NOT LIKE '%control%'
+                AND     tp.sysnamez NOT LIKE '%n9k%'
+                UNION ALL
+                SELECT  e2e.node_ida AS source_name,
+                        e2e.node_ida AS source_id,
+                        1 AS source_dir,
+                        e2e.porta AS source_port_disp,
+                        e2e.porta AS source_pau,
+                        e2e.node_idz AS target_name,
+                        e2e.node_idz AS target_id,
+                        1 AS target_dir,
+                        e2e.portz AS target_port_disp,
+                        e2e.portz AS target_pau,
+                        'UP' AS state,
+                        '' AS equip_type,
+                        '1' AS status
+                FROM    nia.tb_e2e_topology e2e
+                WHERE   e2e.node_idz NOT LIKE '%control%'
+                AND     e2e.node_idz NOT LIKE '%n9k%' ) AS link;
+    </select>
+
+ 
+    <insert id="UPDATE_NODE_POSITION" parameterType="java.util.List">
+        DELETE FROM resource.tb_node_position_info
+        WHERE topology_type = #{TYPE};
+        INSERT
+        INTO    resource.tb_node_position_info
+                (
+                        node_type,
+                        node_id,
+                        node_image_path,
+                        fx,
+                        fy,
+                        topology_type
+                )
+                VALUES
+                <foreach collection="NODES" item="item" separator=",">
+                (
+                        #{item.node_type},
+                        #{item.node_id},
+                        #{item.node_image_path},
+                        #{item.fx},
+                        #{item.fy},
+                        #{item.topology_type}
+                )
+                </foreach>
+    </insert>
+
+    <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  sysDialog.alarmno,
+            sysDialog.alarmtime,
+            sysDialog.node_num,
+            sysDialog.node_nm,
+            sysDialog.alarmmsg,
+            sysDialog.alarmlvl,
+            sysDialog.etc,
+            sysDialog.rule_id,
+            sysDialog.alarmloc,
+            CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+            WHEN sysDialog.status = 'FIN' THEN '마감'
+            WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+            ELSE '-'
+            END AS status,
+            nodea.ip_addr
+    FROM    rca.tb_syslog_alarm_mst sysDialog
+    LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = sysDialog.node_nm
+    WHERE sysDialog.alarmtime <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+    <!-- AND sysDialog.alarmmsg LIKE '%DOWN%' -->
+    ORDER BY sysDialog.alarmno DESC
+    </select>
+
+    <!-- <select id="SELECT_NIA_SYSLOG_PAGE3_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  sysDialog.alarmno,
+            sysDialog.alarmtime,
+            sysDialog.node_num,
+            sysDialog.node_nm,
+            sysDialog.alarmmsg,
+            sysDialog.alarmlvl,
+            sysDialog.etc,
+            sysDialog.rule_id,
+            sysDialog.alarmloc
+    FROM    rca.tb_syslog_alarm_mst sysDialog
+    <where>
+        <if test="ALARMNO != null">
+            alarmno = #{ALARMNO}
+        </if>
+    </where>
+    </select> -->
+
+   <select id="SELECT_NIA_SYSLOG_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+        SELECT  sysDialog.alarmno,
+                sysDialog.alarmtime,
+                sysDialog.node_num,
+                sysDialog.node_nm,
+                sysDialog.alarmmsg,
+                sysDialog.alarmlvl,
+                sysDialog.etc,
+                sysDialog.rule_id,
+                sysDialog.alarmloc,
+                CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+                WHEN sysDialog.status = 'FIN' THEN '마감'
+                WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+                ELSE '-'
+                END AS status
+        FROM    rca.tb_syslog_alarm_mst sysDialog
+        <where>
+            <if test="START_DATE == null">
+            sysDialog.alarmtime BETWEEN NOW()::timestamp - interval '30 day' AND NOW()::timestamp
+            </if>
+           <if test="START_DATE != null">
+            AND sysDialog.alarmtime <![CDATA[ > ]]> #{START_DATE}::timestamp 
+            </if>
+            <if test="END_DATE != null">
+            AND sysDialog.alarmtime <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+            </if>
+            <if test="ALARMNO != null">
+            AND sysDialog.alarmno = #{ALARMNO}
+            </if>
+            <if test="EQUIPMENT != null">
+            AND sysDialog.node_nm = #{EQUIPMENT}
+            </if>
+            <if test="NODENUM != null">
+            AND sysDialog.node_num = #{NODENUM}
+            </if>
+            <if test="ALARMMSG != null">
+            AND UPPER(sysDialog.alarmmsg) LIKE '%' || UPPER(#{ALARMMSG}) || '%'
+            </if>
+            ORDER BY sysDialog.alarmno DESC
+            <if test="OFFSET != null">
+                OFFSET #{OFFSET} LIMIT #{LIMIT}
+            </if>
+            <if test="LIMIT != null and OFFSET == null">
+                LIMIT #{LIMIT}
+            </if>
+        </where> 
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <update id="UPDATE_NIA_SYSLOG_STATUS">
+        UPDATE NIA.TB_SYSLOG_SOP
+        SET    STATUS = #{STATUS},
+                <if test="FAULT_CLASSIFY != null and FAULT_CLASSIFY != ''">
+                    FAULT_CLASSIFY = #{FAULT_CLASSIFY},
+                </if>
+                <if test="FAULT_TYPE != null and FAULT_TYPE != ''">
+                    FAULT_TYPE = #{FAULT_TYPE},
+                </if>
+                <if test="FAULT_DETAIL_CONTENT != null and FAULT_DETAIL_CONTENT != ''">
+                    FAULT_DETAIL_CONTENT = #{FAULT_DETAIL_CONTENT},
+                </if>
+                <if test="ETC_CONTENT != null and ETC_CONTENT != ''">
+                    ETC_CONTENT = #{ETC_CONTENT}
+                </if>
+        WHERE ALARMNO = #{ALARMNO}
+    </update>
+
+    <select id="SELECT_NIA_SYSLOG_RULE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  syslog_rule_id ,
+                syslog_rule_nm ,
+                occur_str1 ,
+                occur_str2 ,
+                occur_str3 ,
+                occur_except_str1 ,
+                occur_except_str2 ,
+                occur_except_str3 ,
+                CASE
+                        WHEN tsrm.use_yn = 'Y'
+                        THEN '사용'
+                        ELSE '미사용'
+                END AS use_yn
+        FROM    gather.tb_syslog_rule_mst tsrm
+        WHERE 1=1
+                <if test="SYSLOG_RULE_NM != null and SYSLOG_RULE_NM != ''">
+                    AND syslog_rule_nm like '%' || #{SYSLOG_RULE_NM} || '%'
+                </if>
+                <if test="OCCUR_KEYWORD != null and OCCUR_KEYWORD != ''">
+                    AND (occur_str1 like '%' || #{OCCUR_KEYWORD} || '%' OR occur_str2 like '%' || #{OCCUR_KEYWORD} || '%' OR occur_str3 like '%' || #{OCCUR_KEYWORD} || '%')
+                </if>
+                <if test="OCCUR_EXCEPT_KEYWORD != null and OCCUR_EXCEPT_KEYWORD != ''">
+                    AND (occur_except_str1 like '%' || #{OCCUR_EXCEPT_KEYWORD} || '%' OR occur_except_str2 like '%' || #{OCCUR_EXCEPT_KEYWORD} || '%' OR occur_except_str3 like '%' || #{OCCUR_EXCEPT_KEYWORD} || '%')
+                </if>
+        ORDER BY syslog_rule_id
+    </select>
+
+    <update id="UPDATE_NIA_SYSLOG_RULE">
+        UPDATE GATHER.TB_SYSLOG_RULE_MST
+        SET    SYSLOG_RULE_NM = #{SYSLOG_RULE_NM},
+               OCCUR_STR1 = #{OCCUR_STR1},
+               OCCUR_STR2 = #{OCCUR_STR2},
+               OCCUR_STR3 = #{OCCUR_STR3},
+               OCCUR_EXCEPT_STR1 = #{OCCUR_EXCEPT_STR1},
+               OCCUR_EXCEPT_STR2 = #{OCCUR_EXCEPT_STR2},
+               OCCUR_EXCEPT_STR3 = #{OCCUR_EXCEPT_STR3},
+               USE_YN = CASE WHEN #{USE_YN} = '사용' THEN 'Y' ELSE 'N' END
+        WHERE SYSLOG_RULE_ID = #{SYSLOG_RULE_ID}
+    </update>
+
+    <delete id="DELETE_NIA_SYSLOG_RULE" parameterType="hashmap">
+        DELETE FROM  GATHER.TB_SYSLOG_RULE_MST 
+        WHERE SYSLOG_RULE_ID = #{SYSLOG_RULE_ID}
+    </delete>
+
+    <insert id="INSERT_NIA_SYSLOG_RULE">
+        INSERT
+        INTO    gather.tb_syslog_rule_mst
+        (
+                syslog_rule_id,
+                syslog_rule_nm,
+                node_type,
+                priority_order,
+                alarm_severity,
+                occur_str1,
+                occur_str2,
+                occur_str3,
+                occur_except_str1,
+                occur_except_str2,
+                occur_except_str3,
+                use_yn
+        )
+        VALUES
+        (
+                NEXTVAL('gather.seq_syslog_rule')
+                ,#{SYSLOG_RULE_NM}
+                ,'*'
+                ,1
+                ,7
+                ,#{OCCUR_STR1}
+                <if test="OCCUR_STR2 != null">
+                ,#{OCCUR_STR2}
+                </if>
+                <if test="OCCUR_STR3 != null">
+                ,#{OCCUR_STR3}
+                </if>
+                <if test="OCCUR_STR1 != null">
+                ,#{OCCUR_EXCEPT_STR1}
+                </if>
+                <if test="OCCUR_EXCEPT_STR2 != null">
+                ,#{OCCUR_EXCEPT_STR2}
+                </if>
+                <if test="OCCUR_EXCEPT_STR3 != null">
+                ,#{OCCUR_EXCEPT_STR3}
+                </if>
+                ,'Y'
+        )
+    </insert>
+
+    <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="hashmap">
+    SELECT  syslog_rule_nm, COUNT(*)
+    FROM    gather.tb_syslog_rule_mst
+    WHERE   syslog_rule_nm = #{SYSLOG_RULE_NM}
+    GROUP BY syslog_rule_nm
+    HAVING  COUNT(*) <![CDATA[ > ]]> 0
+    </select>
+
+    <select id="SELECT_NIA_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  node_nm
+        FROM    rca.tb_syslog_alarm_mst tsam
+        WHERE   tsam.alarmtime BETWEEN NOW()::TIMESTAMP - interval '30 day' AND NOW()::TIMESTAMP
+        GROUP BY node_nm
+    </select>
+
+    <!-- <select id="SELECT_SOPINFO_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  proc_status, fault_classify, fault_type, fault_detail_content
+        FROM    nia.tb_syslog_sop
+        WHERE   1=1
+            <if test="ALARMNO != null">
+                AND alarmno = #{ALARMNO}
+            </if>
+    </select> -->
+
+    <select id="SELECT_NIA_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT DISTINCT alarmloc
+        FROM rca.tb_syslog_alarm_mst
+        WHERE alarmloc IS NOT NULL
+    </select>
+
+    <select id="SELECT_LAST_SYSLOG_TIME" parameterType="hashmap" resultType="hashmap">
+    SELECT  MAX(alarmtime) AS "max"
+    FROM    rca.tb_syslog_alarm_mst
+    </select>
+
+    <select id="SELECT_SYSLOG_SOP_HIST_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  syslog.alarmno,
+                syslog.node_nm,
+                syslog.node_num,
+                syslog.alarmloc,
+                syslog.alarmtime,
+                syslog.alarmmsg,
+                syslog.etc,
+                sop.proc_status,
+                sop.fault_classify,<!-- 장애구분 -->
+                sop.fault_type,<!-- 장애유형 -->
+                sop.fault_detail_content,<!-- 조치내용 -->
+                sop.etc_content,<!-- 기타조치내용 -->
+                sop.alarm_occur_time,
+                sop.handling_fin_time,
+                sop.handling_fin_user,
+                sop.status,
+                COUNT(1) over () totalCount
+        FROM    nia.tb_syslog_sop sop
+        LEFT OUTER JOIN rca.tb_syslog_alarm_mst syslog ON sop.alarmno = syslog.alarmno
+        WHERE   1=1
+            <if test="EQUIPMENT != null">
+                AND syslog.node_nm = #{EQUIPMENT}
+            </if>
+            <if test="IFNAME != null">
+                AND syslog.alarmloc = #{IFNAME}
+            </if>
+                AND syslog.alarmtime <![CDATA[ > ]]> now() - INTERVAL '1' MONTH
+        ORDER BY syslog.alarmtime DESC
+    </select>
+
+    <select id="SELECT_SYSLOG_ALARM_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+        <include refid="SQL_PAGE_BEFORE"/>
+            SELECT  sop.alarmno,
+                    syslog.node_nm,
+                    syslog.alarmloc,
+                    syslog.etc,
+                    sop.proc_status,
+                    sop.fault_classify,
+                    sop.fault_type,
+                    sop.fault_detail_content,
+                    sop.etc_content,
+                    sop.alarm_occur_time,
+                    sop.handling_fin_time,
+                    sop.handling_fin_user,
+                    CASE WHEN sop.status = 'INIT' THEN '발생'
+                    WHEN sop.status = 'FIN' THEN '마감'
+                    WHEN sop.status = 'AUTO_FIN' THEN '자동 마감'
+                    ELSE '-'
+                    END AS status,
+                    COUNT(1) over () totalCount
+            FROM    nia.tb_syslog_sop sop
+            INNER JOIN  rca.tb_syslog_alarm_mst syslog ON sop.alarmno = syslog.alarmno
+            WHERE   1=1
+                <if test="EQUIPMENT != null">
+                    AND syslog.node_nm = #{EQUIPMENT}
+                </if>
+                <if test="IFNAME != null">
+                    AND syslog.alarmloc = #{IFNAME}
+                </if>
+                <if test="STATUS != null">
+                    AND sop.status = #{STATUS}
+                </if>
+                <if test="START_DATE != null">
+                    AND sop.alarm_occur_time <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+                </if>
+                <if test="END_DATE != null">
+                    AND sop.handling_fin_time <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                </if>
+                <if test="ALARMNO != null">
+                    AND sop.alarmno = #{ALARMNO}
+                </if>
+                AND sop.handling_fin_time <![CDATA[ > ]]> now() - INTERVAL '1' MONTH
+                order by sop.alarm_occur_time desc
+                <if test="OFFSET != null">
+                    OFFSET #{OFFSET}
+                </if>
+                <if test="LIMIT != null">
+                    LIMIT #{LIMIT}
+                </if>
+        <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_SELF_RECOVERY_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  tatpd.self_process_no,
+            tatpd.alarmno,
+            tatpd.treat_gb,
+            tatpd.feedback_time,
+            tatpd.occur_time,
+            tatpd.feedback_msg,
+            tatpd.clos_type,
+            tatpd.self_process_group,
+            tatpd.self_process_type
+    FROM    nia.tb_auto_treat_process_dtl tatpd
+    WHERE   tatpd.self_process_group IN ('ST')
+    </select>
+
+    <select id="SELECT_SELF_OPTIMIZATION_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  tatpd.self_process_no,
+            tatpd.ticket_id,
+            tatpd.ticket_type,
+            tatpd.treat_gb,
+            tatpd.feedback_time,
+            tatpd.occur_time,
+            tatpd.feedback_msg,
+            tatpd.clos_type,
+            tatpd.self_process_group,
+            tatpd.self_process_type
+    FROM    nia.tb_auto_treat_process_dtl tatpd
+    WHERE   tatpd.self_process_group IN ('SO')
+    </select>
+
+    <select id="SELECT_SELF_PROCESS_YEAR_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT CAST(EXTRACT(YEAR FROM occur_time) AS VARCHAR) AS year
+        FROM nia.tb_auto_treat_process_dtl
+        GROUP BY year
+    </select>
+
+    <select id="SELECT_SELF_PROCESS_MONTH_LIST" parameterType="hashmap" resultType="hashmap">
+        WITH months AS (
+            SELECT generate_series(
+                <if test="YEAR != null and YEAR != ''">
+                DATE_TRUNC('year', TO_DATE(#{YEAR}::text, 'YYYY')::date),
+                DATE_TRUNC('year', TO_DATE(#{YEAR}::text, 'YYYY')::date) + INTERVAL '1 year' - INTERVAL '1 day',
+                </if>
+                <if test="YEAR == null and YEAR == ''">
+                DATE_TRUNC('year', CURRENT_DATE),
+                DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year' - INTERVAL '1 day',
+                </if>
+                '1 month'
+            ) AS hourly_time
+        )
+        SELECT
+            TO_CHAR(months.hourly_time, 'YYYY-MM') AS hourly_time,
+            COALESCE(COUNT(tatpd.*), 0) AS TOTALCOUNT,
+            COALESCE(COUNT(CASE WHEN tatpd.self_process_group IN (#{SELF_PROCESS_TYPE}) AND tatpd.clos_type = 'A' AND tatpd.clos_status = 'Y' THEN 1 END), 0) AS COUNT
+        FROM months
+        LEFT JOIN nia.tb_auto_treat_process_dtl tatpd
+        ON DATE_TRUNC('month', tatpd.occur_time) = months.hourly_time
+        <if test="PROCESS == '최적화'">
+            AND tatpd.self_process_group IN (#{SELF_PROCESS_TYPE})
+        </if>
+        <if test="PROCESS == '회복'">
+            AND tatpd.self_process_group IN (#{SELF_PROCESS_TYPE})
+        </if>
+        GROUP BY hourly_time
+        ORDER BY hourly_time
+    </select>
+
+    <select id="SELECT_SELF_PROCESS_DAY_LIST" parameterType="hashmap" resultType="hashmap">
+        WITH days AS (
+            SELECT generate_series(
+                <if test="MONTH != null and MONTH != ''">
+                DATE_TRUNC('month', TO_DATE(#{MONTH}, 'YYYY-MM')::date),
+                DATE_TRUNC('month', TO_DATE(#{MONTH}, 'YYYY-MM')::date) + INTERVAL '1 month' - INTERVAL '1 day',
+                </if>
+                <if test="MONTH == null and MONTH == ''">
+                DATE_TRUNC('month', CURRENT_DATE),
+                DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day',
+                </if>
+                '1 day'
+            ) AS hourly_time
+        )
+        SELECT
+            TO_CHAR(days.hourly_time, 'YYYY-MM-DD') AS hourly_time,
+            COALESCE(COUNT(tatpd.*), 0) AS TOTALCOUNT,
+            COALESCE(COUNT(CASE WHEN tatpd.self_process_group IN (#{SELF_PROCESS_TYPE}) AND tatpd.clos_type = 'A' AND tatpd.clos_status = 'Y' THEN 1 END), 0) AS COUNT
+        FROM days
+        LEFT JOIN nia.tb_auto_treat_process_dtl tatpd
+        ON DATE_TRUNC('day', tatpd.occur_time) = days.hourly_time
+        <if test="PROCESS == '최적화'">
+            AND tatpd.self_process_group IN (#{SELF_PROCESS_TYPE})
+        </if>
+        <if test="PROCESS == '회복'">
+            AND tatpd.self_process_group IN (#{SELF_PROCESS_TYPE})
+        </if>
+        GROUP BY hourly_time
+        ORDER BY hourly_time
+    </select>
+
+    <select id="SELECT_SELF_PROCESS_HOUR_LIST" parameterType="hashmap" resultType="hashmap">
+        WITH hours AS (
+            SELECT generate_series(
+                <if test="DAY != null and DAY != ''">
+                DATE_TRUNC('day', TO_DATE(#{DAY}, 'YYYY-MM-DD')::date),
+                DATE_TRUNC('day', TO_DATE(#{DAY}, 'YYYY-MM-DD')::date) + INTERVAL '1 day' - INTERVAL '1 hour',
+                </if>
+                <if test="DAY == null and DAY == ''">
+                DATE_TRUNC('day', CURRENT_DATE),
+                DATE_TRUNC('day', CURRENT_DATE) + INTERVAL '1 day' - INTERVAL '1 hour',
+                </if>
+                '1 hour'
+            ) AS hourly_time
+        )
+        SELECT
+            TO_CHAR(hours.hourly_time, 'YYYY-MM-DD HH24:MI') AS hourly_time,
+            COALESCE(COUNT(tatpd.*), 0) AS TOTALCOUNT,
+            COALESCE(COUNT(CASE WHEN tatpd.self_process_group IN (#{SELF_PROCESS_TYPE}) AND tatpd.clos_type = 'A' AND tatpd.clos_status = 'Y' THEN 1 END), 0) AS COUNT
+        FROM hours
+        LEFT JOIN nia.tb_auto_treat_process_dtl tatpd
+        ON DATE_TRUNC('hour', tatpd.occur_time) = hours.hourly_time
+        <if test="PROCESS == '최적화'">
+            AND tatpd.self_process_group IN (#{SELF_PROCESS_TYPE})
+        </if>
+        <if test="PROCESS == '회복'">
+            AND tatpd.self_process_group IN (#{SELF_PROCESS_TYPE})
+        </if>
+        GROUP BY hourly_time
+        ORDER BY hourly_time
+    </select>
+
+    <select id="SELECT_SELF_PROCESS_DETAIL_PAGE2_LIST" parameterType="hashmap" resultType="hashmap">
+    <include refid="SQL_PAGE_BEFORE" />
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY occur_time DESC) AS row_num,
+            CASE WHEN tatpdt.self_process_type = 'A' THEN '이상트래픽'
+            WHEN tatpdt.self_process_type = 'N' THEN '유해트래픽'
+            WHEN tatpdt.self_process_type = 'S' THEN 'SYSLOG'
+            WHEN tatpdt.self_process_type = 'F' THEN '비장애'
+            ELSE '' 
+            END AS selfProcessType,
+            tatpdt.self_process_group,
+            tatpdt.self_process_type,
+            CASE WHEN clos_type = 'A' THEN '자동'
+            ELSE '수동'
+            END AS clos_type,
+            tatpdt.feedback_msg,
+            TO_CHAR(tatpdt.occur_time, 'YYYY-MM-DD HH24:MI') AS occur_time,
+            tatpdt.feedback_time,
+            tatpdt.ticket_id,
+            tatpdt.ticket_type,
+            tatpdt.self_process_no,
+            tatpdt.alarmno,
+            CASE WHEN clos_status = 'Y' THEN '마감'
+            ELSE '발생'
+            END AS closStatus,
+            tatpdt.clos_status,
+            TO_CHAR(tatpdt.clos_time, 'YYYY-MM-DD HH24:MI') AS clos_time,
+            tsam.node_nm,
+            tsam.alarmloc,
+            ts.fault_detail_content as ticket_fault_detail_content,
+            tss.fault_detail_content as syslog_fault_detail_content,
+            trtc.fault_time,
+            trtc.status
+        FROM nia.tb_auto_treat_process_dtl tatpdt
+        LEFT JOIN rca.tb_syslog_alarm_mst tsam 
+        ON tatpdt.alarmno = tsam.alarmno
+        LEFT JOIN nia.tb_sop ts
+        ON tatpdt.ticket_id = ts.ticket_id
+        LEFT JOIN nia.tb_syslog_sop tss 
+        ON tatpdt.alarmno = tss.alarmno
+        LEFT JOIN rca.tb_rca_ticket_current trtc 
+        ON tatpdt.ticket_id = trtc.ticket_id
+        WHERE 1=1
+            <if test="DATETYPE == 'DAY' and DATETIME != null">
+            AND tatpdt.occur_time <![CDATA[ >= ]]> #{DATETIME}::TIMESTAMP
+            AND tatpdt.occur_time <![CDATA[ < ]]> #{DATETIME}::TIMESTAMP + INTERVAL '1 hour'
+            </if>
+            <if test="DATETYPE == 'MONTH' and DATETIME != null">
+            AND tatpdt.occur_time <![CDATA[ >= ]]> #{DATETIME}::TIMESTAMP
+            AND tatpdt.occur_time <![CDATA[ < ]]> #{DATETIME}::TIMESTAMP + INTERVAL '1 day'
+            </if>
+            <if test="DATETYPE == 'YEAR' and DATETIME != null">
+            AND DATE_TRUNC('MONTH', tatpdt.occur_time) = TO_TIMESTAMP(CONCAT(#{DATETIME}, '-01'), 'YYYY-MM-DD')
+            </if>
+            <choose>
+                <when test="TYPE == 'recovery' and TYPE != null">
+                    <if test="SELF_PROCESS_TYPE == null or SELF_PROCESS_TYPE == ''">
+                        AND tatpdt.self_process_group IN ('ST')
+                    </if>
+                    <if test="SELF_PROCESS_TYPE != null and SELF_PROCESS_TYPE != ''">
+                        AND tatpdt.self_process_type = #{SELF_PROCESS_TYPE}
+                    </if>
+                </when>
+                <when test="TYPE == 'optimization' and TYPE != null">
+                    <if test="SELF_PROCESS_TYPE == null or SELF_PROCESS_TYPE == ''">
+                        AND tatpdt.self_process_group IN ('SO')
+                    </if>
+                    <if test="SELF_PROCESS_TYPE != null and SELF_PROCESS_TYPE != ''">
+                        AND tatpdt.self_process_type = #{SELF_PROCESS_TYPE}
+                    </if>
+                </when>
+            </choose>
+            <if test="START_DATE != null">
+            AND tatpdt.occur_time <![CDATA[ > ]]> #{START_DATE}::timestamp 
+            </if>
+            <if test="END_DATE != null">
+            AND tatpdt.occur_time <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+            </if>
+            <if test="TICKET_ID != '' and TICKET_ID != null">
+            AND tatpdt.ticket_id = #{TICKET_ID}
+            </if>
+            <if test="ALARMNO != '' and ALARMNO != null">
+            AND tatpdt.alarmno = #{ALARMNO}
+            </if>
+            <if test="SELF_PROCESS_TYPE != '' and SELF_PROCESS_TYPE != null">
+            AND tatpdt.self_process_type = #{SELF_PROCESS_TYPE}
+            </if>
+            <if test="CLOS_TYPE != '' and CLOS_TYPE != null">
+            AND tatpdt.clos_type = #{CLOS_TYPE}
+            </if>
+            <if test="CLOS_STATUS != null">
+            AND clos_status = #{CLOS_STATUS}
+            </if>
+        ORDER BY tatpdt.occur_time DESC
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="SQL_PAGE_AFTER" />
+    </select>
+
+    <select id="SELECT_SELF_PROCESS_TRAFFIC_ONE" parameterType="hashmap" resultType="hashmap">
+        SELECT  ticket_id,
+                root_cause_sysnamea,
+                root_cause_porta,
+                root_cause_sysnamez,
+                root_cause_portz
+        FROM    rca.tb_rca_ticket_al_current
+        WHERE   1=1
+            <if test="TICKET_ID != null and TICKET_ID != ''">
+                AND ticket_id = #{TICKET_ID}
+            </if>
+    </select>
+    <select id="SELECT_SELF_PROCESS_SYSLOG_DETAIL_ONE" parameterType="hashmap" resultType="hashmap">
+        SELECT  alarmno,
+                alarmtime,
+                node_num,
+                node_nm,
+                alarmmsg,
+                alarmlvl,
+                etc,
+                rule_id,
+                alarmloc,
+                status
+        FROM    rca.tb_syslog_alarm_mst
+        WHERE 1=1
+            <if test="ALARMNO != null and ALARMNO != ''">
+                AND alarmno = #{ALARMNO}
+            </if>
+    </select>
+
+    <update id="UPDATE_SELF_PROCESS_CLOS_TYPE">
+        UPDATE nia.tb_auto_treat_process_dtl
+        SET    CLOS_TYPE = 'M'
+        WHERE clos_status IN ('N')
+            <if test="TICKET_ID != null and TICKET_ID != ''">
+                AND ticket_id = #{TICKET_ID}
+            </if>
+            <if test="ALARMNO != null and ALARMNO != ''">
+                AND alarmno = #{ALARMNO}
+            </if>
+    </update>
+
+</mapper>
+
+

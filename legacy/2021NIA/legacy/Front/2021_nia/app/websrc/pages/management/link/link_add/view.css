@@ -1,0 +1,34 @@
+md-dialog.link-add-dialog div.link-add-dialog-content {
+    font-size: 0.8em;
+}
+
+md-dialog.link-add-dialog div.link-add-dialog-content div.link-info-container div.link-detail-info {
+    display: flex;
+}
+
+md-dialog.link-add-dialog div.link-add-dialog-content div.link-info-container div.link-detail-info {
+    display: grid;
+}
+
+md-dialog.link-add-dialog table.nia-custom-table td.title {
+    text-align: center;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+
+md-dialog.link-add-dialog table.nia-custom-table tr > td > md-select{
+    margin: 0px 0px 0px 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+    max-width: 123px;
+}
+
+md-dialog.link-add-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}
+
+md-dialog.link-add-dialog input.ng-invalid {
+    border-bottom: 1px solid #ff000047;
+}
+

@@ -1,0 +1,45 @@
+//=================================================================//
+// common-ws
+//=================================================================//
+bootJar {
+	enabled = false
+}
+jar {
+	enabled = true
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	
+	// commons-codec: 범용 암호화 및 디코딩을 위한 Apache Commons Codec 라이브러리
+	implementation 'commons-codec:commons-codec:1.15'
+
+	// httpclient: Apache HttpClient을 사용하여 HTTP 통신을 위한 라이브러리
+	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+
+	// commons-io: Apache Commons IO 라이브러리로, 입출력 작업을 단순화하고 향상시키는 유틸리티
+	implementation 'commons-io:commons-io:2.11.0'
+
+	// JJWT (JSON Web Token): JSON Web Token 작업을 위한 Java 라이브러리
+	// JwtTokenProvider : WebSocket
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'		/* JwtTokenProvider : WebSocket */
+	/* 
+		jsonwebtoken 0.11.2 버전은 mac os에서 다음과 같은 에러가 발생할 수 있다.
+		The signing key's size is 104 bits which is not secure enough for the HS256 algorithm.
+	*/
+	// implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	// runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'		
+
+	// Jackson Databind: Jackson JSON 처리 라이브러리의 일부로 데이터 바인딩 기능을 제공
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	// Gson: JSON 직렬화/역직렬화를 위한 Java 라이브러리: HttpUtil, JsonUtil
+	implementation 'com.google.code.gson:gson'
+
+	// JSON: 간단한 JSON 처리를 위한 라이브러리
+	implementation 'org.json:json:20231013'
+
+
+}

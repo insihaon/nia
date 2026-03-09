@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkSvcBasDao">
+	<resultMap id="tbLnkSvcBasVoResult" type="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		<result column="LNK_SVC_MST_SEQ" property="lnkSvcMstSeq" jdbcType="BIGINT" />
+		<result column="SIF_ID" property="sifId" jdbcType="VARCHAR" />
+		<result column="SIF_NM" property="sifNm" jdbcType="VARCHAR" />
+		<result column="SIF_PROTOCOL" property="sifProtocol" jdbcType="VARCHAR" />
+		<result column="SSYSTEM_NM" property="ssystemNm" jdbcType="VARCHAR" />
+		<result column="SMODULE_NM" property="smoduleNm" jdbcType="VARCHAR" />
+		<result column="SNET_NM" property="snetNm" jdbcType="VARCHAR" />
+		<result column="SADDRESS" property="saddress" jdbcType="VARCHAR" />
+		<result column="SPORT" property="sport" jdbcType="VARCHAR" />
+		<result column="SURI" property="suri" jdbcType="VARCHAR" />
+		<result column="SOPSTATE" property="sopstate" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="SURI_METHOD" property="suriMethod" jdbcType="VARCHAR" />
+		 
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="BaseSVC_Column_List">
+		A.LNK_SVC_MST_SEQ, A.SIF_ID, A.SIF_NM, A.SIF_PROTOCOL
+		, A.SSYSTEM_NM, A.SMODULE_NM, A.SNET_NM, A.SADDRESS
+		, A.SPORT, A.SURI, A.SOPSTATE, A.SCOMMENT
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="AppendSVC_Column_List">
+	
+	</sql>
+	
+	<sql id="AppendSVC_From_Clause">
+	
+	</sql>
+	
+	<sql id="VoSVC_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.LNK_SVC_MST_SEQ = #{lnkSvcMstSeq, jdbcType=BIGINT}
+				AND A.SIF_ID = #{sifId, jdbcType=VARCHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(lnkSvcMstSeq)">
+				AND A.LNK_SVC_MST_SEQ = #{lnkSvcMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifId)">
+				AND A.SIF_ID = #{sifId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifNm)">
+				AND A.SIF_NM = #{sifNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifProtocol)">
+				AND A.SIF_PROTOCOL = #{sifProtocol, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssystemNm)">
+				AND A.SSYSTEM_NM = #{ssystemNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smoduleNm)">
+				AND A.SMODULE_NM = #{smoduleNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snetNm)">
+				AND A.SNET_NM = #{snetNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddress)">
+				AND A.SADDRESS = #{saddress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sport)">
+				AND A.SPORT = #{sport, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suri)">
+				AND A.SURI = #{suri, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sopstate)">
+				AND A.SOPSTATE = #{sopstate, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="AppendSVC_Where_Clause">
+	
+	</sql>
+	
+	<insert id="insertTbLnkSvcBasVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		INSERT
+			
+		INTO TB_LNK_SVC_BAS (
+			SIF_ID
+			,	SIF_NM
+			,	SIF_PROTOCOL
+			,	SSYSTEM_NM
+			,	SMODULE_NM
+			,	SNET_NM
+			,	SADDRESS
+			,	SPORT
+			,	SURI
+			,	SOPSTATE
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{sifId, jdbcType=VARCHAR}
+			,	#{sifNm, jdbcType=VARCHAR}
+			,	#{sifProtocol, jdbcType=VARCHAR}
+			,	#{ssystemNm, jdbcType=VARCHAR}
+			,	#{smoduleNm, jdbcType=VARCHAR}
+			,	#{snetNm, jdbcType=VARCHAR}
+			,	#{saddress, jdbcType=VARCHAR}
+			,	#{sport, jdbcType=VARCHAR}
+			,	#{suri, jdbcType=VARCHAR}
+			,	#{sopstate, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbLnkSvcBasVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		UPDATE
+			
+		TB_LNK_SVC_BAS A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifNm)">
+			A.SIF_NM = #{sifNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifProtocol)">
+				, A.SIF_PROTOCOL = #{sifProtocol, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssystemNm)">
+				, A.SSYSTEM_NM = #{ssystemNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smoduleNm)">
+				, A.SMODULE_NM = #{smoduleNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snetNm)">
+				, A.SNET_NM = #{snetNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddress)">
+				, A.SADDRESS = #{saddress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sport)">
+				, A.SPORT = #{sport, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suri)">
+				, A.SURI = #{suri, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sopstate)">
+				, A.SOPSTATE = #{sopstate, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="VoSVC_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbLnkSvcBasVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		DELETE
+			
+		FROM TB_LNK_SVC_BAS A
+		<include refid="VoSVC_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbLnkSvcBasVo" resultMap="tbLnkSvcBasVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		SELECT
+			
+		<include refid="BaseSVC_Column_List" />
+		<include refid="AppendSVC_Column_List"/>
+		FROM TB_LNK_SVC_BAS A
+		<include refid="AppendSVC_From_Clause"/>
+		<include refid="VoSVC_Where_Clause" />
+		<include refid="AppendSVC_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbLnkSvcBasVo" resultMap="tbLnkSvcBasVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		SELECT
+			
+		<include refid="BaseSVC_Column_List" />
+		<include refid="AppendSVC_Column_List"/>
+		FROM TB_LNK_SVC_BAS A
+		<include refid="AppendSVC_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="AppendSVC_Where_Clause"/>
+	</select>
+	
+	<select id="countListPageTbLnkSvcBasVo" resultType="int" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		SELECT
+			
+			COUNT(1) TOTALCOUNT
+		FROM TB_LNK_SVC_BAS A
+		<include refid="List_Where_Clause" />
+	</select>
+	
+	<select id="getWSURIConfig" resultMap="tbLnkSvcBasVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo">
+		SELECT 
+		A.SADDRESS ,A.SURI,B.SURI_METHOD 
+		FROM BIF.TB_LNK_SVC_BAS A
+		INNER JOIN BIF.TB_WS_SVC_BAS B ON A.LNK_SVC_MST_SEQ = B.LNK_SVC_MST_SEQ
+		WHERE A.SIF_ID = #{sifId, jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

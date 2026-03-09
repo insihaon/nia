@@ -1,0 +1,184 @@
+<div layout-fill ng-cloak class="ticket-wrapper" ng-controller="RcaTicketCtrl" ng-class="{'no-scroll': isScrollVisibled}" ng-init="init(tools.constants.RcaTicketType.TICKET)">
+    <div class="ticket-menu-container" ng-class="{'lte': tools.store.hasProfile('lte') }" id="filterMenu">
+        <ul>
+            <li style="margin: 0px 15px; color: #c8ccde;">
+                <i class="fa fa-cog fa-lg" style="color: #c8ccde;" ng-click="addTicket()" ng-right-click="openDevContextMenu($event)"></i>
+                <span class="filter_title">Filter</span>
+            </li>
+            <li> <!--멀티 셀렉터 필터링-->
+                <md-select class="multi_filter new_multi_filter" ng-model="devFilter" ng-change="onChangeDev(devFilter)" md-selected-text="devFilter.text" ng-model-options="{debounce:100}"> <!-- ng-model-options="{trackBy: '$value.id'}"-->
+                    <md-option ng-value="item" ng-repeat="item in ticket_type_items" >{{item.text}}</md-option>
+                </md-select>
+
+                <!--<md-select class="multi_filter" ng-model="type" md-selected-text="selectedText" ng-model-options="{debounce:100}" multiple> &lt;!&ndash; ng-model-options="{trackBy: '$value.id'}"&ndash;&gt;-->
+                    <!--<md-option ng-value="type" ng-repeat="type in ['전체', '선로', '링크', '노드', '전원', '유닛', '통신', '클럭', '회선', '기타']"-->
+                               <!--ng-class="{checked: type.selected}">{{type}}</md-option> &lt;!&ndash; ng-change &ndash;&gt;-->
+                <!--</md-select>-->
+            </li>
+            <li style="margin: 0px 15px;">
+                <i class="fa fa-exclamation-triangle fa-lg" style="color: #c8ccde;"></i>
+                <span class="filter_title"></span>
+            </li>
+            <li> <!--멀티 셀렉터 필터링-->
+                <!--<md-select class="multi_filter new_multi_filter" ng-model="type" md-selected-text="selectedText" ng-model-options="{debounce:100}" multiple>-->
+                    <!--<md-option ng-value="type" ng-repeat="type in ['전체', '선로', '링크', '노드', '전원', '유닛', '통신', '클럭', '회선', '기타']"-->
+                               <!--ng-class="{checked: type.selected}">{{type}}</md-option>-->
+                <!--</md-select>-->
+                <md-select class="multi_filter new_multi_filter" ng-model="statusFilter" ng-change="onChangeStatus(statusFilter)" md-selected-text="statusFilter.text" ng-model-options="{debounce:100}"> <!-- ng-model-options="{trackBy: '$value.id'}"-->
+                    <md-option ng-value="item" ng-repeat="item in ticket_status_items" >{{item.text}}</md-option>
+                </md-select>
+                <!--<md-select class="multi_filter new_multi_filter" ng-model="status" ng-model-options="{debounce:100}" multiple>-->
+                    <!--<md-option ng-value="status" ng-repeat="status in statusFilter.getObj()"-->
+                               <!--ng-class="{checked: statusFilter.getObj()[$index].selected}"-->
+                                <!--ng-click="statusFilter.itemClick($index)">{{status.display}}</md-option>-->
+                <!--</md-select>-->
+            </li>
+            <li>
+                <div class="ticketCount" ng-click="debugger()"> <span>TOTAL</span> &nbsp; <span style="color: #f37e7e; font-size: 22px;">{{ticketLength || '0'}}</span></div>
+            </li>
+            <li class="toggleItem" ng-click="tools.simulateTicket()">
+                <i class="fas fa fa-cog fa-lg filter_btn"></i>
+                <md-tooltip md-direction="bottom">
+                    검색 옵션
+                </md-tooltip>
+            </li>
+            <li class="toggleItem" ng-click="tools.store.sound = !tools.store.sound">
+                <i class="fas fa-bell{{(tools.store.sound) ? '' : '-slash'}} fa-lg filter_btn" ng-style="!tools.store.sound && {'color': '#f9423e'}"></i>
+                <md-tooltip md-direction="bottom">
+                    알람 ON/OFF
+                </md-tooltip>
+            </li>
+            <li class="toggleItem" ng-click="resetTicket()"> <!-- ticketRealTimeToggle()  -->
+                <i class="fas fa-lg filter_btn" ng-class="{'fa-play': tools.store.isTicketRealTimePause, 'fa-pause': !tools.store.isTicketRealTimePause}"></i>
+                <md-tooltip md-direction="bottom">
+                    실시간 모니터링 {{tools.store.isTicketRealTimePause ? '시작' : '일시정지'}}
+                </md-tooltip>
+            </li>
+            <li class="toggleItem expand" style="border-right: none;">
+                <i class="fa fa-lg filter_btn" ng-class="{'fa-compress': tools.store.ticketExpandMode, 'fa-expand': !tools.store.ticketExpandMode}"></i>
+                <md-tooltip md-direction="bottom">
+                    {{tools.store.ticketExpandMode ? '접기' : '펼치기'}}
+                </md-tooltip>
+            </li>
+        </ul>
+    </div>
+
+    <div layout="column" layout-wrap class="ticket-container" md-top-index="0">
+        <div ng-repeat="ticket in tools.store.niaList | filter: tools.store.ticketAllSearch | filter: devTypeFilter | filter: devStatusFilter"
+             id="section-{{ticket.ticket_id}} {{$index}}" class="ticket-area" ng-style="{height: ticket.ticket_el_size + 'px'}"
+             ng-class="{'active': 190 == tools.constants.TicketEleStatus.OPEN.size , 'flip-step1': 190 == tools.constants.TicketEleStatus.OPEN.size}">
+            <!--ng-if="isShow($index)"-->
+            <section class="ticket-section {{getTicketBorderColorClass(ticket)}}" ng-class="{'border-effect': ticket.ticket_id == tools.store.niaSelectedTicket.ticket_id, 'hover' : 190== tools.constants.TicketEleStatus.OPEN.size}"
+                     ng-style="tools.store.ticketExpandMode && { 'height': '107px' }" ng-if="isShow($index)">
+                <!--{{getTicketColorClass(ticket)}}--> <!--  bg_color_red -->
+                <section class="card__part card__part-1 {{getTicketColorClass(ticket)}}"
+                         ng-style="ticket.nature_restoration == true && ticket.status != tools.constants.TicketStatus.FIN.code && { 'background-color': tools.constants.AdditionalTicketStatus.NATURE.hex }"
+                          ng-dblclick="showMap3d(ticket,$event)" id="ticket_{{$index}}">
+
+                    <!--티넷 좌측 영역 시작-->
+                    <div class="ticket-section_l">
+                        <ul>
+                            <li>NIA #.{{ticket.ticket_id}}</li>
+                            <li>{{getTicketTypeLabel(ticket)}}</li><!-- {{(tools.constants.TicketType[ticket.root_cause_type]||{text:'기타'}).text + '장애'}} -->
+                            <li>{{ticket.ticket_rca_result_dtl_code || ticket.ticket_rca_result_code || ticket.ticket_result_dtl_code}}</li>
+                        </ul>
+                    </div>
+                    <!--티넷 좌측 영역 끝-->
+
+                    <!--티넷 우측 영역 시작-->
+                    <div class="ticket-section_r" style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;">
+                        <div class="topWrap" style="display: flex;">
+                            <ul class="cableDiagram" ng-class="{'not-cable': ticket.root_cause_type != 'CableCut'}" style="width: 75%;">
+                                <li class="cableA">
+                                    <span>A</span>
+                                    <span class="node" style="width: 270px; background-color: #7a7c8d38;"><span class="over" style="background-color: rgba(255,255,255,0.05);" ng-style="ticket.root_cause_checka > 0 && { color: '#ff3333', 'font-weight': 900 }">{{ticket.root_cause_sysnamea}}</span></span>
+                                    <span class="port-node"><span class="over" style="background-color: rgba(255,255,255,0.1);">{{ticket.root_cause_porta}}</span></span>
+                                </li>
+                                <li>
+                                    <span>장애영향케이블</span><i class="fa fa-plus fa-lg open-icon" ng-show="ticket.root_cause_type == 'CableCut'"></i>
+                                </li>
+                                <li class="cableZ">
+                                    <span>Z</span>
+                                    <span class="node" style="width: 270px; background-color: #7a7c8d38;"><span class="over" style="background-color: rgba(255,255,255,0.05);" ng-style="ticket.root_cause_checkz > 0 && { color: '#ff3333', 'font-weight': 900 }">{{ticket.root_cause_sysnamez}}</span></span>
+                                    <span class="port-node" style="background-color: rgba(255,255,255,0.1);"><span class="over">{{ticket.is_organ_system ? '' : ticket.root_cause_portz}}</span></span>
+                                </li>
+                            </ul>
+                            <ul class="trunk_name">
+                                <li >
+                                    <span class="port-node">
+                                        <span class="over" style="font-size: 16px; float: right; margin-right: 0px;"
+                                              ng-style="{'color': getTicketStatusColor(ticket) }">{{ getTicketStatusText(ticket) }}</span>
+                                    </span>
+                                </li>
+                                <!--<li style="padding: 0px; top: -6px;">-->
+                                    <!--<i class="fa fa-arrow-{{ticket.direction | toLower}}  fa-2x arrow bounce-{{ticket.direction | toLower}}" style="margin-left: 7px; color: red;"></i>-->
+                                <!--</li>-->
+                            </ul>
+                        </div>
+                        <div class="middleWrap">
+                            <ul class="labelValueList">
+                               <!-- <li class="open-icon">
+                                    <i class="fa fa-exclamation-triangle fa-lg"></i>
+                                    <span style="font-size: 11px; margin-right: 5px;">장애영향케이블</span>
+                                </li>
+                                <li><span>영향서비스</span><span style="font-size: 20px; vertical-align: middle; color: #345035;">{{ticket.influencecircuit_count || 0}}</span></li>
+                                <li><span>영향장비</span><span style="font-size: 20px; vertical-align: middle; color: #345035;">{{ticket.equip_cnt}}</span></li>-->
+
+                                <li><span>최초 장애 발생 시간</span><span style="font-size: 14px; vertical-align: middle;">{{ticket.fault_time | dateFormat}}</span></li>
+
+                                <li style="width: 40px; height: 35px;"></li>
+
+                                <li class="alarmButton alb_2" ng-sgl-click="showSopList(ticket)">
+                                    <span>SOP</span>
+                                </li>
+                                <li class="alarmButton alb_2" ng-sgl-click="showAIProcess(ticket)"  style="width: 80px;">
+                                    <span style="margin-right: 0;">장애 대응</span>
+                                </li>
+                                <!--<li class="alarmButton alb_2" ng-if="ticket.status == 'FIN'" ng-class="{'disabled': ticket.status == 'INIT'}" ng-sgl-click="ticketProcessing(ticket, $event, 'ACK')" style="padding: 0 3px;">-->
+                                    <!--<span>인지</span>-->
+                                <!--</li>-->
+                                <li class="alarmButton alb_2" ng-show="ticket.ticket_type=='RT' && ticket.status == 'ACK'" ng-sgl-click="ticket.status != 'FIN' && ticketProcessing(ticket, $event, 'FIN')" style="padding: 0 3px;">
+                                    <span>마감</span>
+                                </li>
+                                <li class="alarmButton alb_4" ng-sgl-click="showMap3d(ticket,$event)">
+                                    <span>Map</span>
+                                </li>
+
+                                <!--<li class="alarmButton alb_1"
+                                    ng-class="{'disabled': !tools.ticketProcessingRule('VISIBLE', 'ACK', ticket)}"
+                                    ng-click="ticketProcessing(ticket, $event, tools.ticketProcessingRule('CODE', 'ACK', ticket))">
+                                    <span>{{tools.ticketProcessingRule('MODIFIED', 'ACK', ticket) ? '인지 수정' : '인지'}}</span>
+                                </li>
+                                <li class="alarmButton alb_2"
+                                    ng-class="{'disabled': !tools.ticketProcessingRule('VISIBLE', 'FIN', ticket)}"
+                                    ng-click="ticketProcessing(ticket, $event, tools.ticketProcessingRule('CODE', 'FIN', ticket))">
+                                    <span>{{tools.ticketProcessingRule('MODIFIED', 'FIN', ticket) ? '마감 수정' : '마감'}}</span>
+                                </li>-->
+                            </ul>
+                        </div>
+                        <div class="newLabel" ng-style="ticket.is_new_ticket == false && {'display': 'none'}"
+                             ng-show="ticket.is_new_ticket == true">
+                            <span>NEW</span>
+                        </div>
+
+                        <div class="countLabel" ng-show="ticket.child_count && ticket.child_count > 0">
+                            +{{ticket.child_count}}
+                        </div>
+                    </div>
+                    <!--우측 티넷영역 끝-->
+                </section>
+                <section class="card__part card__part-2"
+                         ng-style="{height: ticketCtrl[ticket.ticket_id].tempState == 'OPEN' ? '180px' : '105px'}">
+                    <div class="card__part__side m--front">
+                        <div ng-include src="'pages/main/monitoringTT/rcaTicket/view.tpl.html'" ng-cloak></div>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </div>
+    <div class="ticket-bottom-container">
+        <div layout="row" class="bottom-toolbar">
+            <span class="ticket-alarm-text"><p>티켓 발생 후 1시간 뒤에 자동 마감처리 됩니다. </p></span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,196 @@
+/* selfProcess-dialog*/
+/* md-dialog.selfProcess-dialog{
+    background-color: #c1d3f624;
+    overflow: hidden;
+    padding: 5px;
+    height: calc(100% - 45px);
+} */
+
+/* md-dialog.selfProcess-dialog div.selfProcess_firstBox {
+    box-shadow: 0 1px 4px #b6cbf085, 0 1px 3px #b6cbf04f;
+    width: 98.5%;
+    margin-top: 5px;
+    border: 2px solid #1f335c47;
+    color: #929292;
+    position: absolute;
+    overflow-y: auto;
+    height: calc(100% - 55px);
+} */
+
+md-dialog.selfProcess-dialog div.selfProcessBox {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 55px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 1px 1px 11px 0 #a08c8c63;
+    background-color: #fff;
+    overflow-y: auto;
+}
+
+md-dialog.selfProcess-dialog div.selfProcessTitle {
+    font-size: 17px;
+    position: absolute;
+    left: 50%;
+    line-height: 30px;
+    font-weight: 600;
+    transform: translateX(-50%);
+    padding: 0px 20px;
+    color: #00000094;
+    border: 2px solid #c1c6d2;
+    border-top: none;
+    box-shadow: 0 1px 4px #c1c6d2, 0 1px 3px #c1c6d2;
+    background-color: #c1c6d2;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    width: 160px;
+    text-align: center;
+}
+
+md-dialog.selfProcess-dialog div.selfProcessBox div.selfProcessContentTitle{
+    font-size: 15px;
+    position: absolute;
+    line-height: 30px;
+    font-weight: 600;
+    padding: 0px 20px;
+    color: #0000009c;
+    top: -6%;
+    background-color: #edf0f5;
+    margin-left: 10px;
+    box-shadow: 2px 1px 3px 0 #89898963;
+    z-index: 9999;
+}
+
+md-dialog.selfProcess-dialog div.selfProcess_firstContent {
+    background-color: rgb(255 255 255);
+    width: 95%;
+    /* min-height: calc(100% - 250px);
+    height: calc(100% - 250px); */
+    position: relative;
+    margin: 35px 12px 12px 12px;
+    box-shadow: 1px 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+
+md-dialog.selfProcess-dialog div.selfProcess_secondContent {
+    background-color: rgb(255 255 255);
+    width: 95%;
+    /* height: 165px;
+    min-height: 150px; */
+    position: relative;
+    margin: 35px 12px 12px 12px;
+    box-shadow: 1px 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+md-dialog.selfProcess-dialog div.selfProcess_secondContent div.c3_chart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+md-dialog.selfProcess-dialog div.selfProcess_secondContent div.c3_chart > svg {
+    flex: 1;
+}
+
+md-dialog.selfProcess-dialog div.node_circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50px;
+    top: 34%;
+    margin-top: 55px;
+    border: 2px solid #6f6d6dc4;
+    position: relative;
+    margin-left: 15px;
+}
+md-dialog.selfProcess-dialog div.node_circle > span.node_name {
+    position: absolute;
+    margin-top: 30px;
+    margin-left: 40px;
+}
+
+md-dialog.selfProcess-dialog div.footer {
+    margin: 5px;
+    width: 99%;
+    height: 40px;
+    padding: 10px;
+}
+
+/*selfProcess-dialog 하단 검색 컨테이너*/
+md-dialog.selfProcess-dialog div.search-container{
+    position: relative;
+    width: auto;
+    min-width: 139px;
+    z-index: 78;
+    overflow: hidden;
+    height: 42px;
+    transition: height 0.4s;
+    background-color: rgb(255, 255, 255);
+}
+md-dialog.selfProcess-dialog div.date-container{
+    margin-top: 10px;
+    margin-left: 20px;
+}
+md-dialog.selfProcess-dialog div.date-container > span{
+    font-size: 11px;
+    margin: auto 0px auto 5px;
+}
+md-dialog.selfProcess-dialog div.date-container > button{
+    height: 20px !important;
+}
+md-dialog.selfProcess-dialog div.date-container input.mini-ticket-search{
+    font-size: 13px;
+    width: 200px;
+    padding: 0px;
+    height: 31px;
+    margin-left: 10px;
+}
+md-dialog.selfProcess-dialog div.date-container input.mini-ticket-search::placeholder{
+    font-size: 13px;
+}
+md-dialog.selfProcess-dialog md-input-container{
+    width: 160px;
+    font-size: 13px;
+    margin: 0 0 0 0;
+}
+md-dialog.selfProcess-dialog md-input-container svg{
+    height:18px;
+    margin-top: 4px;
+}
+
+md-dialog.selfProcess-dialog div.selfProcessBox p.requestDoc {
+    height: 100%;
+    padding: 20px;
+    color: #646363;
+}
+
+/* table */
+div.table-wrapper {
+    padding-top: 15px;
+    height: 100%;
+}
+div.self-process-table{
+    width: 100%;
+    overflow-x: auto;
+    height: 100%;
+}
+table.md-table{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    /* border-radius: 11px; */
+}
+div.table-container div.self-process-table > table > thead > th {
+    position: sticky;
+    top: 0;
+    background-color: #f5f5f5; /* 고정된 thead의 배경색, 필요에 따라 조절 */
+    z-index: 1; /* 다른 요소 위에 표시되도록 z-index 설정, 필요에 따라 조절 */
+}
+
+div.table-container div.self-process-table > table > tbody > tr:hover{
+    cursor: none;
+    background: none;
+}
+table.md-table tr:hover {
+    cursor: auto; 
+    background-color: initial; 
+}

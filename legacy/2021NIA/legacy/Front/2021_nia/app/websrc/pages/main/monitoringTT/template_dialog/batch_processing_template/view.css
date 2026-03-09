@@ -1,0 +1,223 @@
+md-dialog.batch-dialog{
+    background-color: rgba(245,245,245,1);
+    min-width: 1000px;
+    max-width: 1000px;
+}
+
+div.batchContents{
+    max-width: 1000px;
+    background-color: rgba(245,245,245,1);
+    height: 400px;
+    overflow: hidden;
+    padding: 5px;
+}
+
+
+/* ========================================== */
+table.topas-table tbody.md-body > tr.md-row, table.topas-table tfoot.md-foot > tr.md-row {
+    height: 24px;
+}
+
+table.topas-table thead.md-head > tr.md-row {
+    height: 38px !important;
+}
+
+md-table-pagination.md-table-pagination.ng-isolate-scope {
+    height: 38px;
+}
+md-card.topas-card{
+    width: calc(100% - 16px);
+}
+
+md-content.topas-content{
+    background-color: #ffffff;
+    overflow: hidden;
+}
+md-content.topas-content._md {
+    height: 305px;
+    width: 100%;
+}
+
+table.topas-table tr > th > md-icon > svg {
+    height: 16px;
+    margin: 4px auto;
+    width: 16px;
+}
+
+table.topas-table .slim-cell{
+    height: 2.2em;
+}
+
+table.topas-table.md-table{
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    height: 304px;
+}
+
+table.topas-table thead{
+    display: block;
+}
+table.topas-table tbody{
+    display: block;
+    height: 241px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+table.topas-table th.md-column,
+table.topas-table td.md-cell {
+    font-size: 11px !important;
+}
+table.topas-table td.md-cell div.over-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 16px;
+
+    display: inline-block;
+}
+
+table.topas-table div.overflow-action:hover{
+    overflow: visible !important;
+    width: auto;
+    display: inline-block;
+    background-color: #ffffff;
+    position: relative;
+    outline: solid 1px #adadad;
+    max-width: 1000px !important;
+    padding-right: 5px;
+    cursor: text;
+
+}
+table.topas-table td.md-cell:not(:last-child) div.overflow-action:hover:before{
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    height: 120%;
+    border-left: 2px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
+table.topas-table td.md-cell:last-child div.overflow-action:hover{
+    float: right;
+    background-color: #e8e8e8;
+    padding-left: 5px;
+}
+
+table.topas-table th.md-column:nth-child(1),
+table.topas-table td.md-cell:nth-child(1){
+    min-width: 70px;
+    max-width: 70px;
+}
+table.topas-table th.md-column:nth-child(2),
+table.topas-table td.md-cell:nth-child(2){
+    min-width: 165px;
+    max-width: 165px;
+}
+table.topas-table th.md-column:nth-child(3),
+table.topas-table td.md-cell:nth-child(3){
+    min-width: 165px;
+    max-width: 165px;
+}
+table.topas-table th.md-column:nth-child(4),
+table.topas-table td.md-cell:nth-child(4){
+    min-width: 165px;
+    max-width: 165px;
+}
+table.topas-table th.md-column:nth-child(5),
+table.topas-table td.md-cell:nth-child(5){
+    min-width: 250px;
+    max-width: 250px;
+}
+table.topas-table td.md-cell:nth-child(5) > div{
+    max-width: 194px;
+}
+table.topas-table td.md-cell:nth-child(5) > div:hover:before{
+    width: 194px;
+}
+
+table.topas-table th.md-column:nth-child(6),
+table.topas-table td.md-cell:nth-child(6){
+    min-width: 170px;
+    max-width: 170px;
+}
+table.topas-table td.md-cell:nth-child(6) > div{
+    max-width: 114px;
+}
+table.topas-table td.md-cell:nth-child(6) > div:hover:before{
+    width: 114px;
+}
+
+table.topas-table th.md-column:nth-child(7),
+table.topas-table td.md-cell:nth-child(7){
+    min-width: 170px;
+    max-width: 170px;
+}
+table.topas-table td.md-cell:nth-child(7) > div{
+    max-width: 114px;
+}
+table.topas-table td.md-cell:nth-child(7) > div:hover:before{
+    width: 114px;
+}
+
+table.topas-table th.md-column:nth-child(8),
+table.topas-table td.md-cell:nth-child(8){
+    min-width: 170px;
+    max-width: 170px;
+}
+table.topas-table td.md-cell:nth-child(8) > div{
+    max-width: 114px;
+}
+table.topas-table td.md-cell:nth-child(8) > div:hover:before{
+    width: 114px;
+}
+
+table.topas-table th.md-column:nth-child(9),
+table.topas-table td.md-cell:nth-child(9){
+    min-width: 150px;
+    max-width: 150px;
+}
+table.topas-table td.md-cell:nth-child(9) > div{
+    max-width: 94px;
+}
+table.topas-table td.md-cell:nth-child(9) > div:hover:before{
+    width: 94px;
+}
+
+table.topas-table th.md-column:nth-child(10),
+table.topas-table td.md-cell:nth-child(10){
+    min-width: 250px;
+    max-width: 250px;
+}
+table.topas-table td.md-cell:nth-child(10) > div{
+    max-width: 194px;
+}
+table.topas-table td.md-cell:nth-child(10) > div:hover:before{
+    width: 194px;
+}
+
+.md-button.md-raised.batch-btn{
+    background-color: rgb(255,255,255);
+    margin: 6px 4px;
+}
+
+.md-button.md-raised.batch-btn:disabled i{
+    color: #b7b7b7;
+}
+
+.fa.orange {
+    color: #F7AA17;
+    margin-right: 4px;
+}
+
+.fa.blue {
+    color: #2421c1;
+    margin-right: 4px;
+}
+
+.fa.green {
+    color: #52A43A;
+    margin-right: 4px;
+}

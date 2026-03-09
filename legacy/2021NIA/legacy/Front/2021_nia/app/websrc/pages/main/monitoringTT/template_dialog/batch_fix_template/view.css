@@ -1,0 +1,42 @@
+div.fixContents{
+    background-color: white;
+    padding: 15px 10px 10px 10px;
+    width: 500px;
+    height: 110px;
+}
+div.fixContents span.sub-title{
+    margin: 10px 10px 5px 10px;
+    font-size: 0.9em;
+    font-weight: 900;
+}
+div.fixContents md-input-container.md-block > label{
+    font-size: 0.9rem;
+}
+div.fixContents md-input-container.md-block > input{
+    font-size: 0.9rem;
+    color: #009688 !important;
+}
+div.fixContents md-input-container.md-block textarea{
+    font-size: 0.9rem;
+    color: #009688 !important;
+    overflow: auto;
+    height: 31px;
+    max-height: 31px;
+}
+div.fixContents md-input-container.md-block ::placeholder{
+    font-size: 0.9rem;
+}
+div.fixContents md-input-container:not(.md-input-invalid).md-input-focused .md-input{
+    border-color:#009688;
+}
+div.fixContents md-input-container{
+    margin: 0px 0px 0px 15px;
+    padding: 0 0;
+}
+div.fixContents md-input-container .md-errors-spacer {
+    display:block;
+}
+div.fixContents md-input-container > label {
+    margin: 0;
+}
+

@@ -1,0 +1,103 @@
+<md-dialog class="syslog-list-dialog" id="syslogDialog" ng-cloak style="width: 80%; height: 80%" >
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">SYSLOG 이력조회</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form style="height: 100%;">
+        <md-dialog-content style="height: 100%;">
+            <div layout="column" class="syslog-list-dialog-content">
+                <md-card class="syslog-card" style="margin: 20px;">
+                    <div layout="column" class="syslog-list-search">
+                        <div class="syslog-list-search-info">
+                            <span class="ml-2" style="margin-left: 10px">FROM</span>
+                            <md-input-container class="node-date" style="margin: 0px 0px 0px 25px;">
+                                <input mdc-datetime-picker="" date="true" time="false" type="text"
+                                show-todays-date="" minutes="true" min-date="date" show-icon="true"
+                                edit-input="true" short-time="true" ng-init="null" ng-enter="handleSearch()"
+                                ng-model="searchSyslogData.startDateTime" class=" dtp-no-msclear dtp-input md-input"/>
+                            </md-input-container>
+                            <span style="margin-left: 10px">TO</span>
+                            <md-input-container class="node-date" style="margin: 0px 0px 0px 10px;">
+                                <input  mdc-datetime-picker="" date="true" time="false" type="text"
+                                show-todays-date="" minutes="true" min-date="date" show-icon="true"
+                                edit-input="true" short-time="true" ng-init="null" ng-enter="handleSearch()"
+                                ng-model="searchSyslogData.endDateTime" class=" dtp-no-msclear dtp-input md-input"/>
+                            </md-input-container>
+                            <span class="ml-2">알람번호</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="syslog-title" ng-model="searchSyslogData.alarmno" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                            <span class="ml-2">장비ID</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="syslog-title" ng-model="searchSyslogData.nodeNum" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                            <span class="ml-2">장비명</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <md-select  ng-model="searchSyslogData.equipment" ng-enter="handleSearch()" >
+                                    <md-option ng-value="item.node_nm" ng-repeat="item in equipmentOptions">
+                                        <span>{{item.node_nm}}</span>
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                            <span class="ml-2">장애내용</span>
+                            <md-input-container class="input-container mt-0 ml-2">
+                                <input class="syslog-title" ng-model="searchSyslogData.alarmmsg" type="text" ng-enter="handleSearch()" clear-btn/>
+                            </md-input-container>
+                        </div>
+                        <div class="syslog-list-search-btn">
+                            <md-button class="syslog-list-search-btn" ng-click="exportExcel()" style="font-size: 11px;"><i class="fas fa-file-excel fa-lg" style="color: #008000; margin-right: 2px; font-size: 20px;"></i>엑셀저장</md-button>
+                            <md-button class="syslog-list-search-btn" ng-click="handleSearch()" style="font-size: 11px;">
+                                <i class="fa fa-search fa-lg"></i>
+                            </md-button>
+                            <md-button class="search-option-switch clearBtn ml-2" ng-click="searchClear()" style="margin-right: 50px;">
+                                전체보기
+                            </md-button>
+                        </div>
+                    </div>
+                    <div layout="column" class="syslog-table" id="scrollable" flex>
+                        <table md-table>
+                            <thead md-head>
+                                <tr md-row>
+                                    <th md-column flex="1" class="pr-0"><span>경보 발행 시간</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>알람번호</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>장비ID</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>장비명</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>장애내용</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>인터페이스명</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>SYSLOG 원본 메시지</span></th>
+                                    <th md-column flex="1" class="pr-0"><span>상태</span></th>
+                                </tr>
+                            </thead>
+                            <tbody md-body>
+                                <tr md-row ng-repeat="item in tools.store.niaSysDialogList.list" >
+                                    <td md-cell flex="1" class="pr-0">{{item.alarmtime | dateFormat}}</td>
+                                    <td md-cell flex="1" class="pr-0">{{item.alarmno}}</td>
+                                    <td md-cell flex="1" class="pr-0">{{item.node_num}}</td>
+                                    <td md-cell flex="1" class="pr-0">{{item.node_nm}}</td>
+                                    <td md-cell flex="1" class="pr-0">{{item.alarmmsg}}</td>
+                                    <td md-cell flex="1" class="pr-0">{{item.alarmloc}}</td>
+                                    <td md-cell flex="1" class="pr-0" style="overflow: auto;">{{item.etc}}</td>
+                                    <td md-cell flex="1" class="pr-0" ng-style="{'color': item.status === '발생' ? 'blue' : 'red'}">{{item.status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <md-table-pagination class="mt-2" md-limit="historyPagingTable.limit"
+                                         md-limit-options="[30,50,100,200]" md-page="historyPagingTable.selected"
+                                         md-total="{{tools.store.niaSysDialogList.total || 0}}" md-page-select="true" md-boundary-links="true">
+                    </md-table-pagination>
+                </md-card>
+            </div>
+            <div class="modalFooter">
+                <!-- <md-button class="md-raised base-btn-2 nia-dark-button"  ng-click="onClickRestore()">복원</md-button> -->
+                <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()">닫기</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

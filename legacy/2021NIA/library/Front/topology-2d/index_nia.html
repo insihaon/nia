@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Expires" content="-1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="No-Cache">
+    <title>NIA Network Topology</title>
+    <link rel="stylesheet" href="assets/fonts/ftstcall/styles.css">
+    <link rel="stylesheet" href="assets/css/jsutcontext.css">
+    <link rel="stylesheet" href="assets/css/style_nia.css">
+    <script type="text/javascript" src="js/d3.v4.js"></script>
+    <script type="text/javascript" src="js/d3-tip.js"></script>
+    <script type="text/javascript" src="js/dat.gui.min.js"></script>
+    <script type="text/javascript" src="global.js"></script>
+    <script type="text/javascript" src="loader.js"></script>
+    <script>
+        window.libDev = true
+    </script>
+</head>
+
+<body>
+    <div class="background"></div>
+    <svg viewBox="0 0 1920 1080" id="topology_container" style="border: 1px solid gray;" class="jctx-host jctx-id-foo">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" orient="auto" markerWidth="3" markerHeight="3" refX="23" refY="5">
+                <path fill="red" d="M 0 0 L 10 5 L 0 10 z"></path>
+            </marker>
+        </defs>
+    </svg>
+
+    <div class="controls">
+        <label for="tx"><span>0 </span>translateX<span>80</span></label>
+        <input type="range" id="tx" min="0" max="80" value="0" />
+        <label for="scale"><span>0</span>scale<span>2</span></label>
+        <input type="range" id="scale" min="0" max="2" step=".05" value="1" />
+        <label for="deg"><span>-360</span>rotate<span>360</span></label>
+        <input type="range" id="deg" min="-360" max="360" value="0" />
+    </div>
+
+    <div class="gripper"></div>
+    <div class="properties flex-column" style="display: none;">
+        <div class="flex-item">
+            <div>NODE INFOMATION</div>
+            <table>
+                <thead>
+                    <tr class="alias">
+                        <th>ALIAS</th>
+                        <th>Device1</th>
+                        <th>Device2</th>
+                    </tr>
+                </thead>
+                <tr class="id">
+                    <td>ID</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="ip">
+                    <td>IP</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="type">
+                    <td>TYPE</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="mac">
+                    <td>MAC</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="alarm">
+                    <td>ALARM</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="port">
+                    <td>PORT</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="flex-item">
+            <div>LINK INFOMATION</div>
+            <table>
+                <tr class="link_alias">
+                    <td>ALIAS</td>
+                    <td></td>
+                </tr>
+                <tr class="speed">
+                    <td>SPEED</td>
+                    <td></td>
+                </tr>
+                <tr class="status">
+                    <td>STATUS</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="flex-item">
+            <div id="template-PTN160ALU">
+                <div class="template TSS-160">
+                    <div class="title-wapper">
+                        <div class="left">TSS-160 (${시스템명})</div>
+                        <div class="right">${설치일자}</div>
+                    </div>
+                    <div class="table-wapper">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="S40" rowspan="2">40 FAN</td>
+                                    <td class="S37" colspan="2">37 PSF</td>
+                                    <td colspan="2"></td>
+                                    <td class="S39" colspan="2">39 PSF</td>
+                                </tr>
+                                <tr>
+                                    <td class="S1" colspan="3">1 EC160</td>
+                                    <td class="S20" colspan="3">20 EC160</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="8"></td>
+                                    <td class="S19" colspan="3">19 I/O</td>
+                                    <td class="S36" colspan="3">36 I/O(SDH)</td>
+                                </tr>
+                                <tr>
+                                    <td class="S18" colspan="3">18 I/O</td>
+                                    <td class="S35" colspan="3">35 I/O(SDH)</td>
+                                </tr>
+                                <tr>
+                                    <td class="S17" colspan="6">17 I/O</td>
+                                </tr>
+                                <tr>
+                                    <td class="S16" colspan="6">16 I/O</td>
+                                </tr>
+                                <tr>
+                                    <td class="S15" colspan="6">15 I/O</td>
+                                </tr>
+                                <tr>
+                                    <td class="S14" colspan="6">14 I/O</td>
+                                </tr>
+                                <tr>
+                                    <td class="S13" colspan="6">13 I/O</td>
+                                </tr>
+                                <tr>
+                                    <td class="S12" colspan="6">12 I/O</td>
+                                </tr>
+                                <tr>
+                                    <td class="S41" rowspan="2">41 FAN</td>
+                                    <td class="S11" colspan="6">11 MT160</td>
+                                </tr>
+                                <tr>
+                                    <td class="S10" colspan="6">10 MT160</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="more-info"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- stable 모드일 경우 만 jctx 를 로드 한다. loader.js 참고 -->
+    <ul class="jctx jctx-id-foo jctx-black jctx-black-shadow">
+        <li data-action="info">상세보기</li>
+        <li data-action="save">저장</li>
+        <li data-action="reload">새로고침</li>
+        <hr>
+        <li data-action="request1">영향회선보기</li>
+        <li data-action="request2" class="disabled">경보이력보기</li>
+    </ul>
+
+    <script>
+        function handleMenuAction(action) {
+            console.log("Action required: ", action);
+        }
+    </script>
+
+</body>
+
+</html>

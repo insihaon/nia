@@ -1,0 +1,51 @@
+md-dialog.link-detail-dialog div.link-detail-dialog-content {
+    font-size: 0.8em;
+}
+
+md-dialog.link-detail-dialog div.link-detail-dialog-content div.link-info-container div.link-detail-info {
+    display: flex;
+}
+
+md-dialog.link-detail-dialog div.link-detail-dialog-content div.link-info-container div.link-detail-info {
+    display: grid;
+}
+
+md-dialog.link-detail-dialog table.node-link-table tr {
+    height: 55px;
+    border-bottom: 1px dotted #5c5c5c29;
+}
+md-dialog.link-detail-dialog table.node-link-table tr:last-child {
+    border-bottom: none;
+}
+md-dialog.link-detail-dialog table.node-link-table td.userInfoKind {
+    text-align: center;
+    padding-right: 30px;
+    padding-left: 30px;
+    border-right: 1px dotted #5c5c5c29;
+    border-left: 1px dotted #5c5c5c29;
+    background-color: #c1d3f624;
+}
+
+md-dialog.link-detail-dialog table.node-link-table tr > td > input{
+    margin-left: 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+}
+md-dialog.link-detail-dialog table.node-link-table tr > td > input:focus {
+    border-bottom: 1.5px solid rgba(17, 16, 62, 0.75);
+}
+
+md-dialog.link-detail-dialog table.node-link-table tr > td > input:disabled {
+    background-color: #fff;
+}
+
+md-dialog.link-detail-dialog table.node-link-table tr > td > md-select{
+    margin: 0px 0px 0px 15px;
+    border: none;
+    border-bottom: 1px solid rgb(224 228 239);
+}
+
+md-dialog.link-detail-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}

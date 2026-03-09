@@ -1,0 +1,25 @@
+{
+    "__body": {},
+    "config": {
+        "url": "/opermgmt/asmgmt/viewListAsHist.model",
+        "param": {
+            "pageIndex": 1,
+            "pageUnit": 0,
+            "pageSize": 0,
+            "firstIndex": 1,
+            "lastIndex": 10,
+            "recordCountPerPage": 10,
+            "rowNo": 0,
+            "url": "/opermgmt/asmgmt/viewListAsHist.model",
+            "totalCount": 0,
+            "bUploadFlag": false
+        },
+        "receivedTime": "2024-08-05 10:28:29.459",
+        "fetch": "error-fetch('/opermgmt/asmgmt/viewListAsHist.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/opermgmt/asmgmt/viewListAsHist.model\",\"totalCount\":0,\"bUploadFlag\":false}', 'method': 'POST' })",
+        "errorThrown": "Method Not Allowed",
+        "cmd": "{\"url\": \"/opermgmt/asmgmt/viewListAsHist.model\", \"sqlId\": \"\", \"param\": \"{\\\"pageIndex\\\": 1, \\\"pageUnit\\\": 0, \\\"pageSize\\\": 0, \\\"firstIndex\\\": 1, \\\"lastIndex\\\": 10, \\\"recordCountPerPage\\\": 10, \\\"rowNo\\\": 0, \\\"url\\\": \\\"/opermgmt/asmgmt/viewListAsHist.model\\\", \\\"totalCount\\\": 0, \\\"bUploadFlag\\\": false}\"}",
+        "duration": 31,
+        "jsonFileName": "opermgmtasmgmtviewListAsHistmodel_pageIn1pageUn0pageSi0firstI1lastIn10record10rowNo0urlopermgmtastotalC0bUploaFalse.json",
+        "oldJsonFileName": "b3Blcm1nbXQvYXNtZ210L3ZpZXdMaXN0QXNIaXN0Lm1vZGVs_MXwwfDB8MXwxMHwxMHwwfC9vcGVybWdtdC98MHxmYWxzZQ.json"
+    }
+}

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Vert.x with SockJS</title>
+    <!--<script src="js/sockjs-1.0.0.min.js"></script>-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>-->
+
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>-->
+    <script src="angular.min.js"></script>
+    <script src="sockjs.min.js"></script>
+    <script src="vertx-eventbus.js"></script>
+    <script src="../moment/moment.min.js"></script>
+    <script src="../moment/moment-with-locales.min.js"></script>
+
+</head>
+<style>
+    div.text {
+        width: 200px;
+        float: left;
+    }
+
+    input[type="text"] {
+        width: 400px;
+    }
+
+    input[type="text"].idText {
+        width: 187px;
+    }
+
+    h3 {
+        display: inline-block;
+        margin-top: 15px;
+        margin-right: 30px;
+    }
+
+    body {
+        overflow: auto;
+        min-width: 950px;
+    }
+</style>
+<body ng-app="myApp" ng-controller="myCtrl" ng-init="init()">
+
+<h3>Vert.x with SockJS{{dd}}</h3><span>{{current_value}}</span><input type="button" ng-show="isShowReconnect" ng-click="reConnect()" value="재접속" style="margin-left:10px;">
+
+<div>
+    <!--<div class="text">Only Fake 티켓 모드</div>-->
+    <div class="text">소켓 테스트 모드 만 이벤트 발생</div>
+    <input type="checkbox" ng-model="sendOnlyDevUser">
+    <br>
+
+    <div class="text">ticket</div>
+    <select ng-model="data"
+            ng-init="data = tickets[0]"
+            ng-options="('RCA TICKET No. ' + ticket.ticket_id) for ticket in tickets">
+    </select>
+
+    <br>
+
+    <div class="text">ticket_id</div>
+    <input class="idText" type="text" ng-model="id"> ~
+    <input class="idText" type="text" ng-model="range">
+    <input type="button" ng-click="push()" value="Push">
+    <br>
+
+    <div class="text">ticket_type</div>
+    <input type="text" ng-model="data.ticket_type">
+    <br>
+
+    <div class="text">ticket_al_id</div>
+    <input type="text" ng-model="data.ticket_al_id">
+    <br>
+
+    <div class="text">root_cause_sysnamez</div>
+    <input type="text" ng-model="data.root_cause_sysnamez">
+    <br>
+
+    <div class="text">root_cause_officea</div>
+    <input type="text" ng-model="data.root_cause_officea">
+    <br>
+
+    <div class="text">root_cause_sysnamea</div>
+    <input type="text" ng-model="data.root_cause_sysnamea">
+    <br>
+
+    <div class="text">root_cause_type</div>
+    <input type="radio" ng-model="data.root_cause_type" value="CableCut"><label>CableCut</label>
+    <input type="radio" ng-model="data.root_cause_type" value="Linkcut"><label>Linkcut</label>
+    <input type="radio" ng-model="data.root_cause_type" value="NodeFail"><label>NodeFail</label>
+    <input type="radio" ng-model="data.root_cause_type" value="PowerFail"><label>PowerFail</label>
+    <input type="radio" ng-model="data.root_cause_type" value="UnitFail"><label>UnitFail</label>
+    <input type="radio" ng-model="data.root_cause_type" value="Etc"><label>Etc</label>
+    <input type="text" ng-model="data.root_cause_type">
+    <br>
+
+    <div class="text">officenamea</div>
+    <input type="text" ng-model="data.officenamea">
+    <br>
+
+    <div class="text">cluster_no</div>
+    <input type="text" ng-model="data.cluster_no">
+    <br>
+
+    <div class="text">fault_time</div>
+    <input type="text" ng-model="data.fault_time">
+    <br>
+
+    <div class="text">root_cause_portz</div>
+    <input type="text" ng-model="data.root_cause_portz">
+    <br>
+
+    <div class="text" disabled="true">ticket_generation_time</div>
+    <input type="text" ng-model="data.ticket_generation_time" disabled="true"><input type="datetime-local" ng-model="pickDate" ng-change="changeTime(pickDate)" disabled="true">
+    <input type="button" ng-click="resetTime()" value="현재시간" disabled="true">
+    <br>
+
+    <div class="text">officenamez</div>
+    <input type="text" ng-model="data.officenamez">
+    <br>
+
+    <div class="text">root_cause_code</div>
+    <input type="text" ng-model="data.root_cause_code">
+    <br>
+
+    <div class="text">root_cause_porta</div>
+    <input type="text" ng-model="data.root_cause_porta">
+    <br>
+
+    <div class="text">root_cause_officez</div>
+    <input type="text" ng-model="data.root_cause_officez">
+    <br>
+
+    <div class="text">status</div>
+    <input type="radio" ng-model="data.status" value="INIT"><label>INIT</label>
+    <input type="radio" ng-model="data.status" value="ACK"><label>ACK</label>
+    <input type="radio" ng-model="data.status" value="FIX"><label>FIX</label>
+    <input type="radio" ng-model="data.status" value="FIN"><label>FIN</label>
+    <input type="radio" ng-model="data.status" value="AUTO_FIN"><label>AUTO_FIN</label>
+    <input type="radio" ng-model="data.status" value="UNKNOWN"><label>UNKNOWN</label>
+    <!--<input type="text" ng-model="data.status">-->
+    <br>
+
+    <div class="text">child_count</div>
+    <input type="text" ng-model="data.child_count">
+    <br>
+
+</div>
+<br>
+
+<div>
+    <h3>Message 공지</h3><br>
+    <textarea ng-model="message" cols="80" rows="5"></textarea>
+    <input type="button" ng-click="pushMessage()" value="공지" style="margin-left:10px;">
+</div>
+
+
+</body>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', async function ($scope, $timeout) {
+        this.db = null;
+        $scope.tickets = null;
+
+        function loadDB() {
+            return new Promise((resolve, reject) => {
+                let request = window.indexedDB.open('RCA_DB', 1);
+                request.onsuccess = ( e => {
+                    this.db = e.target.result;
+                    resolve(e.target.result);
+                }).bind(this);
+            });
+        }
+        function getAll(storeName) {
+            return new Promise(((resolve, reject) => {
+                let { db } = this;
+
+                if (db) {
+                    let request = db.transaction(storeName).objectStore(storeName).openCursor(null, IDBCursor.NEXT);
+                    let results = {};
+                    request.onsuccess = ( e => {
+                        let cursor = e.target.result;
+                        if (cursor) {
+                            console.log("Key:" + cursor.key + " Value:" + cursor.value);
+                            results[cursor.key] = cursor.value;
+                            cursor.continue();
+                        } else {
+                            resolve(results);
+                        }
+                    }).bind(this);
+                    request.onerror = e => reject(e.target.error);
+                }
+            }).bind(this));
+        }
+        $scope.sendOnlyDevUser = true;
+        // $scope.tickets = JSON.parse(sessionStorage.getItem('Ticket'));
+
+        if (!$scope.tickets || $scope.tickets.length <= 0) {
+            $scope.tickets =
+            //     [{
+            //     "ticket_id": 90,
+            //     "is_new_ticket": true,
+            //     "ticket_type": "CIT",
+            //     "ticket_al_id": 1119,
+            //     "root_cause_sysnamez": "JB전주교대전산실-PTS-JEONJUEDU-UNIV",
+            //     "root_cause_officea": "R03169",
+            //     "root_cause_sysnamea": "북전주-PTS-0538-01-01",
+            //     "root_cause_type": "CableCut",
+            //     "officenamea": "북전주국사",
+            //     "cluster_no": 1060059,
+            //     "fault_time": 1511671473000,
+            //     "root_cause_portz": "r1sr1sl2/ETHLocPort#8#1",
+            //     "ticket_generation_time": new Date().getTime(),
+            //     "officenamez": "전주국사",
+            //     "root_cause_code": "NNI",
+            //     "root_cause_porta": "r1sr1sl19/ETHLocPort#20#1",
+            //     "root_cause_officez": "R03151",
+            //     "status": "INIT",
+            //     "total_related_alarm_count": "2",
+            //     "total_alarm_count": "50",
+            //     "ticket_el_size": 220,
+            //     child_count: 2
+            // }];
+            [{
+                "ticket_type": "RT",
+                "root_cause_sysnamez": "여의도-MSPP-L-1713-01-01-신촌S64M001",
+                "root_cause_checka": 1,
+                "total_related_alarm_count": 1,
+                "influencecircuit_count": 0,
+                "nature_restoration": "0",
+                "root_cause_type": "Linkcut",
+                "officenamea": "신촌국사",
+                "ticket_update_time": 1573106522000,
+                "fault_time": 1573005747000,
+                "root_cause_metypez": "MSPP",
+                "root_cause_sys_location": "A",
+                "ticket_generation_time": 1573105434720,
+                "root_cause_porta": "S11.B-7-1",
+                "ticket_rca_result_dtl_code": "DS3 신호 장애",
+                "root_cause_officez": "R00447",
+                "ticket_rca_type": "UNI_Linkcut",
+                "ticket_al_id": "335541",
+                "total_alarm_count": 102,
+                "ticket_rca_result_code": "MSPP_SVC_DS_ERR",
+                "root_cause_equip_typez": "MSPP3HTF",
+                "child_count": 72,
+                "type_text": "링크",
+                "root_cause_officea": "R00420",
+                "root_cause_sysnamea": "신촌-MSPP-L-0343-02-02-여의도S64M001",
+                "root_cause_orgz_2": "서울남부유선운용센터",
+                "root_cause_orgz_3": "강남전송망팀(집중)",
+                "root_cause_checkz": 0,
+                "ticket_id": "233043",
+                "root_cause_orgz_1": "강남네트워크운용본부",
+                "root_cause_orga_3": "신촌운용팀(집중)",
+                "cluster_no": "5126589",
+                "root_cause_orga_1": "강북네트워크운용본부",
+                "work_fail": "0",
+                "root_cause_orga_2": "서울중부유선운용센터",
+                "root_cause_portz": "",
+                "officenamez": "여의도국사",
+                "root_cause_code": "UNI",
+                "ticket_fm_nonfm": "FM",
+                "is_new_ticket": false,
+                "handling_time": 1573105434753,
+                "root_cause_metypea": "MSPP",
+                "root_cause_equip_typea": "MSPP3HTF",
+                "handling_user": "AI",
+                "status": "INIT",
+                "ticket_el_size": 220
+            }];
+        }
+
+
+
+        $scope.init = function () {
+            //eventBus = new EventBus('http://localhost:8084/eventbus');
+            //eventBus.onopen = function () {
+            //eventBus.publish('in', 'jiseok');
+//            document.getElementById('current_value').innerHTML = "입장하셨습니다.<br>";
+            registerHandler();
+            //}
+        };
+
+
+        $scope.$watch('data', function () {
+            $scope.pickDate = new Date($scope.data.ticket_generation_time);
+            $scope.id = angular.copy($scope.data.ticket_id);
+        });
+
+        function registerHandler() {
+            $scope.eventBus = new EventBus('http://' + window.location.hostname + ':8084/eventbus');
+
+            $scope.eventBus.onopen = function () {
+                $scope.isShowReconnect = false;
+                $scope.current_value = '소켓서버 접속완료';
+                $scope.$apply();
+            };
+            $scope.eventBus.onclose = function () {
+                $scope.isShowReconnect = true;
+                $scope.current_value = '소켓서버 접속끊김';
+                $scope.$apply();
+            };
+
+//            $scope.eventBus.onopen = function () {
+//
+//                $scope.eventBus.registerHandler('out', function (error, message) {
+//                    const data = message.body;
+//                    var dateTime = new Date();
+//                    document.getElementById('current_value').innerHTML = document.getElementById('current_value').innerHTML + "<br>[" + dateTime.getHours() + ":" + dateTime.getMinutes()+ ":" + dateTime.getSeconds() + "]  " + data['msg'];
+//                });
+//                $scope.eventBus.registerHandler('session', function (error, message) {
+//                    const data = message.body;
+//                    document.getElementById('current_value').innerHTML = document.getElementById('current_value').innerHTML + "<br>" + data;
+//                });
+//                $scope.eventBus.registerHandler('ticket', function (error, message) {
+//                    const data = message.body;
+//                    document.getElementById('current_value').innerHTML = document.getElementById('current_value').innerHTML + "<br>" + data;
+//                });
+//            }
+        }
+
+//        $scope.ddd.getTime();
+        $scope.changeTime = function (date) {
+            if (date) {
+                $scope.data.ticket_generation_time = date.getTime();
+            }
+        };
+        $scope.push = function () {
+            $scope.resetTime();
+            if ($scope.data.ticket_id >= $scope.range && $scope.range != '') {
+                alert('기준 ticket_id보다 크게 입력하십시오...');
+                return;
+            }
+
+            var body = {
+                event_type: 'TICKET_NEW',
+                data: [],//$scope.data
+                sendOnlyDevUser: $scope.sendOnlyDevUser
+            };
+
+            if ($scope.range == '') {
+//                $scope.data.ticket_id = parseInt($scope.data.ticket_id);
+                $scope.data.is_new_ticket = ($scope.data.status == 'INIT') ? true : false;
+                var pushTicket = angular.copy($scope.data);
+                pushTicket.ticket_id = $scope.id;
+
+                if ($scope.data.ticket_id != $scope.id) {
+                    pushTicket.original_ticket_id = $scope.data.ticket_id;
+                }
+
+                pushTicket.ticket_update_time = new Date().getTime();
+                body.data = [pushTicket];
+                $scope.eventBus.publish('broadcastTicket', body);
+                return;
+            }
+
+            for (var i = 0; i <= parseInt($scope.range) - parseInt($scope.id); i++) {
+//                var newTicket = getTicket($scope.data);
+                var newTicket = angular.copy($scope.data);
+                newTicket.ticket_id = (parseInt($scope.id) + i).toString();
+
+                if ($scope.data.ticket_id != $scope.id) {
+                    newTicket.original_ticket_id = $scope.data.ticket_id;
+                }
+
+//                $scope.eventBus.publish('broadcastTicket', {data:[newTicket]});
+                body.data.push(newTicket);
+                if (parseInt($scope.range) - parseInt($scope.id) > 50
+                    && i > 0 && i % 50 == 0) {
+                    $scope.eventBus.publish('broadcastTicket', body);
+                    body.data = [];
+                }
+            }
+            if (body.data.length > 0) {
+                $scope.eventBus.publish('broadcastTicket', body);
+            }
+        };
+
+        function getTicket(obj) {
+            var newTk = {};
+            for (var i in obj) {
+                newTk[i] = obj[i];
+            }
+            return newTk;
+        }
+
+        $scope.resetTime = function () {
+            $scope.data.ticket_generation_time = new Date().getTime();
+            $scope.pickDate = new Date($scope.data.ticket_generation_time);
+        };
+
+        $scope.reConnect = function () {
+            registerHandler();
+        };
+        $scope.pushMessage = function () {
+            var txt;
+            var pw = prompt("비밀번호를 입력하세요:", "");
+            if (pw == null) {
+                return;
+            } else if (pw == "") {
+                txt = "User cancelled the prompt.";
+            } else {
+                txt = "Hello " + pw + "! How are you today?";
+            }
+
+            var message = '[' + moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss') + '] ' + $scope.message;
+            $scope.eventBus.publish('in', {data: message});
+        };
+
+        await loadDB();
+        $scope.store = await getAll('TicketStore');
+        // $scope.tickets = $scope.store['Ticket']['value'];
+        $scope.tickets = Object.values($scope.store).map(v=>v.value);
+        $scope.data = $scope.tickets[0];
+        $scope.id = $scope.data.ticket_id;
+        $scope.message = 'WEB UI 배포를 시작합니다. 5분이내 작업이 완료 될 예정입니다. \r\n배포가 완료되었습니다. 새로고침 하시면 업데이트 된 시스템으로 모니터링이 가능합니다.' ;
+        $scope.pickDate = new Date($scope.data.ticket_generation_time);
+        $scope.current_value = '';
+        $scope.isShowReconnect = false;
+        $scope.eventBus;
+        $scope.range = '';
+
+        $scope.$apply();
+
+        $scope.testPush = () => {
+            let list = [{"properties":{"influencecircuit_count":"0","total_alarm_count":"2","child_count":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233721","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:23","influencecircuit_count":"0","total_alarm_count":"4","child_count":"1","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233723","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:30","influencecircuit_count":"0","total_alarm_count":"3","child_count":"1","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:31","influencecircuit_count":"0","total_alarm_count":"6","child_count":"2","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233727","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:34","influencecircuit_count":"0","total_alarm_count":"4","child_count":"2","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:37","influencecircuit_count":"0","total_alarm_count":"5","child_count":"3","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233730","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233731","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233732","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:44","influencecircuit_count":"0","total_alarm_count":"6","child_count":"4","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233734","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:47","influencecircuit_count":"0","total_alarm_count":"7","child_count":"3","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:48","influencecircuit_count":"0","total_alarm_count":"8","child_count":"4","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:49","influencecircuit_count":"0","total_alarm_count":"9","child_count":"5","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233738","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:52","influencecircuit_count":"0","total_alarm_count":"7","child_count":"5","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233740","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:56","influencecircuit_count":"0","total_alarm_count":"10","child_count":"6","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:57","influencecircuit_count":"0","total_alarm_count":"8","child_count":"6","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:03:59","influencecircuit_count":"0","total_alarm_count":"12","child_count":"7","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233744","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:01","influencecircuit_count":"0","total_alarm_count":"9","child_count":"7","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233746","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:06","influencecircuit_count":"0","total_alarm_count":"10","child_count":"8","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:08","influencecircuit_count":"0","total_alarm_count":"13","child_count":"8","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233749","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:10","influencecircuit_count":"0","total_alarm_count":"13","child_count":"9","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:12","influencecircuit_count":"0","total_alarm_count":"14","child_count":"9","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233752","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:16","influencecircuit_count":"0","total_alarm_count":"16","child_count":"10","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:19","influencecircuit_count":"0","total_alarm_count":"19","child_count":"11","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:20","influencecircuit_count":"0","total_alarm_count":"14","child_count":"10","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233756","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:24","influencecircuit_count":"0","total_alarm_count":"21","child_count":"12","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:25","influencecircuit_count":"0","total_alarm_count":"15","child_count":"11","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:27","influencecircuit_count":"0","total_alarm_count":"22","child_count":"13","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233760","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233761","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:34","influencecircuit_count":"0","total_alarm_count":"24","child_count":"14","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:35","influencecircuit_count":"0","total_alarm_count":"16","child_count":"12","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233764","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:38","influencecircuit_count":"0","total_alarm_count":"17","child_count":"13","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233766","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233767","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:42","influencecircuit_count":"0","total_alarm_count":"25","child_count":"15","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:43","influencecircuit_count":"0","total_alarm_count":"18","child_count":"14","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:44","influencecircuit_count":"0","total_alarm_count":"19","child_count":"15","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:46","influencecircuit_count":"0","total_alarm_count":"27","child_count":"16","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233772","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:48","influencecircuit_count":"0","total_alarm_count":"20","child_count":"16","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233774","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:52","influencecircuit_count":"0","total_alarm_count":"28","child_count":"17","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233776","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:55","influencecircuit_count":"0","total_alarm_count":"22","child_count":"17","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233778","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:04:57","influencecircuit_count":"0","total_alarm_count":"29","child_count":"18","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233780","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:02","influencecircuit_count":"0","total_alarm_count":"31","child_count":"19","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233782","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:03","influencecircuit_count":"0","total_alarm_count":"23","child_count":"18","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:04","influencecircuit_count":"0","total_alarm_count":"25","child_count":"19","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:06","influencecircuit_count":"0","total_alarm_count":"26","child_count":"20","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233786","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:09","influencecircuit_count":"0","total_alarm_count":"32","child_count":"20","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:11","influencecircuit_count":"0","total_alarm_count":"33","child_count":"21","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233789","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:14","influencecircuit_count":"0","total_alarm_count":"27","child_count":"21","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:17","influencecircuit_count":"0","total_alarm_count":"28","child_count":"22","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:18","influencecircuit_count":"0","total_alarm_count":"35","child_count":"22","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233793","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:22","influencecircuit_count":"0","total_alarm_count":"30","child_count":"23","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233795","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:24","influencecircuit_count":"0","total_alarm_count":"31","child_count":"24","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233797","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:26","influencecircuit_count":"0","total_alarm_count":"33","child_count":"25","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:27","influencecircuit_count":"0","total_alarm_count":"38","child_count":"23","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233800","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:29","influencecircuit_count":"0","total_alarm_count":"41","child_count":"24","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233802","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:31","influencecircuit_count":"0","total_alarm_count":"34","child_count":"26","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:32","influencecircuit_count":"0","total_alarm_count":"42","child_count":"25","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:34","influencecircuit_count":"0","total_alarm_count":"35","child_count":"27","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:36","influencecircuit_count":"0","total_alarm_count":"37","child_count":"28","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233807","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:39","influencecircuit_count":"0","total_alarm_count":"39","child_count":"29","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:42","influencecircuit_count":"0","total_alarm_count":"40","child_count":"30","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233724","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233810","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"ticket_update_time":"2019-11-12 11:05:44","influencecircuit_count":"0","total_alarm_count":"43","child_count":"26","nature_restoration":"0","related_alarm_count":"1"},"ticketId":"233720","eventType":"TICKET_MERGE","ticketStatus":null,"value":null,"isResult":false}
+                ,{"properties":{"influencecircuit_count":"0","total_alarm_count":"1","child_count":"0","related_alarm_count":"1"},"ticketId":"233812","eventType":"TICKET_NEW","ticketStatus":null,"value":null,"isResult":false}
+            ];
+            debugger;
+            for(var i=0;i<list.length;i++) {
+                $scope.eventBus.publish('broadcastTicket', list[i]);
+            }
+
+        };
+
+    });
+</script>
+</html>

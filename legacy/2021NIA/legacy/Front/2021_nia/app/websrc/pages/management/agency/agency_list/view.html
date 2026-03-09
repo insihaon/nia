@@ -1,0 +1,80 @@
+<md-dialog class="agency-list-dialog" id="agencyList" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()">이용기관</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <form>
+        <md-dialog-content>
+            <div layout="column" class="agency-list-dialog-content">
+                <md-card class="agency-card" style="margin: 20px;">
+                    <div layout="column" class="agency-list-search">
+                        <div class="agency-list-search-info">
+                            <span class="agency-name-title">기관명</span>
+                            <md-input-container class="input-container">
+                                <input class="agency-name" type="text" ng-model="searchagencyList.NrenName" ng-enter="handleSearch()" clear-btn>
+                            </md-input-container>
+                            <span class="agency-nodetitle">노드명</span>
+                            <md-input-container class="input-container">
+                                <input class="agency-node" type="text" ng-model="searchagencyList.NodeId" ng-enter="handleSearch()" clear-btn>
+                            </md-input-container>
+                            <span class="agency-user-id-title">고객ID</span>
+                            <md-input-container class="input-container">
+                                <input class="agency-user-id" type="text" ng-model="searchagencyList.CustomerId" ng-enter="handleSearch()" clear-btn>
+                            </md-input-container>
+                        </div>
+                        <div class="agency-btn-container">
+                            <md-button class="btn-float" ng-click="exportExcel()"><i class="fas fa-file-excel fa-lg" ng-enter="handleSearch()" style="color: #008000; margin-right: 2px; font-size: 20px;"></i>엑셀저장</md-button>
+                            <md-button class="btn-float" ng-click="handleSearch()">
+                                <i class="fa fa-search fa-lg"></i>
+                            </md-button>
+                            <md-button class="btn-float" ng-click="searchClear()" style="margin-right: 50px;">
+                                전체보기
+                            </md-button>
+                        </div>
+                    </div>
+                    <div layout="column" class="agency-table" id="scrollable">
+                        <table md-table>
+                            <thead md-head>
+                                <tr md-row>
+                                    <th md-column md-column-size="70" class="pr-0"><span>번호</span></th>
+                                    <th md-column md-column-size="150" class="pr-0"><span>기관명</span></th>
+                                    <th md-column md-column-size="200" class="pr-0"><span>노드명</span></th>
+                                    <th md-column md-column-size="200" class="pr-0"><span>I/F ID</span></th>
+                                    <th md-column md-column-size="200" class="pr-0"><span>I/F명</span></th>
+                                    <th md-column md-column-size="100" class="pr-0"><span>대역폭<br>(Gbps)</span></th>
+                                    <th md-column md-column-size="200" class="pr-0"><span>고객ID</span></th>
+                                    <th md-column md-column-size="200" class="pr-0"><span>이메일</span></th>
+                                </tr>
+                            <thead>
+                            <tbody md-body>
+                            <tr md-row ng-repeat="item in agencyList">
+                                <td md-cell md-column-size="70" class="pr-0">{{ (($scope.historyPagingTable.selected-1)*$scope.historyPagingTable.limit) + $index + 1 }}</td>
+                                <td md-cell md-column-size="150" class="pr-0"><a href='' ng-click="agencyDetail(item)">{{item.nren_name}}</a></td>
+                                <td md-cell md-column-size="200" class="pr-0">{{item.node_id}}</td>
+                                <td md-cell md-column-size="200" class="pr-0">{{item.node_int}}</td>
+                                <td md-cell md-column-size="200" class="pr-0">{{item.if_nm}}</td>
+                                <td md-cell md-column-size="100" class="pr-0">{{item.bandwidth}}</td>
+                                <td md-cell md-column-size="200" class="pr-0">{{item.customer_id}}</td>
+                                <td md-cell md-column-size="200" class="pr-0">{{item.email}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <md-table-pagination class="mt-2" md-limit="historyPagingTable.limit" md-limit-options="[30,50,100,200]" md-page="historyPagingTable.selected"
+                                         md-total="{{agencyList[0].AgencyTotalCount || 0}}" md-page-select="true" md-boundary-links="true">
+                    </md-table-pagination>
+                </md-card>
+            </div>
+            <div class="modalFooter">
+                <md-button class="md-raised base-btn-2 nia-dark-button md-hide" ng-style="{display: tools.store.optionsNodeEditable ? 'inline-block !important':'none'}" ng-disabled="tools.store.optionsNodeEditable != true" ng-click="agencyAdd()">등록</md-button>
+                <md-button class="md-raised dialog-btn base-btn-2 black-btn" ng-click="dlgFunc.cancel()">닫기</md-button>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

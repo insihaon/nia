@@ -1,0 +1,25 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": null,
+        "total": 1,
+        "result": {
+            "code": 401,
+            "message": "Invalid token"
+        }
+    },
+    "config": {
+        "param": {
+            "USER_ID": "T021239112",
+            "MENU_ID": "M0000788",
+            "INT": 999
+        },
+        "receivedTime": "2024-04-03 09:05:59.619",
+        "url": "/dh/api-test/WS_008",
+        "cmd": "{\"url\": \"/dh/api-test/WS_008\", \"sqlId\": \"\", \"param\": \"{\\\"USER_ID\\\": \\\"T021239112\\\", \\\"MENU_ID\\\": \\\"M0000788\\\", \\\"INT\\\": 999}\"}",
+        "duration": 20,
+        "jsonFileName": "dhapitestWS008_USERIDT021239112MENUIDM0000788INT999.json",
+        "oldJsonFileName": "ZGgvYXBpLXRlc3QvV1NfMDA4_VDAyMTIzOTExMnxNMDAwMDc4OHw5OTk.json"
+    }
+}

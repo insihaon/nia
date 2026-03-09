@@ -1,0 +1,93 @@
+md-dialog.port-list-dialog {
+    background-color: rgba(245,245,245,1);
+    max-width: 1210px;
+    max-height: 490px;
+    width: 1210px;
+    height: 800px;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+
+md-dialog.port-list-dialog div.port-list-dialog-content{
+    font-size: 11px;
+    height: calc(100% - 50px);
+}
+
+div.port-list-dialog-content md-card.port-card {
+    height: calc(100% - 40px);
+    min-height: 356px;
+}
+
+md-dialog.port-list-dialog div.port-detail-search{
+    display: inline;
+}
+
+md-dialog.port-list-dialog div.port-detail-search md-input-container.input-container{
+    margin: 0px 0px 0px 10px;
+    width: calc(100% - 630px);
+    min-width: 150px;
+}
+
+md-dialog.port-list-dialog div.port-detail-search md-input-container.input-container input{
+    font-size: 13px;
+    color: #212121;
+}
+
+div.port-list-dialog-content div.port-table {
+    overflow: auto;
+}
+
+div.port-list-dialog-content div.port-table > table{
+    text-align-last: center;
+    overflow: visible;
+}
+
+div.port-list-dialog-content div.port-table > table th.md-column {
+    font-size: 14px;
+}
+
+div.port-list-dialog-content div.port-table table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.port-list-dialog-content div.port-table table > tbody > tr > td{
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 10px !important;
+}
+
+div.port-list-dialog-content div.port-table table > tbody > tr > td:hover {
+    text-overflow: unset;
+    white-space: unset;
+    background-color: white;
+}
+
+div.port-list-dialog-content div.port-table > table > tbody > tr > td > span{
+    font-size: 13px;
+}
+
+div.port-list-dialog-content div.port-table > table > tbody > tr > td > span > a{
+    cursor: pointer
+}
+
+div.port-list-dialog-content div.port-table table > tbody > tr > td > span > md-input-container {
+    margin: 0px 0px 0px 0px;
+}
+
+md-dialog.port-list-dialog md-dialog-content > div.port-list-dialog-content div.port-table{
+    margin: 20px 0px 0px 0px;
+}
+
+md-dialog.port-list-dialog md-dialog-content > div.port-list-dialog-content div.port-table > table{
+    text-align: center;
+}
+
+md-dialog.port-list-dialog div.modalFooter {
+    width: 100%;
+    text-align: right;
+}

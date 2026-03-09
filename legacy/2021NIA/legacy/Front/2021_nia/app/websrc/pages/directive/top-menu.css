@@ -1,0 +1,284 @@
+div.top-menu-area{
+    /*position: absolute;*/
+    width:100%;
+    height:65px;
+    min-width: 1900px;
+    background-color:#f6f6f6;
+    z-index: 10;
+    /*font-family: 'NanumSquare', sans-serif;*/
+}
+
+div.header{
+    display: flex;
+    background-image:url("../../images/koren_rca/nia_header_logo.png");
+    background-repeat:no-repeat;
+    background-position:left center;
+    background-size:contain;
+    box-shadow:0px 5px 5px rgba(0,0,0,0.2);
+    border-bottom:1px solid #3d64ac;
+    box-sizing:border-box;
+}
+
+div.header>div.headerLogo{
+    position: relative;
+    font-size: 2em;
+    width: 280px;
+    min-width: 280px;
+    font-weight: 900;
+    padding-top: 8px;
+    padding-left: 20px;
+    cursor: pointer;
+}
+
+.headerImage {
+    background-image: url("../../images/koren_rca/header_logo2.png");
+    background-repeat: no-repeat;
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    filter: grayscale(100%) brightness(300%) ;
+    background-size:cover;
+    box-sizing: border-box;
+    mix-blend-mode: screen;
+}
+
+div.header>div.headerLogo>span.sysversion{
+    position: absolute;
+    top: 33px;
+    background-color: #a1bbdc;
+    color: #FFFFFF;
+    font-size: 12px;
+    text-align: center;
+    padding-left: 7px;
+    padding-right: 7px;
+    line-height: 20px;
+    height: 17px;
+    border-radius:3px;
+    /*border-radius: 8.5px;*/
+    font-family: 'NanumSquare', sans-serif;
+}
+
+div.header>div.nav{
+    left:260px;
+    top:0;
+    width: calc(100% - 705px);
+    max-height: 65px;
+    overflow: hidden;
+}
+
+/* 1차메뉴 */
+div.header>div.nav>ul{
+    padding:0;
+    margin:0;
+    list-style:none;
+    display: flex;
+}
+div.header>div.nav>ul>li{
+    float:left;
+    width:105px;
+    position: relative;
+}
+div.header>div.nav>ul>li a{
+    text-decoration: none;
+    color: rgba(255,255,255,0.9);
+}
+div.header>div.nav>ul>li a:hover{
+    color: #FFFFFF;
+}
+div.header>div.nav>ul>li:hover ul{
+    display: block;
+}
+div.header>div.nav>ul>li>span{
+    display:inline-block;
+    color:#a1bbdc;
+    font-size:16px;
+    width:100%;
+    /*border-bottom:3px solid #FFFFFF;*/
+    height:65px;
+    line-height:66px;
+    text-align:center;
+    font-weight: 400;
+    transform: rotate(-0.03deg);
+    cursor:pointer;
+    letter-spacing: -0.5px;
+    transition:all 0.15s;
+    border-right:1px solid rgba(255,255,255,0.05);
+}
+div.header>div.nav>ul>li:first-child>span{
+    border-left:1px solid rgba(255,255,255,0.05);
+}
+div.header>div.nav>ul>li:hover>span{
+    /*color:#003f33;*/
+    color: #fff;
+    /*border-bottom:3px solid #2c3345;*/
+    border-bottom:3px solid #fff;
+    /*height:65px;*/
+    background-color:rgba(255,255,255,0.05);
+}
+
+/* 2차메뉴 */
+div.header>div.nav>ul>li>ul{
+    display: none;
+    margin:0;
+    padding:0;
+    position: fixed;
+    border-radius: 5px;
+    /* padding-top: 10px; */
+    background-color: rgb(28 43 64);
+}
+div.header>div.nav>ul>li>ul:hover li{
+    display: block;
+}
+div.header>div.nav>ul>li>ul>li{
+    font-size:14px;
+    font-weight: 600;
+    transform: rotate(-0.03deg);
+    white-space: nowrap;
+    padding: 5px 10px 5px 10px;
+    text-align: center;
+    list-style:none;
+    width:100%;
+    margin-bottom:5px;
+    color:#919191;
+    transition:all 0.25s;
+    border-radius:3px;
+}
+div.header>div.nav>ul>li>ul>li:hover{
+    background-color:#7a7c8d;
+    cursor:pointer;
+    color:#FFFFFF;
+    transition:all 0.25s;
+}
+
+div.header>div.nav>ul>li>ul>li:nth-child(1){
+    padding-top: 10px;
+}
+
+
+div.header>div.rightItem{
+    width: 425px;
+}
+div.header>div.rightItem>ul{
+    padding:0;
+    margin:0;
+    list-style:none;
+}
+div.header>div.rightItem>ul>li{
+    float:left;
+    border-left:1px solid rgba(255,255,255,0.1);
+    height:65px;
+    width: 50%;
+}
+div.header>div.rightItem>ul>li.search>input{
+    width:200px;
+    height:40px;
+    border-radius:20px;
+    border:1px solid #a1bbdc;
+    /*border:none;*/
+    background-color:#1c2b40;
+    text-align:center;
+    /*box-shadow:inset 2px 2px 3px rgba(0,0,0,0.1);*/
+    outline:none;
+    background-image: url("../../images/koren_rca/icon_search.png");
+    background-repeat: no-repeat;
+    background-position: 93% 50%;
+    float: right;
+    margin-right:10px;
+    vertical-align: middle;
+    margin-top:13px;
+    transform: rotate(-0.03deg);
+    letter-spacing: -0.5px;
+    font-size:14px;
+    font-weight: 400;
+    padding-right:10px;
+    padding-left:10px;
+    color:#FFFFFF;
+    opacity:0.5;
+    transition:all 0.25s;
+}
+div.header>div.rightItem>ul>li.search>input:focus,
+div.header>div.rightItem>ul>li.search>input:hover{
+    opacity: 1;
+    background-color:#FFFFFF;
+    border-color:#FFFFFF;
+    color:#000000;
+}
+
+div.header>div.rightItem>ul>li.userinfo{
+    text-align:left;
+    color: #fff;
+}
+div.header>div.rightItem>ul>li.userinfo>span:first-child{
+    position: relative;
+    display:inline-block;
+    background-image:url("../../images/koren_rca/icon_clock.png");
+    background-repeat: no-repeat;
+    background-position: 10px 50%;
+    text-indent: 30px;
+    font-size:12px;
+    height:35px;
+    line-height:35px;
+    transform: rotate(-0.03deg);
+    letter-spacing: -0.5px;
+}
+div.header>div.rightItem>ul>li.userinfo>div{
+    position: relative;
+    display:inline-block;
+    background-image:url("../../images/koren_rca/icon_user.png");
+    background-repeat: no-repeat;
+    background-position: 10px 50%;
+    /*text-indent: 40px;*/
+    font-size:13px;
+    height:35px;
+    line-height:35px;
+    border-top:1px solid #e7e7e7;
+    transform: rotate(-0.03deg);
+    letter-spacing: -0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 45px;
+}
+
+div.header>div.rightItem>ul>li.userinfo>span.teamName{
+    position: relative;
+    display:inline-block;
+    font-size:13px;
+    height:35px;
+    line-height:32px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    transform: rotate(-0.03deg);
+    letter-spacing: -0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+}
+div.header>div.rightItem>ul>li.userinfo>div:hover {
+
+}
+div.header>div.rightItem>ul>li.userinfo>div div{
+    /*text-align: left;*/
+    /*padding-left: 45px;*/
+}
+div.header>div.rightItem>ul>li.userinfo>div:hover div{
+    /*line-height: 16px;*/
+}
+
+div.header>div.rightItem>ul>li.connectinfo{
+    background-image:url("../../images/koren_rca/icon_users.png");
+    background-repeat: no-repeat;
+    background-position:50% 18px;
+    font-size:13px;
+    text-align: center;
+    padding-left:10px;
+    padding-right:10px;
+    background-color:#F8F8F8;
+}
+div.header>div.rightItem>ul>li.connectinfo>span{
+    display: inline-block;
+    position: relative;
+    transform: rotate(-0.03deg);
+    line-height:100px;
+    letter-spacing: -0.5px;
+}
+
+

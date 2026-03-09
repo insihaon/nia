@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ip.alarm.mapper.linkage.LinkageAlarmMapper">
+
+<!--    catchview       -->
+
+    <select id="selectAlarmList" resultType="com.nia.data.linkage.ip.alarm.vo.alarm.AlarmVo" parameterType="int">
+        SELECT INTERRIDX, MODULE_SRL, STRRESID, STRIFID, STRTYPE
+             , STRLEVEL, STRTITLE, STRCONTENT, STRGROUPID, STRGROUPID1
+             , STRGROUPID2, STRGROUPID3, STRGROUPID4, STRGROUPID5, STRGROUPID6
+             , STRGROUPID7, STRGROUPID8, STRGROUPID9, STRGROUPID10, DATERAISEDATE
+             , DATECLEARDATE, DATEREGDATE, STRCLEARCHECK, STRMEMO, STRACKNOWNCHECK
+             , STRACKNOWNCHECK_MEMBER_SRL
+          FROM xe_cvnms_error
+         WHERE INTERRIDX > #{interrIdx}
+           AND STRTYPE != 'ping'
+         ORDER BY INTERRIDX
+    </select>
+
+    <select id="selectAlarmClearList" resultType="com.nia.data.linkage.ip.alarm.vo.alarm.AlarmVo" parameterType="string">
+        SELECT INTERRIDX, MODULE_SRL, STRRESID, STRIFID, STRTYPE
+             , STRLEVEL, STRTITLE, STRCONTENT, STRGROUPID, STRGROUPID1
+             , STRGROUPID2, STRGROUPID3, STRGROUPID4, STRGROUPID5, STRGROUPID6
+             , STRGROUPID7, STRGROUPID8, STRGROUPID9, STRGROUPID10, DATERAISEDATE
+             , DATECLEARDATE, DATEREGDATE, STRCLEARCHECK, STRMEMO, STRACKNOWNCHECK
+             , STRACKNOWNCHECK_MEMBER_SRL
+          FROM xe_cvnms_error
+         WHERE DATECLEARDATE IS NOT NULL
+           AND DATECLEARDATE > #{dateClearDate}
+           AND STRTYPE != 'ping'
+        ORDER BY DATECLEARDATE
+    </select>
+</mapper>
+
+

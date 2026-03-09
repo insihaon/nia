@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.orgmgmt.dao.TbLvlCdDao">
+	<resultMap id="tbLvlCdVoResult" type="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		<result column="SLVL_CD" property="slvlCd" jdbcType="CHAR" />
+		<result column="SLVL_NM" property="slvlNm" jdbcType="VARCHAR" />
+		<result column="SORG_OFFICE_FLAG_YN" property="sorgOfficeFlagYn" jdbcType="CHAR" />
+		<result column="SEX_LINK_USE_TYPE_CD" property="sexLinkUseTypeCd" jdbcType="CHAR" />
+		<result column="SEX_LINK_USE_TYPE_NM" property="sexLinkUseTypeNm" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+	<!--  2015. 07.01 SORG_OFFICE_FLAG_YN 컬럼에 Y,N 값에 공백이 들어가있음 6자리 추후 VARCHAR로컬럼타입변경 데이터 트림입력 처리필요-->
+	<sql id="Base_Column_List">
+		A.SLVL_CD, A.SLVL_NM, TRIM(A.SORG_OFFICE_FLAG_YN) SORG_OFFICE_FLAG_YN, A.SEX_LINK_USE_TYPE_CD
+		, A.SCOMMENT, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT
+		, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+		,B.SEX_LINK_USE_TYPE_NM
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SEX_LINK_USE_TYPE_NM
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	, MST.TB_EXTERNAL_LINK_USE_TYPE_CD B
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.SLVL_CD = #{slvlCd, jdbcType=CHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slvlCd)">
+				AND A.SLVL_CD LIKE '%' || #{slvlCd, jdbcType=CHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slvlNm)">
+				AND A.SLVL_NM = #{slvlNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgOfficeFlagYn)">
+				AND A.SORG_OFFICE_FLAG_YN = #{sorgOfficeFlagYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexLinkUseTypeCd)">
+				AND A.SEX_LINK_USE_TYPE_CD = #{sexLinkUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+				AND A.SLVL_NM  LIKE  '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+				
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	 AND   A.SEX_LINK_USE_TYPE_CD = B.SEX_LINK_USE_TYPE_CD(+)
+	</sql>
+	
+	<insert id="insertTbLvlCdVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		INSERT
+			
+		INTO MST.TB_LVL_CD (
+			SLVL_CD
+			,	SLVL_NM
+			,	SEX_LINK_USE_TYPE_CD
+			,   SORG_OFFICE_FLAG_YN
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+			,   DMODIFY_DT
+		
+		) VALUES (
+			#{slvlCd, jdbcType=CHAR}
+			,	#{slvlNm, jdbcType=VARCHAR}
+			,	#{sexLinkUseTypeCd, jdbcType=CHAR}
+			,	#{sorgOfficeFlagYn, jdbcType=CHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+			,	CURRENT_TIMESTAMP
+		
+		)
+	</insert>
+	
+	<update id="updateTbLvlCdVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		UPDATE
+			
+		MST.TB_LVL_CD A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slvlNm)">
+			A.SLVL_NM = #{slvlNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgOfficeFlagYn)">
+				, A.SORG_OFFICE_FLAG_YN = #{sorgOfficeFlagYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexLinkUseTypeCd)">
+				, A.SEX_LINK_USE_TYPE_CD = #{sexLinkUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbLvlCdVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		DELETE
+			
+		FROM MST.TB_LVL_CD A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbLvlCdVo" resultMap="tbLvlCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_LVL_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbLvlCdVo" resultMap="tbLvlCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_LVL_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+		
+		ORDER BY A.SEX_LINK_USE_TYPE_CD , A.SLVL_NM
+	</select>
+	
+	<select id="selectListPageTbLvlCdVo" resultMap="tbLvlCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM  FROM (
+			SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM  FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_LVL_CD A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				
+				ORDER BY A.SEX_LINK_USE_TYPE_CD , A.SLVL_NM
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbLvlCdVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_LVL_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectNewLvlCd" resultType="String" >
+		SELECT  
+		 'VV'||TRIM(TO_CHAR(TO_NUMBER(DECODE(MAX(RIGHT(SLVL_CD,4)),NULL,'0000',MAX(RIGHT(SLVL_CD,4))))+1, '0000')) AS NEW_SEQ
+		 FROM MST.TB_LVL_CD
+		 WHERE SEX_LINK_USE_TYPE_CD = 'CE0006'
+		  AND SLVL_CD LIKE 'VV%' 
+	</select>
+	
+</mapper>

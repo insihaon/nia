@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5level %c{36}.%method():%line - %msg%n"/>
+        </Console>
+
+        <RollingFile name="File" fileName="logs/rca.log" filePattern="logs/rca-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %c{36}.%method():%line - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+		<!-- 모든 로그는 WARN 레벨 이상일때만 찍고 -->
+		<Root level="DEBUG"> <!-- LVL: FATAL,ERROR,WARN,INFO,DEBUG,TRACE -->
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+
+        <!--<Logger name="com" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>-->
+
+        <!-- 로그많이 찍어대는 요놈들은 warn수준이상만 찍겠다. org.apache.http
+        <logger name="org.apache" level="DEBUG" additivity="false">
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="Console"/>
+        </logger>
+         -->
+
+        <!-- 내패키지는 무조건 찍자-->
+        <logger name="com.nia.korenrca" level="TRACE" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </logger>
+    </Loggers>
+</Configuration>

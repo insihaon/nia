@@ -1,0 +1,29 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "timestamp": "2026-02-23T04:36:03.395+00:00",
+            "status": 500,
+            "error": "Internal Server Error",
+            "path": "/ipsdn/services/config/interfaces/"
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-s9510-1&ifname=xe23\",\"encrypt\":\"govUT6WOQAPLIhFbf9U=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-s9510-1&ifname=xe23\",\"encrypt\":\"govUT6WOQAPLIhFbf9U=\"} }",
+        "requestTime": "2026-02-23 13:33:54.803",
+        "responseTime": "2026-02-23 13:33:55.022",
+        "duration": 219,
+        "jsonFileName": "niaipsdn_servicconfiginteparamnodenamese.json"
+    }
+}

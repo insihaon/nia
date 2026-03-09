@@ -1,0 +1,220 @@
+<md-dialog class="aiProcess-dialog" id="syslogConfigTemplate" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <i class="fa fa-check fa-lg"></i>
+            <span class="title" ng-click="debugger()"> &nbsp;SYSLOG 장애 대응 </span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="dlgFunc.cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="height: 100%;">
+        <div layout="column" class="aiProcessContents">
+            <md-card class="aiProcess-card" style="margin: 15px;">
+                <md-tabs md-border-bottom="" md-stretch-tabs>
+                    <md-tab flex label="SYSLOG">
+                        <div layout="column" layout-fill ng-cloak class="selfConfiguration">
+                            <div class="aiProcess_firstBox">
+                                <div class="aiProcessBox">
+                                    <div class="aiProcessTitle" ng-click="debugger()">작업 요청</div>
+                                    <div class="aiProcess_firstContent" style="min-height: auto; height: auto; margin-top: 50px;">
+                                        <div class="aiProcessContentTitle">알람 상세 정보</div>
+                                        <table md-table class="selfConfig sopCodeList tt-alarm-table ticket-alarm rca-md-table" md-progress="promise" style="min-height: 100%; padding: 25px 0px 0px 5px;">
+                                            <thead md-head>
+                                            <tr md-row>
+                                                <th md-column md-column-size="120" class="pr-0">알람 번호</th>
+                                                <th md-column md-column-size="120" class="pr-0">발생시간</th>
+                                                <th md-column md-column-size="120" class="pr-0">장비 번호</th>
+                                                <th md-column md-column-size="120" class="pr-0">장비명</th>
+                                                <th md-column md-column-size="120" class="pr-0">인터페이스</th>
+                                                <th md-column md-column-size="120" class="pr-0">알람메시지</th>
+                                                <th md-column md-column-size="120" class="pr-0">원본메시지</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody md-body style="min-height: calc(100% - 40px); height: calc(100% - 40px);">
+                                            <tr md-row>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{alarm.alarmno}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{alarm.alarmtime | dateFormat}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{alarm.node_num }}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{alarm.node_nm}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{alarm.alarmloc}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{alarm.alarmmsg }}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell style="white-space: normal; word-wrap: break-word;">{{alarm.etc}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                        
+                                    <div class="aiProcess_secondContent" style="height: 35%; min-height: 35%; margin-top: 20px;">
+                                        <div class="aiProcessContentTitle" style="margin-top: 10px;">연관 SOP 리스트</div>
+                                        <table md-table ng-if="syslogSopHistList.length === 0" md-progress="promise" style="min-height: 100%; padding: 25px 0px 0px 5px;">
+                                            <tbody  md-body style="padding-top: 25%; height: 100%; display: flex; justify-content: center; align-items: center;" >
+                                                <tr md-row>
+                                                    <td class="pr-0" over-cell>연관 SOP 데이터가 존재하지 않습니다.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table><!-- table.tt-alarm-table.md-table  -->
+                                        <table md-table class="selfConfig sopCodeList tt-alarm-table ticket-alarm rca-md-table" ng-if="syslogSopHistList.length !== 0" md-progress="promise" style="min-height: 100%; padding: 25px 0px 0px 5px; overflow-x: auto; overflow-y: auto;">
+                                            <thead md-head>
+                                            <tr md-row>
+                                                <th md-column md-column-size="70"></th>
+                                                <th md-column md-column-size="120" class="pr-0">알람 번호</th>
+                                                <th md-column md-column-size="120" class="pr-0">발생 시간</th>
+
+                                                <th md-column md-column-size="100" class="pr-0">장애구분</th>
+                                                <th md-column md-column-size="100" class="pr-0">장애유형</th>
+                                                <th md-column md-column-size="100" class="pr-0">조치내용</th>
+                                                <th md-column md-column-size="100" class="pr-0">기타사항</th>
+
+                                                <th md-column md-column-size="120" class="pr-0">장비 번호</th>
+                                                <th md-column md-column-size="120" class="pr-0">장비 이름</th>
+                                                <th md-column md-column-size="120" class="pr-0">인터페이스</th>
+                                                <th md-column md-column-size="120" class="pr-0">알람메시지</th>
+                                                <th md-column md-column-size="200" class="pr-0">원본메시지</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody md-body style="min-height: calc(100% - 40px); height: calc(100% - 40px);/*  overflow-x: auto; */">
+                                            <tr md-row ng-repeat="item in syslogSopHistList">
+                                                <td md-cell md-checkbox-cell md-column-size="70" ng-click="onChangeSelectedSop(item)">
+                                                    <md-checkbox ng-model="item.selected" aria-label="''"></md-checkbox>
+                                                </td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{item.alarmno}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{item.alarmtime | dateFormat}}</td>
+
+                                                <td md-cell md-column-size="100" class="pr-0" over-cell>{{item.fault_classify}}</td>
+                                                <td md-cell md-column-size="100" class="pr-0" over-cell>{{item.fault_type}}</td>
+                                                <td md-cell md-column-size="100" class="pr-0" over-cell>{{item.fault_detail_content}}</td>
+                                                <td md-cell md-column-size="100" class="pr-0" over-cell>{{item.etc_content}}</td>
+
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{item.node_num}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{item.node_nm}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{item.alarmloc}}</td>
+                                                <td md-cell md-column-size="120" class="pr-0" over-cell>{{item.alarmmsg}}</td>
+                                                <td md-cell md-column-size="200" class="pr-0" over-cell style="white-space: normal; word-wrap: break-word;">{{item.etc}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                        
+                                    <div class="aiProcess_secondContent" style="height: 30%; min-height: 30%; margin-top: 20px;">
+                                        <div class="aiProcessContentTitle" style="margin-top: 10px;">담당직원 정보</div>
+                                        <table md-table class="selfHealingTable tt-alarm-table rca-md-table" md-progress="promise" style="min-height: 100%; padding: 25px 0px 0px 5px;">
+                                            <thead md-head>
+                                            <tr md-row>
+                                                <th md-column md-column-size="70"></th>
+                                                <th md-column md-column-size="140">이름</th>
+                                                <th md-column md-column-size="100">분류</th>
+                                                <th md-column md-column-size="200">EMAIL</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody md-body style="height: calc(100% - 32px); overflow-y: auto;">
+                                            <tr md-row md-select="item" class="repeated-item" ng-repeat="item in managerList">
+                                                <td md-cell md-checkbox-cell md-column-size="70" ng-click="applyManager()">
+                                                    <md-checkbox aria-label="''" ng-click="item.selected=!item.selected" ng-style="alarm.status != '발생' && { 'cursor': 'not-allowed'}" ng-disabled="alarm.status != '발생'"></md-checkbox>
+                                                </td>
+                                                <td md-cell md-column-size="140">{{item.name}}</td>
+                                                <td md-cell md-column-size="100">{{item.agency_name}}</td>
+                                                <td md-cell md-column-size="200">{{item.email}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="aiProcess_secondBox">
+                                <div class="aiProcessBox">
+                                    <div class="aiProcess_firstContent">
+                                        <div class="aiProcessContentTitle" style="top: -3%;">조치 요청서</div>
+                                        <p meditor ng-model="model_config.text" class="requestDoc ng-pristine ng-untouched ng-valid ng-isolate-scope w-100" style="overflow-x:auto; font-family: 'NanumGothic';"></p>
+                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                          .
+                                    <div class="aiProcess_secondContent" style="margin: 0px 12px 12px 12px;">
+                                        <div class="aiProcessContentTitle">조치 SOP</div>
+                                        <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="openSOPListDialog()" style="float: right;">EDIT</md-button>
+                                        <div layout="column" style="height: 100%; padding: 20px; color: #646363; /* overflow-x: auto; */">
+                                            <!--<span>조치방법</span>-->
+                                            <div layout="row" class="w-100" style="font-size: 13px; height: 65px;">
+                                                <md-select placeholder="장애구분" class="mr-3" ng-model="operatorOpinion.faultClassify" style="width: 150px;">
+                                                    <md-option ng-value="item.fault_type" ng-repeat="item in sopCodeList['장애구분']" style="height: 45px; font-size: 13px;">{{ item.fault_type }}</md-option>
+                                                </md-select>
+                                                <md-select placeholder="장애유형" class="mr-3" ng-model="operatorOpinion.faultType" style="width: 150px;">
+                                                    <md-option ng-value="item.fault_type" ng-repeat="item in sopCodeList['장애유형']" style="height: 45px; font-size: 13px;">{{ item.fault_type }}</md-option>
+                                                </md-select>
+                                                <md-select placeholder="조치내용" class="mr-3" ng-model="operatorOpinion.faultDetail" style="width: 150px;">
+                                                    <md-option ng-value="item.fault_type" ng-repeat="item in sopCodeList['조치내용']" style="height: 45px; font-size: 13px;">{{ item.fault_type }}</md-option>
+                                                </md-select>
+                                            </div>
+                                            <md-input-container class="md-block w-100" flex="100">
+                                                <input ng-model="operatorOpinion.etcContent" placeholder="기타 조치 내용 입력">
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="footer selfConfigFooter">
+                                <md-button class="md-raised base-btn-2 black-btn" ng-click="dlgFunc.cancel()" style="float: right;">
+                                    닫기
+                                </md-button>
+                                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="showFinProcessDialog()" style="float: right;">
+                                    <!--마감-->
+                                    {{ alarm.status == '마감' || alarm.status == '자동 마감' || alarm.status == 'FIN' || alarm.status == 'AUTO_FIN' ? '수정' : '마감' }}
+                                </md-button>
+                                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="sendEMail()" ng-disabled="alarm.status != '발생'" style="float: right; margin-right: 15px;">
+                                    메일 전송
+                                </md-button>
+                                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="openConfigTestAction()" style="float: right;">
+                                    시험
+                                </md-button>
+                                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="openBypassRouteListDialog()" disabled style="float: right;" flex="15">
+                                    자가구성 시험
+                                </md-button>
+                                <md-button class="md-raised base-btn-2 nia-dark-button" ng-click="openDateSetting()" disabled style="float: right;" flex="15">
+                                    데이터 스냅샷
+                                </md-button>
+                            </div>
+                        </div>
+                    </md-tab>
+                </md-tabs>
+            </md-card>
+        </div>
+    </md-dialog-content>
+</md-dialog>
+
+<template id="template-requestDoc-config">
+    <h2>
+        &nbsp;&nbsp;&nbsp;
+        장애 상세내역 및 조치 요청서
+    </h2>
+    <!-- <div style="margin-right: 20px;">&nbsp;<a style="cursor: pointer;" href=" http://116.89.191.47:8080/#/nia/nia.selfProcess/?ticket_id={ticketId}&isEmail=true&self_process_group={selfProcessGroup}&self_process_type={selfProcessType}">바로가기</a><br></div> -->
+    <div><br></div>
+        <h4>1. 발신</h4>
+        <div>&nbsp; &nbsp; ${AGENCY_NAME}&nbsp;${발신자}</div>
+        <div><br></div>
+        <h4>2. 수신</h4>
+        <div class="selectedManagerConfig">&nbsp; &nbsp;${수신자}</div>
+        <div><br></div>
+        <h4>3. 작업 요청 내용</h4>
+        <div>&nbsp;- 발생 시간 : ${발생시간}<br></div>
+        <div>&nbsp;- 알람 번호 : ${알람번호}<br></div>
+        <div>&nbsp;- 장비명 : ${장비명}</div>
+        <div>&nbsp;- 장비 번호 : ${장비번호}<br></div>
+        <div>&nbsp;- 인터페이스 : ${인터페이스}</div>
+        <div>&nbsp;- 알람 메시지 : ${알람메시지}<br></div>
+        <div>&nbsp;- 원본 메시지 : ${원본메시지}<br></div>
+        <div>&nbsp;- 상세 내용 : <span class="recommendDetailConfig"></span><br></div>
+        <div><br></div>
+        <h4>4. 장애 구역</h4>
+        <div>&nbsp;- 장애 구역: ${장애구역}<br></div>
+        <div><br></div>
+        <h4>5. 연관 SOP</h4>
+        <div>&nbsp;- 장애 구분: <span class="faultClassifyConfig">&nbsp;${장애구분}</span><br></div>
+        <div>&nbsp;- 장애 유형: <span class="faultTypeConfig">&nbsp;${장애유형}</span><br></div>
+        <div>&nbsp;- 조치 내용: <span class="faultDetailConfig">&nbsp;${조치내용}</span><br></div>
+    <div><br></div>
+</template>
+
+<template id="deafault-requestDoc-config">
+    <span>발송된 조치 요청서가 존재하지 않습니다.</span>
+</template>
+                

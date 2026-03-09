@@ -1,0 +1,127 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+repositories {
+    jcenter()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+version = '3.5.0'
+sourceCompatibility = '1.8'
+
+compileJava {
+    options.encoding = "UTF-8"
+}
+
+dependencies {
+    //compile "io.vertx:vertx-core:$version"
+    //compile "io.vertx:vertx-web:$version"
+    //compile "io.vertx:vertx-auth-common:$version"
+    //compile "io.vertx:vertx-auth-shiro:$version"
+    //compile "io.vertx:vertx-auth-jdbc:$version"
+    //compile "io.vertx:vertx-auth-jwt:$version"
+    //compile 'com.google.code.gson:gson:2.8.0'
+    compile files(
+        './lib/vert.x-3.5.0/jackson-annotations-2.9.0.jar'
+        , './lib/vert.x-3.5.0/jackson-core-2.9.0.jar'
+        , './lib/vert.x-3.5.0/jackson-databind-2.9.0.jar'
+        , './lib/vert.x-3.5.0/vertx-auth-common-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-auth-jdbc-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-auth-jwt-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-auth-oauth2-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-core-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-hazelcast-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-web-3.5.0.jar'
+        , './lib/mybatis-3.4.5/mybatis-3.4.5.jar'
+        , './lib/vert.x-3.5.0/netty-common-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-buffer-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-codec-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-codec-dns-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-codec-http-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-codec-http2-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-codec-socks-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-handler-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-handler-proxy-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-resolver-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-resolver-dns-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-tcnative-boringssl-static-2.0.6.Final.jar'
+        , './lib/vert.x-3.5.0/netty-transport-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-transport-native-epoll-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-transport-native-kqueue-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/netty-transport-native-unix-common-4.1.15.Final.jar'
+        , './lib/vert.x-3.5.0/vertx-jwt-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-bridge-common-3.5.2.CR1.jar'
+        , './lib/vert.x-3.5.0/vertx-jdbc-client-3.5.0.jar'
+        , './lib/vert.x-3.5.0/vertx-sql-common-3.5.0.jar'
+        , './lib/vert.x-3.5.0/c3p0-0.9.5.2.jar'
+        , './lib/vert.x-3.5.0/mchange-commons-java-0.2.11.jar'
+        , './lib/log4j/log4j-api-2.9.1.jar'
+        , './lib/log4j/log4j-core-2.9.1.jar'
+        , './lib/mysql-connector-java-5.1.44-bin.jar'
+        , './lib/postgresql-9.4-1201.jdbc4.jar'
+        , './lib/commons-codec-1.11.jar'
+        , './lib/amqp-client-5.5.2.jar'
+        , './lib/qpid-broker-core-6.0.5.jar'
+        , './lib/slf4j-api-1.7.25.jar'
+        , './lib/vertx-rabbitmq-client-3.6.2.jar'
+        , './lib/poi/commons-io-2.5.jar'
+        , './lib/poi/org.apache.commons.io.jar'
+        , './lib/poi/poi-3.13-20150929.jar'
+        , './lib/poi/poi-excelant-3.13-20150929.jar'
+        , './lib/poi/poi-ooxml-3.13-20150929.jar'
+        , './lib/poi/poi-ooxml-schemas-3.13-20150929.jar'
+        , './lib/poi/poi-scratchpad-3.13-20150929.jar'
+        , './lib/poi/xmlbeans-2.6.0.jar'
+        , './lib/gson-2.8.0.jar'
+        , './lib/quartz-2.2.3.jar'
+        , './lib/mail/activation-1.1.jar'
+        , './lib/mail/javax.mail-1.5.5.jar'
+        , './lib/mail/javax.mail-api-1.5.5.jar'
+        , './lib/jsch-0.1.55.jar'
+    )
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+mainClassName = 'com.nia.korenrca.server.Server'
+
+shadowJar {
+    classifier = ''
+    version = '1.0'
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
+
+    exclude '.idea'
+    from('src/main/java/log4j2.xml')
+    from('src/main/java') {
+        include '**/*.xml'
+    }
+    from('lib/native') {
+        into '/'
+    }
+    from('app/build') {
+        into 'app/websrc'
+    }
+//    from('file-access/chrome') { // 빌드시 크롬 설치파일 포함
+//        into 'file-access/chrome'
+//    }
+
+//    from('app/dist') {
+//        into 'app/websrc'
+//    }
+//    from('app_ovc/build') {
+//        into 'app/websrc'
+//    }
+//    from('app_blur/release') {
+//        into 'app/websrc'
+//    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5.0'
+}

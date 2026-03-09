@@ -1,0 +1,14 @@
+<div class="ai-process-container show-debug-bg" layout-fill>
+    <div class="topProcessMenu">
+        <ul>
+            <li ng-class="{active: tools.store.aiPageNum == '1'}" ng-click="tools.store.aiPageNum = '1'">자가구성</li>
+            <li ng-class="{active: tools.store.aiPageNum == '2'}" ng-click="tools.store.aiPageNum = '2'">자가회복</li>
+            <li ng-class="{active: tools.store.aiPageNum == '3'}" ng-click="tools.store.aiPageNum = '3'">AI 처리결과 이력</li>
+        </ul>
+    </div>
+    <div ng-if="tools.store.aiPageNum == '1'" ng-include src="'pages/main/aiProcess/selfConfiguration/view.html'" ng-cloak layout-fill></div>
+    <div ng-if="tools.store.aiPageNum == '2'" ng-include src="'pages/main/aiProcess/selfHealing/view.html'" ng-cloak layout-fill></div>
+    <div ng-if="tools.store.aiPageNum == '3'" ng-include src="'pages/main/aiProcess/aiHistory/view.html'" ng-cloak layout-fill></div>
+</div>
+<img class="ai-icon" src="../../../images/koren_rca/aiProcess/ai.png" ng-click="testToggle()">
+<div class="ai-message"><p ng-if="aiText != ''">{{aiText}} <span>|</span></p></div>

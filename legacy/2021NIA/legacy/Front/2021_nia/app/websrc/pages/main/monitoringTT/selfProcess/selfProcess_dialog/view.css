@@ -1,0 +1,76 @@
+md-dialog.self-process-dialog {
+    background-color: rgba(245,245,245,1);
+    max-width: 1350px;
+    max-height: 710px;
+    width: 1350px;
+    height: 930px;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+
+md-dialog.self-process-dialog div.self-process-dialog-content{
+    font-size: 11px;
+    height: calc(100% - 50px);
+}
+
+div.self-process-dialog-content md-card.self-process-card {
+    height: calc(100% - 40px);
+    min-height: 300px;
+}
+
+div.self-process-dialog-content md-card.self-process-card div.self-process-search div.self-process-search-info md-input-container {
+    width: calc(100% - 80%);
+}
+
+div.self-process-dialog-content md-card.self-process-card div.self-process-search div.self-process-search-info md-input-container > input{
+    font-size: 13px;
+}
+
+div.self-process-dialog-content md-card.self-process-card div.self-process-search div.self-process-search-btn{
+    text-align: right;
+}
+
+div.self-process-dialog-content div.self-process-table{
+    overflow: auto;
+    height: calc(100vh - 280px);
+    min-height: 150px;
+}
+
+div.self-process-dialog-content div.self-process-table > table{
+    text-align-last: center;
+    overflow: visible;
+}
+
+div.self-process-dialog-content div.self-process-table > table th.md-column{
+    font-size: 14px;
+}
+
+div.self-process-dialog-content div.self-process-table > table > thead > tr > th{
+    text-align: center;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+div.self-process-dialog-content div.self-process-table > table > tbody > tr > td{
+    text-align: center;
+}
+
+div.self-process-dialog-content div.self-process-table > table > tbody > tr > td > span{
+    font-size: 13px;
+}
+
+div.self-process-dialog-content div.self-process-table > table > tbody > tr > td > span > a{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+md-dialog.self-process-dialog > form > md-dialog-content div.modalFooter{
+    width: 100%;
+    text-align: right;
+}
+
+.repeated-item:hover {
+    background-color: rgb(233, 232, 232);
+    cursor: pointer;
+}

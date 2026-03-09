@@ -1,0 +1,191 @@
+<div class="selfProcessContainer" layout="column" layout-fill ng-cloak>
+    <div layout="row" class="selfProcessGroupContainer" flex layout-fill>
+        <div layout="column" class="group w-50 h-100">
+            <div layout="column" layout-fill flex>
+                <div class="group-contents" layout-fill>
+                    <div layout="column" class="self-process-search">
+                        <div class="self-process-search-info flex" flex>
+                            <div class="search-container" style="display: flex; flex-direction: row; margin-left: 30px;">
+                                <div class="search-dateType">
+                                    <span class="search-item ml-2" style="font-size: 15px;">&nbsp;TYPE&nbsp;</span>
+                                    <md-input-container class="search-item input-container" style="margin: 18px 0;">
+                                        <md-select  ng-model="optimizationOptions.dateType" >
+                                            <md-option ng-value="item.value" ng-repeat="item in dataTypeAll">
+                                                <span>{{item.text}}</span>
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                                <div class="search-date">
+                                    <!-- <span class="ml-2 search-item" style="font-size: 15px;">&nbsp;&nbsp;FROM&nbsp;</span>
+                                        <md-input-container class="search-item input-container">
+                                            <input mdc-datetime-picker="" date="true" time="false" type="text" id="datetime2"
+                                                   show-todays-date="" minutes="true" min-date="date" show-icon="true"
+                                                   edit-input="true" short-time="true" ng-init="null" placeholder=""
+                                                   ng-model="optimizationOptions.startDateTime" class=" dtp-no-msclear dtp-input md-input">
+                                        </md-input-container> -->
+                                        <span class="search-item ml-2" style="font-size: 15px;">&nbsp;DATE&nbsp;</span>
+                                        <md-input-container class="search-item input-container" style="margin: 18px 0;">
+                                            <!-- <input mdc-datetime-picker="" date="true" time="false" type="text" id="datetime2"
+                                                   show-todays-date="" minutes="true" min-date="date" show-icon="true"
+                                                   edit-input="true" short-time="true" ng-init="null" placeholder=""
+                                                   ng-model="optimizationOptions.endDateTime" class=" dtp-no-msclear dtp-input md-input"> -->
+                                                   <input mdc-datetime-picker="" type="date" ng-if="optimizationOptions.dateType === 'DAY'"
+                                                   show-todays-date="" minutes="true" min-date="date" show-icon="false"
+                                                   edit-input="true" short-time="true" ng-init="null" placeholder=""
+                                                   ng-model="optimizationOptions.dateTime" class=" dtp-no-msclear dtp-input md-input">
+                                                   <input mdc-datetime-picker="" type="month" ng-if="optimizationOptions.dateType === 'MONTH'"
+                                                   show-todays-date="" minutes="true" min-date="date" show-icon="false"
+                                                   edit-input="true" short-time="true" ng-init="null" placeholder=""
+                                                   ng-model="optimizationOptions.dateTime" class=" dtp-no-msclear dtp-input md-input">
+                                                   <md-select  ng-model="optimizationOptions.dateTime" ng-if="optimizationOptions.dateType === 'YEAR'">
+                                                        <md-option ng-value="item.year" ng-repeat="item in yearList">
+                                                            <span>{{item.year}}</span>
+                                                        </md-option>
+                                                    </md-select>
+                                                   <!-- <input type="month" ng-model="optimizationOptions.endDateTime"  ng-if="optimizationOptions.dateType === 'MONTH'" class="dtp-no-msclear dtp-input md-input">        -->
+                                        </md-input-container>
+                                </div>
+                            </div>
+                            <div class="search-button-container">
+                                <md-button class="search-item self-process-search-btn" ng-click="loadSelfOptimizationList('O')" style="justify-content: center; font-size: 13px; min-width: fit-content;">
+                                    <i class="fa fa-search fa-lg"></i>
+                                </md-button>
+                                <md-button class="search-item search-option-switch" ng-click="optimizationSearchClear()">
+                                    초기화
+                                </md-button>
+                                <!-- 실시간 On OFF toggle 버튼 생성 -->
+                                <md-button class="search-item search-option-switch toggleBtn" ng-class="{ 'active': optimizationEnabled, 'blink': optimizationEnabled }">
+                                    {{ optimizationEnabled ? '실시간ON' : '실시간OFF' }}
+                                </md-button>
+                                <!-- <md-button class="search-item search-option-switch toggleBtn" ng-class="{ 'active': optimizationEnabled && optimizationOptions.dateTime === '', 'blink': optimizationEnabled }" ng-click="toggleOptimization()">
+                                    {{ optimizationEnabled && optimizationOptions.dateTime === '' ? '실시간ON' : '실시간OFF' }}
+                                </md-button> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="column" class="chart-wrapper">
+                        <div class="chart">
+                            <div class="selfProcess_secondContent">
+                                <h4 class="chartTitle">자가 최적화</h4>
+                                <div class="chart-area" style="color: #000; fill: #000; overflow-y:hidden;" id="optimizationChart">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="column" class="table-wrapper">
+                        <div layout="column" layout-wrap class="table-container" id="optimizationTable" md-top-index="0" >
+                            <div layout="column" class="self-process-table">
+                                <table md-table>
+                                    <thead md-head>
+                                        <tr md-row >
+                                            <th md-column flex="1" class="pr-0"><span>시간</span></th>
+                                            <th md-column flex="1" class="pr-0"><span>총 발생 건수</span></th>
+                                            <th md-column flex="1" class="pr-0"><span>자가최적화 건수</span></th>
+                                            <th md-column flex="1" class="pr-0"><span>기능</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody md-body>
+                                        <tr md-row class="repeated-item" ng-repeat="item in optimizationData" >
+                                            <td md-cell flex="1" class="pr-0">{{item.hourly_time}}</td>
+                                            <td md-cell flex="1" class="pr-0">{{item.totalcount}}</td>
+                                            <td md-cell flex="1" class="pr-0">{{item.count}}</td>
+                                            <td md-cell flex="1" class="pr-0"><md-button ng-click="openDetail(item,'optimization', optimizationOptions.dateType)">상세보기</md-button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="column" class="group w-50 h-100">
+            <div layout="column" layout-fill flex>
+                <div class="group-contents" layout-fill>
+                    <div layout="column" class="self-process-search">
+                        <div class="self-process-search-info flex" flex>
+                            <div class="search-container" style="display: flex; flex-direction: row; margin-left: 30px;">
+                                <div class="search-dateType">
+                                    <span class="search-item ml-2" style="font-size: 15px;">&nbsp;TYPE&nbsp;</span>
+                                    <md-input-container class="search-item input-container" style="margin: 18px 0;">
+                                        <md-select  ng-model="recoveryOptions.dateType" >
+                                            <md-option ng-value="item.value" ng-repeat="item in dataTypeAll">
+                                                <span>{{item.text}}</span>
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                                <div class="search-date">
+                                    <span class="search-item ml-2" style="font-size: 15px;">&nbsp;DATE&nbsp;</span>
+                                    <md-input-container class="search-item input-container" style="margin: 18px 0;">
+                                               <input mdc-datetime-picker="" type="date" ng-if="recoveryOptions.dateType === 'DAY'"
+                                               show-todays-date="" minutes="true" min-date="date" show-icon="false"
+                                               edit-input="true" short-time="true" ng-init="null" placeholder=""
+                                               ng-model="recoveryOptions.dateTime" class=" dtp-no-msclear dtp-input md-input">
+                                               <input mdc-datetime-picker="" type="month" ng-if="recoveryOptions.dateType === 'MONTH'"
+                                               show-todays-date="" minutes="true" min-date="date" show-icon="false"
+                                               edit-input="true" short-time="true" ng-init="null" placeholder=""
+                                               ng-model="recoveryOptions.dateTime" class=" dtp-no-msclear dtp-input md-input">
+                                               <md-select  ng-model="recoveryOptions.dateTime" ng-if="recoveryOptions.dateType === 'YEAR'">
+                                                    <md-option ng-value="item.year" ng-repeat="item in yearList">
+                                                        <span>{{item.year}}</span>
+                                                    </md-option>
+                                                </md-select>
+                                    </md-input-container>
+                            </div>
+                            </div>
+                            <div class="search-button-container">
+                                <md-button class="search-item self-process-search-btn" ng-click="loadSelfRecoveryList('R')" style="justify-content: center; font-size: 13px; min-width: fit-content;">
+                                    <i class="fa fa-search fa-lg"></i>
+                                </md-button>
+                                <md-button class="search-item search-option-switch" ng-click="recoverySearchClear()">
+                                    초기화
+                                </md-button>
+                                <!-- 실시간 On OFF toggle 버튼 생성 -->
+                                <md-button class="search-item search-option-switch toggleBtn" ng-class="{ 'active': recoveryEnabled, 'blink': recoveryEnabled }">
+                                    {{ recoveryEnabled ? '실시간ON' : '실시간OFF' }}
+                                </md-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="column" class="chart-wrapper">
+                        <div class="chart">
+                            <div class="selfProcess_secondContent" flex>
+                                <h4 class="chartTitle">자가 회복</h4>
+                                <div class="chart-area" style="color: #000; fill: #000; overflow-y:hidden; " id="recoveryChart">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div layout="column" class="table-wrapper">
+                            <div layout="column" layout-wrap class="table-container" md-top-index="0" >
+                                <div layout="column" class="self-process-table">
+                                    <table md-table>
+                                        <thead md-head>
+                                            <tr md-row >
+                                                <th md-column flex="1" class="pr-0"><span>시간</span></th>
+                                                <th md-column flex="1" class="pr-0"><span>총 발생 건수</span></th>
+                                                <th md-column flex="1" class="pr-0"><span>자가회복 건수</span></th>
+                                                <th md-column flex="1" class="pr-0"><span>기능</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody md-body>
+                                            <tr md-row class="repeated-item" ng-repeat="item in recoveryData" >
+                                                <td md-cell flex="1" class="pr-0">{{item.hourly_time}}</td>
+                                                <td md-cell flex="1" class="pr-0">{{item.totalcount}}</td>
+                                                <td md-cell flex="1" class="pr-0">{{item.count}}</td>
+                                                <td md-cell flex="1" class="pr-0"><md-button ng-click="openDetail(item,'recovery',recoveryOptions.dateType)">상세보기</md-button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
