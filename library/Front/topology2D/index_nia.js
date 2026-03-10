@@ -324,7 +324,7 @@ let log = window.console.log
 
             function onChangeVisibleNodeOption() {
                 svg.selectAll('.node_invisible')
-                    .classed(className.invisible, function(d) {
+                    .classed(className.invisible, function (d) {
                         return options.node.invisible_node && (d.visible == false || d.source.visible == false || d.target.visible == false);
                     });
             }
@@ -615,7 +615,7 @@ let log = window.console.log
                         .attr("class", "bg_image")
                         .attr("width", "100%")
                         .attr("height", "100%")
-                        // .attr("xlink:href", "images/background4.png");
+                    // .attr("xlink:href", "images/background4.png");
                 }
                 return g
             }
@@ -632,7 +632,14 @@ let log = window.console.log
                     g.selectAll("*").remove();
 
                     const config = ctrl.getConfigAll()
-                    if(config?.map?.bg_element) {
+                    if (config?.map?.bg_element) {
+                        // g.append('path')
+                        //     .attr('d', 'M510 245 L710 40 L1550 40 L1450 245Z')
+                        //     .style('fill', 'gray')
+                        //     .style("fill-opacity", "20%")
+                        //     .style('stroke', '#fff')
+                        //     .style('stroke-width', 0.1)
+
                         g.append('path')
                             .attr('d', 'M490 510 L670 290 L1470 290 L1360 510Z')
                             .style('fill', 'gray')
@@ -736,8 +743,8 @@ let log = window.console.log
                 }
 
                 new_node.each(function (d, i) {
-                    if(d.visible == false) {
-                        return ;
+                    if (d.visible == false) {
+                        return;
                     }
                     let selection = d3.select(this);
                     if (d.alarm != undefined) {
@@ -766,9 +773,9 @@ let log = window.console.log
                         selection.append('g')
                             .attr('class', 'node_badge')
                             .append('circle')
-                            .attr('r',20)
+                            .attr('r', 20)
                             .attr('transform', 'translate(20,-20) scale(0.5 0.5)')
-                            .style('fill',  d.related_alarm ? 'red' : '#ff000033')
+                            .style('fill', d.related_alarm ? 'red' : '#ff000033')
                             .style('stroke', 'red');
 
                         selection.select('g.node_badge')
@@ -787,7 +794,7 @@ let log = window.console.log
                         let alarm = d.alarm || 4;
                         return 'node_container ' + nodeAlarm[alarm].style;
                     })
-                    .classed('node_invisible', function(d) {
+                    .classed('node_invisible', function (d) {
                         return d.visible == false;
                     });
 
@@ -805,7 +812,7 @@ let log = window.console.log
                         return ctrl.getNodeId(d, 'desc');
                     })
                     .classed('desc_container', true)
-                    .classed('node_invisible', function(d) { return d.visible == false; });
+                    .classed('node_invisible', function (d) { return d.visible == false; });
 
                 new_desc.append('text')
                     .attr('x', 0)
@@ -853,7 +860,7 @@ let log = window.console.log
                     .attr('id', function (d) {
                         return ctrl.getLinkId(d);
                     })
-                    .classed('node_invisible', function(d) {
+                    .classed('node_invisible', function (d) {
                         return d.source.visible == false || d.target.visible == false;
                     })
                     .classed('link_container', true);
@@ -1125,7 +1132,7 @@ let log = window.console.log
                 }
                 if (ZOOM_POS) {
                     setTimeout(() => {
-                        ctrl.zoomIn({ type: 'pos', scale: ZOOM_SCALE, ...ZOOM_POS, duration : 750 });
+                        ctrl.zoomIn({ type: 'pos', scale: ZOOM_SCALE, ...ZOOM_POS, duration: 750 });
                     }, 1000)
                 }
             }
@@ -2240,12 +2247,12 @@ let log = window.console.log
                         document.querySelector(".node-info .alarm > *:nth-child(2)").innerText = d.alarm;
                         document.querySelector(".node-info .port > *:nth-child(2)").innerText = "";
 
-                        if(slot == null){
+                        if (slot == null) {
                             slot = ".S" + Math.randomInt(10, 20);
                             d3.select(slot).classed("animation-blink", true);
-                        } else{
-                            if(slot.length > 1){
-                                for(let i = 0; i< slot.length; i++){
+                        } else {
+                            if (slot.length > 1) {
+                                for (let i = 0; i < slot.length; i++) {
                                     d3.select(slot[i]).classed("animation-blink", true);
                                 }
                             } else { d3.select(slot[0]).classed("animation-blink", true); }
@@ -2709,14 +2716,14 @@ let log = window.console.log
                     const ZOOM_POS = config.zoom && config.zoom.initPos;
 
                     if (ZOOM_POS) {
-                        ctrl.zoomIn({ type: 'pos', scale: ZOOM_SCALE, ...ZOOM_POS, duration : 750 });
+                        ctrl.zoomIn({ type: 'pos', scale: ZOOM_SCALE, ...ZOOM_POS, duration: 750 });
                         return
-                    } 
+                    }
                 } catch (error) {
                 }
 
                 zoomDefault()
-                
+
             },
 
             /**
@@ -2837,8 +2844,8 @@ let log = window.console.log
             // <!--</editor-fold desc="[#Map2d.prototype]">
         };
 
-        window.onload = () => { 
-            if(!window.libDev) return;
+        window.onload = () => {
+            if (!window.libDev) return;
 
             setTimeout(function () {
 
@@ -3018,4 +3025,4 @@ let log = window.console.log
         // }
 
     }
-)(typeof exports !== 'undefined' ? exports : this);
+    )(typeof exports !== 'undefined' ? exports : this);
