@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.sdn.linkage.mapper.nia.NiaInterfaceMapper">
+
+    <insert id="insertInterfaceYd" parameterType="java.util.HashMap">
+        <if test="interfaceVoList.size != 0">
+            INSERT INTO IP_SDN.TB_INTERFACE_YD
+            (
+                ID, IF_NAME, NODE_ID, IP_ADDR, HW_IF_ID
+            )
+            VALUES
+            <foreach collection="interfaceVoList" item="item" separator=",">
+            (
+                #{item.id}, #{item.ifName}, #{item.nodeId}, #{item.ipAddr}, #{item.hwIfId}
+            )
+            </foreach>
+        </if>
+    </insert>
+
+    <insert id="insertInterface">
+        INSERT INTO IP_SDN.TB_INTERFACE
+        SELECT * FROM IP_SDN.TB_INTERFACE_YD
+    </insert>
+
+    <delete id="deleteInterfaceYd">
+        TRUNCATE TABLE IP_SDN.TB_INTERFACE_YD
+    </delete>
+
+    <delete id="deleteInterface">
+        TRUNCATE TABLE IP_SDN.TB_INTERFACE
+    </delete>
+
+    <update id="updateLinkageHist" parameterType="java.util.HashMap">
+        UPDATE NIA.TB_LINKAGE_SEQ
+           SET VALUE_NAME = #{value}
+             , YD_DATE = now() 
+         WHERE KEY_NAME = #{key}
+    </update>
+</mapper>
+
+

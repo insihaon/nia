@@ -1,0 +1,104 @@
+#server:
+#  port: 30408
+
+logging:
+  level:
+    root: INFO
+---
+spring:
+  profiles: local
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  restTemplate:
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://incodej-lab.iptime.org:6544/niadb
+    username: niaadmin
+    password: niaadmin12#$
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: dev
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  restTemplate:
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.10.6:5433/niadb
+    username: niaadmin
+    password: niaadmin12
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: real
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  restTemplate:
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://116.89.191.47:6544/niadb
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.sdn.sflow.linkage.mapper.SflowMapper">
+
+    <select id="selectCurrentSflowSeq" resultType="long">
+        SELECT currval('gather.seq_sflow_collect') AS COLLECT_SEQ
+    </select>
+
+    <insert id="insertSflowDataBatch" parameterType="java.util.List">
+        INSERT INTO GATHER.TB_SFLOW_COLLECT
+        (
+        COLLECT_SEQ, COLLECT_HOST, AGENT_ADDRESS, ETHER_TYPE, HEADER_PROTOCOL,
+        INPUT_IFINDEX, OUTPUT_IFINDEX, SAMPLE_DIRECTION, SRC_IP, SRC_MAC,
+        SRC_PORT, SOURCE_ID_TYPE, SOURCE_ID_INDEX, DST_IP, DST_MAC,
+        DST_PORT, PACKET_BYTES, PACKET_DROPS, FRAME_LENGTH, HEADER_LENGTH,
+        IP_DSCP, IP_ECN, IP_FLAGS, IP_FRAGMENT_OFFSET, IP_TOTAL_LENGTH,
+        IP_TTL, SAMPLING_RATE, TCP_HEADER_LENGTH, TCP_URGENT_POINTER, TCP_WINDOW_SIZE,
+        COLLECT_TIMESTAMP
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            nextval('gather.seq_sflow_collect'), #{item.collectHost}, #{item.agentAddress}, #{item.etherType}, #{item.headerProtocol},
+            #{item.inputIfindex}, #{item.outputIfindex}, #{item.sampleDirection}, #{item.srcIp}, #{item.srcMac},
+            #{item.srcPort}, #{item.sourceIdType}, #{item.sourceIdIndex}, #{item.dstIp}, #{item.dstMac},
+            #{item.dstPort}, #{item.packetBytes}, #{item.packetDrops}, #{item.frameLength}, #{item.headerLength},
+            #{item.ipDscp}, #{item.ipEcn}, #{item.ipFlags}, #{item.ipFragmentOffset}, #{item.ipTotalLength},
+            #{item.ipTtl}, #{item.samplingRate}, #{item.tcpHeaderLength}, #{item.tcpUrgentPointer}, #{item.tcpWindowSize},
+            #{item.collectTimestamp}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateLinkageHist" parameterType="java.util.HashMap">
+        UPDATE NIA.TB_LINKAGE_SEQ
+        SET VALUE_NAME = #{value}
+          , YD_DATE = now()
+        WHERE KEY_NAME = #{key}
+    </update>
+
+
+</mapper>
+
+

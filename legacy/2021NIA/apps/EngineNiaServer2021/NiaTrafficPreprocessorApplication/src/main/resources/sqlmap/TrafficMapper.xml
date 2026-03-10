@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ai.traffic.preprocessor.mapper.TrafficMapper">
+
+    <select id="selectAnomalousTrafficCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(*) AS CNT FROM RCA.TB_ANOMALOUS_TRAFFIC
+        WHERE STRIFID = #{strifid}
+         AND INTTIMESTAMP = #{inttimestamp} ::integer
+    </select>
+
+    <select id="selectNoxiousTrafficCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(*) AS CNT
+          FROM RCA.TB_NOXIOUS_TRAFFIC
+         WHERE DATEREGDATE = #{dateregdate} ::timestamp
+           AND STRRESIP = #{strresip}
+           AND STRS_IP = #{strsIp}
+           AND STRS_PORT = #{strsPort}
+           AND STRD_IP = #{strdIp}
+           AND STRD_PORT = #{strdPort}
+    </select>
+
+    <select id="selectSdnTrafficCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(*) AS CNT
+         FROM RCA.TB_ANOMALOUS_1MI_TRAFFIC
+        WHERE MEASURED_DATETIME = to_timestamp(cast(#{measured_datetime} AS int8)/1000)
+         AND STRRESID = #{strresid}
+         AND STRIFID = #{strifid}
+    </select>
+
+    <select id="selectNodeFactorCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(*) AS CNT
+         FROM RCA.TB_NODEFACTOR
+        WHERE MEASURED_DATETIME = to_timestamp(cast(#{measured_datetime} AS int8)/1000)
+         AND NODE_ID = #{id}::int
+    </select>
+
+
+
+    <insert id="insertAnomalousTraffic" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_ANOMALOUS_TRAFFIC
+        SELECT DISTINCT NULL, CPI.STRIFID, PM.IF_ID, CPI.STRRESID, PM.NODE_ID
+             , CPI.STRTYPEMIN, CPI.INTTIMESTAMP, CPI.INTYEAR, CPI.INTMONTH, CPI.INTDAY
+             , CPI.INTHOUR, CPI.INTMIN, CPI.INTWEEK, CPI.INTBANDWIDTH, CPI.FLTBPSIN
+             , CPI.FLTBPSOUT, CPI.FLTPPSIN, CPI.FLTPPSOUT, CPI.FLTERRORIN, CPI.FLTERROROUT
+             , CPI.FLTDISCARDIN, CPI.FLTDISCARDOUT, CPI.FLTUNKNOWN, CPI.FLTUSAGE, CPI.FLHCINOCTETS
+             , CPI.FLHCOUTOCTETS, CPI.FLHCINUCASTPKTS, CPI.FLHCOUTUCASTPKTS, CPI.FLHCINMULTICASTPKTS, CPI.FLHCOUTMULTICASTPKTS
+             , CPI.FLHCINBROADCASTPKTS, CPI.FLHCOUTBROADCASTPKTS, CPI.FLTBPSINMAX, CPI.FLTBPSOUTMAX, CPI.FLTPPSINMAX
+             , CPI.FLTPPSOUTMAX, CPI.FLTERRORINMAX, CPI.FLTERROROUTMAX, CPI.FLTDISCARDINMAX, CPI.FLTDISCARDOUTMAX
+             , CPI.FLTUNKNOWNMAX, CPI.FLTUSAGEMAX, #{fltbpsinAnomaly} ::boolean, #{fltbpsoutAnomaly} ::boolean
+          FROM IP_YD.XE_CVNMS_PERF_IF CPI
+          LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM
+            ON CPI.STRIFID = PM.IF_NUM
+           AND CPI.STRRESID = PM.NODE_NUM
+         WHERE CPI.STRIFID = #{strifid}
+           AND CPI.INTTIMESTAMP = #{inttimestamp} ::integer
+    </insert>
+
+    <insert id="insertNoxiousTraffic" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_NOXIOUS_TRAFFIC
+        SELECT DISTINCT NULL, NM.NODE_NUM, SL.STRRESIP, SL.STRRESNAME, SL.STRS_IP
+             , SL.STRS_PORT, SL.STRD_IP, SL.STRD_PORT, SL.STRS_MAC, SL.STRD_MAC
+             , SL.STRPROTOCOL, SL.STRIPV4TOS, SL.STRCHANNEL, SL.STRSENDERIP, SL.STRIN_INTERFACE
+             , SL.STROUT_INTERFACE, SL.STRBYTES_COL, SL.STRCOUNTS, SL.DATEREGDATE
+          FROM IP_YD.XE_SFLOW_LOG SL
+          LEFT OUTER JOIN RESOURCE.TB_NODE_MST NM
+            ON SL.STRRESIP = NM.IP_ADDR
+         WHERE SL.DATEREGDATE = #{dateregdate} ::timestamp
+           AND SL.STRRESIP = #{strresip}
+           AND SL.STRS_IP = #{strsIp}
+           AND SL.STRS_PORT = #{strsPort}
+           AND SL.STRD_IP = #{strdIp}
+           AND SL.STRD_PORT = #{strdPort}
+    </insert>
+
+    <insert id="insertNodeFactor" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_NODEFACTOR
+        SELECT NULL, NM.NODE_NUM, NF.CPU_USAGE, NF.MEM_USAGE,N.ID, NF.MEASURED_DATETIME
+         FROM IP_SDN.TB_NODEFACTOR NF
+        INNER JOIN IP_SDN.TB_NODE N
+          ON NF.NODE_ID = N.ID
+         INNER JOIN RESOURCE.TB_NODE_MST NM
+           ON N.ID = NM.IP_SDN_ID::INT
+         WHERE NF.MEASURED_DATETIME = to_timestamp(cast(#{measured_datetime} AS int8)/1000)
+         AND N.ID = #{id}::int
+    </insert>
+
+    <insert id="insertSdnTraffic" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_ANOMALOUS_1MI_TRAFFIC
+        SELECT NULL, #{trafficGb} ,PM.IF_NUM AS STRIFID , I.IF_NAME AS STRIFNM, NM.NODE_NUM AS STRRESID, NM.NODE_NM AS STRRESNM, LT.MEASURED_DATETIME,
+            LT.RX_BIT_RATE AS FLTBPSIN ,LT.TX_BIT_RATE AS FLTBPSOUT , LT.RX_PKT_RATE AS FLTPPSIN ,  LT.TX_PKT_RATE AS FLTPPSOUT , NOW()
+        FROM IP_SDN.TB_LINK_TRAFFIC LT
+        INNER JOIN(SELECT ID, LOWER(IF_NAME) AS IF_NAME, NODE_ID FROM IP_SDN.TB_INTERFACE ) I
+            ON LT.IF_ID = I.ID
+        INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.IF_ID = I.IF_NAME
+        INNER JOIN IP_SDN.TB_NODE N ON I.NODE_ID = N.ID
+        INNER JOIN ( SELECT IP_SDN_ID::INT, NODE_ID, NODE_NUM, NODE_NM FROM RESOURCE.TB_NODE_MST ) NM
+            ON N.ID = NM.IP_SDN_ID
+        WHERE PM.NODE_NUM = NM.NODE_NUM
+        <if test="strifid != null">
+            AND PM.IF_NUM = #{strifid}
+        </if>
+        <if test="strresid != null">
+            AND NM.NODE_NUM = #{strresid}
+        </if>
+          AND LT.MEASURED_DATETIME = to_timestamp(cast(#{measured_datetime} AS int8)/1000)
+
+    </insert>
+
+    <insert id="insertAiAnomalous" parameterType="com.nia.ai.traffic.preprocessor.vo.anomalous.AnomalousTrafficVo">
+        INSERT INTO RCA.TB_AI_ANOMALOUS
+        (
+            STRIFID, INTTIMESTAMP, FLTBPSIN, FLTBPSIN_PREDICT, FLTBPSIN_THRESHOLD_UPPER,
+            FLTBPSIN_THRESHOLD_LOWER, FLTBPSIN_ANOMALY, FLTBPSOUT, FLTBPSOUT_PREDICT, FLTBPSOUT_THRESHOLD_UPPER,
+            FLTBPSOUT_THRESHOLD_LOWER, FLTBPSOUT_ANOMALY
+        )
+        VALUES
+        (
+            #{strifid}, #{inttimestamp} ::integer, #{fltbpsin}, #{fltbpsin_predict}, #{fltbpsin_threshold_upper},
+            #{fltbpsin_threshold_lower}, #{fltbpsin_anomaly}, #{fltbpsout}, #{fltbpsout_predict}, #{fltbpsout_threshold_upper},
+            #{fltbpsout_threshold_lower}, #{fltbpsout_anomaly}
+        )
+    </insert>
+
+    <insert id="insertAiNoxious" parameterType="com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrafficVo">
+        INSERT INTO RCA.TB_AI_NOXIOUS
+        (
+            STRRESIP, STRRESNAME, STRS_IP, STRS_PORT, STRD_IP,
+            STRD_PORT, STRS_MAC, STRD_MAC, STRPROTOCOL, STRIPV4TOS,
+            STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL,
+            STRCOUNTS, DATEREGDATE, ANOMALY
+        )
+        VALUES
+        (
+            #{strresip}, #{strresname}, #{strs_ip}, #{strs_port}, #{strd_ip},
+            #{strd_port}, #{strs_mac}, #{strd_mac}, #{strprotocol}, #{stripv4tos},
+            #{strchannel}, #{strsenderip}, #{strin_interface}, #{strout_interface}, #{strbytes_col},
+            #{strcounts}, #{dateregdate} ::timestamp, #{anomaly}
+        )
+    </insert>
+
+    <insert id="insertAiSdnTraffic" parameterType="com.nia.ai.traffic.preprocessor.vo.sdn.traffic.SdnTrafficVo">
+        INSERT INTO RCA.TB_ANOMALOUS_AI_RESULT
+        (
+            TRAFFIC_GB,STRIFID, STRRESID, MEASURED_DATETIME, FLTBPSIN, FLTBPSIN_PREDICT,FLTBPSIN_THRESHOLD_UPPER
+            ,FLTBPSIN_THRESHOLD_LOWER , FLTBPSIN_ANOMALY ,FLTBPSOUT, FLTBPSOUT_PREDICT, FLTBPSOUT_THRESHOLD_UPPER,
+            FLTBPSOUT_THRESHOLD_LOWER,FLTBPSOUT_ANOMALY,INSERT_TIME
+        )
+        SELECT #{traffic_gb}, IF_NUM, NODE_NUM ,to_timestamp(#{measured_datetime}/1000), #{fltbpsin}, #{fltbpsin_predict}, #{fltbpsin_threshold_upper},
+            #{fltbpsin_threshold_lower}, #{fltbpsin_anomaly},#{fltbpsout},#{fltbpsout_predict},#{fltbpsout_threshold_upper},
+            #{fltbpsout_threshold_lower},#{fltbpsout_anomaly},now()
+        FROM RESOURCE.TB_PORT_MST
+        WHERE IF_NUM = #{strifid} OR NODE_NUM = #{strresid}
+    </insert>
+
+    <insert id="insertAiNodeFactor" parameterType="com.nia.ai.traffic.preprocessor.vo.sdn.factor.NodeFactorVo">
+        INSERT INTO RCA.TB_NODEFACTOR_AI_RESULT
+        (
+          strresid, measured_datetime, predicted_time, cpu_predicted, mem_predicted
+        )
+        VALUES
+        (
+          (SELECT NM.NODE_NUM  FROM RESOURCE.TB_NODE_MST NM
+          WHERE IP_SDN_ID = #{id}),to_timestamp(#{measured_datetime}/1000),#{predicted_time},#{cpu_usage},#{mem_usage}
+        )
+
+    </insert>
+
+    <select id="selectThreeTimesCntCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1) cnt
+        FROM RCA.TB_ANOMALOUS_AI_RESULT AIRES
+        WHERE 1=1
+        <if test="strifid != null">
+            AND AIRES.strifid = #{strifid}
+        </if>
+        <if test="strresid != null">
+            AND AIRES.strresid = #{strresid}
+        </if>
+        AND date_trunc('minute', AIRES.measured_datetime) <![CDATA[ > ]]>
+            date_trunc('minute', to_timestamp(#{measured_datetime} / 1000.0)) - INTERVAL '3 minutes'
+        AND date_trunc('minute', AIRES.measured_datetime) <![CDATA[ <= ]]>
+            date_trunc('minute', to_timestamp(#{measured_datetime} / 1000.0)) + INTERVAL '1 minute';
+    </select>
+</mapper>

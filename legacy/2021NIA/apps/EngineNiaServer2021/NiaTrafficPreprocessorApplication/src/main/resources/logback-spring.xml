@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <springProfile name="dev">
+        <property resource="log-properties/logback-dev.properties"/>
+    </springProfile>
+
+    <springProfile name="real">
+        <property resource="log-properties/logback-real.properties"/>
+    </springProfile>
+
+    <!-- log file path -->
+    <property name="LOG_PATH" value="${log.config.path}"/>
+
+    <appender name="aiTrafficePreprocessorApplicationInfo"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/aiTrafficePreprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <encoder>
+            <pattern>%d{yyyy:MM:dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{35} : %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="aiTrafficePreprocessorApplicationError"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/aiTrafficePreprocessor_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <encoder>
+            <pattern>%d{yyyy:MM:dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{35} : %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="com.nia.ai.traffic.preprocessor" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="aiTrafficePreprocessorApplicationInfo"/>
+    </root>
+    <root level="ERROR">
+        <appender-ref ref="aiTrafficePreprocessorApplicationError"/>
+    </root>
+
+</configuration>

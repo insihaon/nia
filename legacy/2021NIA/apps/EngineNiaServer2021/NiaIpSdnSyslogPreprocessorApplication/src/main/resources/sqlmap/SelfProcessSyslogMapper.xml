@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.syslog.preprocessor.mapper.SelfProcessSyslogMapper">
+
+    <insert id="insertAutoProcess" parameterType="com.nia.syslog.preprocessor.vo.selfProcess.AutoTreatProcessVo">
+        INSERT INTO nia.tb_auto_treat_process_dtl
+        (self_process_no, self_process_group, self_process_type, clos_type, feedback_msg, occur_time, feedback_time,
+         ticket_id, ticket_type, alarmno, clos_status, clos_time)
+        VALUES (nextval('nia.seq_self_process_no'), #{selfProcessGroup}, #{selfProcessType}, 'A', null,
+                #{occur_time}::timestamp, null, #{ticketId}, #{ticketType}, #{alarmno}, 'N', null)
+    </insert>
+
+    <select id="selectAutoProcess" parameterType="string" resultType="string">
+        select self_process_no,
+               self_process_group,
+               self_process_type,
+               clos_type,
+               feedback_msg,
+               occur_time,
+               feedback_time,
+               ticket_id,
+               ticket_type,
+               alarmno,
+               clos_status,
+               clos_time
+        from nia.tb_auto_treat_process_dtl pd
+        where pd.clos_type = 'A'
+           or pd.clos_type = 'M'
+            and pd.ticket_id = #{num}
+           or pd.alarmno = #{num}
+    </select>
+
+
+    <select id="selectSyslogAlarmMst" parameterType="string"
+            resultType="com.nia.syslog.preprocessor.vo.selfProcess.SyslogAlarmVo">
+        select sa.alarmno,
+               sa.alarmtime,
+               sa.node_num,
+               sa.node_nm,
+               sa.alarmmsg,
+               sa.alarmlvl,
+               sa.etc,
+               sa.rule_id,
+               sa.alarmloc,
+               sa.status
+        from rca.tb_syslog_alarm_mst sa
+        where sa.alarmno = #{num}
+    </select>
+
+    <select id="selectSyslogSop" parameterType="string"
+            resultType="com.nia.syslog.preprocessor.vo.selfProcess.SyslogSopVo">
+        select sop_id,
+               alarmno,
+               fault_classify,
+               fault_type,
+               fault_detail_content,
+               etc_content,
+               status,
+               proc_status,
+               alarm_occur_time,
+               handling_fin_user,
+               handling_fin_time,
+               alarmloc
+        from nia.tb_syslog_sop
+        where alarmno = #{alarmno}
+    </select>
+
+    <insert id="insertSyslogSop" parameterType="java.util.HashMap">
+        INSERT INTO nia.tb_syslog_sop
+        (sop_id,
+         alarmno,
+         fault_classify,
+         fault_type,
+         fault_detail_content,
+         etc_content,
+         status,
+         proc_status,
+         alarm_occur_time,
+         handling_fin_user,
+         handling_fin_time,
+         alarmloc)
+        VALUES (nextval('nia.seq_syslog_sop_id'),
+                #{alarmno},
+                #{faultClassify},
+                #{faultType},
+                #{faultDetailContent},
+                #{etcContent},
+                #{status},
+                #{procStatus},
+                #{alarmOccurTime}::timestamp,
+                #{handlingFinUser},
+                now(),
+                #{alarmloc})
+    </insert>
+    <!--com.nia.syslog.preprocessor.vo.alarm.SysLogAlarmVo-->
+    <update id="updateSyslogPortAlarmStatus" parameterType="map">
+        UPDATE rca.tb_syslog_alarm_mst
+        SET status = 'AUTO_FIN'
+        WHERE status NOT IN ('FIN')
+          AND node_num = #{nodeNum}
+          AND node_nm = #{nodeNm}
+          and alarmmsg like '%IFMGR_IF%'
+    </update>
+    <update id="updateSyslogLinkAlarmStatus" parameterType="map">
+        UPDATE rca.tb_syslog_alarm_mst
+        SET status = 'AUTO_FIN'
+        WHERE status NOT IN ('FIN')
+          AND node_num = #{nodeNum}
+          AND node_nm = #{nodeNm}
+          and alarmmsg like '%OSPF_OPR_LINK%'
+    </update>
+
+    <update id="updateAutoProcessSyslog" parameterType="java.util.HashMap">
+        UPDATE NIA.tb_auto_treat_process_dtl
+        SET CLOS_TIME   = now()
+          , CLOS_STATUS = 'Y'
+        WHERE CLOS_STATUS NOT IN ('Y')
+          AND SELF_PROCESS_TYPE = 'S'
+          AND ALARMNO = #{alarmno}
+    </update>
+
+    <update id="updateAlarmloc" parameterType="string">
+        update rca.tb_syslog_alarm_mst
+        set alarmloc = #{alarmloc}
+        where alarmno = #{alarmno}
+    </update>
+
+
+</mapper>
+
+

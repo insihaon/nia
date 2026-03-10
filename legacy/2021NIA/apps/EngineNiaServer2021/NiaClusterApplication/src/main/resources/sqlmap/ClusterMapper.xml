@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.rca.cluster.preprocessor.mapper.ClusterMapper">
+
+    <select id="selectClusterKey" resultType="string">
+        SELECT NEXTVAL('rca.seq_cluster') ::VARCHAR AS CLUSTERNO
+    </select>
+
+    <select id="selectTmpClusterKey" resultType="string">
+        SELECT NEXTVAL('rca.seq_tmp_cluster') ::VARCHAR AS CLUSTERNO
+    </select>
+
+
+    <insert id="insertTmpCluster" parameterType="com.nia.rca.cluster.preprocessor.vo.TmpClusterObject">
+        INSERT INTO RCA.TB_TMP_CLUSTER_CURRENT
+        (
+            TMP_CLUSTER_NO,
+            START_TIME,
+            END_TIME
+        )
+        VALUES
+        (
+            #{tmpClusterSeq},
+            #{clusterStartTime},
+            #{clusterEndTime}
+        )
+    </insert>
+
+    <insert id="insertCluster" parameterType="com.nia.rca.cluster.preprocessor.vo.ClusterObject">
+       WITH UPSERT AS
+       (
+         SELECT #{clusterNo} AS CLUSTER_NO
+               , #{tmpClusterNo} AS TMP_CLUSTER_NO
+               , now() AS INSERT_TIME
+       )
+       INSERT INTO RCA.TB_CLUSTER_CURRENT_MST
+       (
+           CLUSTER_NO,
+           TMP_CLUSTER_NO,
+           INSERT_TIME
+       )
+       SELECT U.CLUSTER_NO
+             , U.TMP_CLUSTER_NO
+             , U.INSERT_TIME
+         FROM UPSERT U
+        WHERE NOT EXISTS(
+               SELECT A.CLUSTER_NO, A.TMP_CLUSTER_NO
+                 FROM RCA.TB_CLUSTER_CURRENT_MST A
+                WHERE A.CLUSTER_NO = U.CLUSTER_NO
+                  AND A.TMP_CLUSTER_NO = U.TMP_CLUSTER_NO
+                  AND A.INSERT_TIME >= RCA.FC_GET_MINUS_DAY(7)
+       )
+        <!--
+                   INSERT INTO RCA.TB_CLUSTER_CURRENT_MST
+                   (
+                       CLUSTER_NO,
+                       TMP_CLUSTER_NO,
+                       CLUSTER_TYPE,
+                       INSERT_TIME
+                   )
+                   VALUES
+                   (
+                       #{clusterNo},
+                       #{tmpClusterNo},
+                       #{clusterType},
+                       now()
+                   )-->
+    </insert>
+</mapper>
+
+
