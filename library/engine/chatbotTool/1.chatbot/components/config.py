@@ -21,8 +21,8 @@ class ESConfig:
     password: str       = os.getenv("ES_PASS",    "changeme123")
     verify: bool        = os.getenv("ES_VERIFY",  "false").lower() == "true"
     timeout: int        = int(os.getenv("ES_TIMEOUT", "30"))
-    index: str          = "my-index"
-    csv_path: Path      = Path(os.getenv("CSV_PATH", "../chatbot.data"))
+    index: str          = "chatbot-qa"
+    csv_path: Path      = Path(os.getenv("CSV_PATH", "data/chatbot.data"))
 
 # ─── 분석기 설정 (DRY 원칙) ────────────────────────────────────────────────────
 ANALYSIS_SETTINGS: Dict[str, Any] = {

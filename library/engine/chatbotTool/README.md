@@ -1,9 +1,11 @@
 ## 🚀 실행 순서
 
-### 1단계: Elasticsearch 실행
+### 1단계: Elasticsearch + kibana 실행
 ```bash
 cd chatbot/elasticsearch
-docker-compose -f docker-compose-light.yml up --build
+docker-compose up -d
+
+kibana UI : http://localhost:9200
 ```
 
 ### 2단계: 데이터 초기화 (최초 한 번만)
