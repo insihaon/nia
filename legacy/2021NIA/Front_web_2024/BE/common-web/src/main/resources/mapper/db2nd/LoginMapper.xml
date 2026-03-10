@@ -1,0 +1,89 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--    version 1.0
+ 
+   Copyright ⓒ 2017 kt corp. All rights reserved.
+ 
+   This is a proprietary software of kt corp, and you may not use this file except in
+   compliance with license agreement with kt corp. Any redistribution or use of this
+   software, with or without modification shall be strictly prohibited without prior written
+   approval of kt corp, and the copyright notice above does not evidence any actual or
+   intended publication of such software. -->
+<mapper namespace="LoginMapper">
+
+	<select id="selectUserInfo" parameterType="java.util.HashMap" resultType="com.codej.base.utils.DataMap">
+      SELECT 
+      		USR.USER_ID,
+           	USR.LOGIN_ID,
+           	USR.USER_NM AS USER_NAME,
+           	USR.USER_TYPE_CD,
+           	USR.DEPT_TEAM_CD AS DEPARTMENT_CD,
+           	USR.MOBILE_PHONE_NUM,
+            USR.TEL_NUM,
+            USR.EMAIL,
+		    USR.APPROVAL_TYPE_CD,
+		    USR.USER_STATUS_CD,
+		    (CASE WHEN USR.APPROVAL_TYPE_CD = 'Z' THEN '미신청' ELSE (SELECT CD_NM END FROM TB_CODE_CD WHERE CD = USR.APPROVAL_TYPE_CD AND CATEGORY_CD = 'APPROVAL_TYPE' AND LVL='1') END) APPROVAL_TYPE_NM,
+		    ORG.CONN_ALLOW_YN_CD,
+		    ORG.ORG_NM AS DEPARTMENT_NAME,
+		    ORG.TEAM_TYPE_CD,
+		    ORG.HIGHER_ORG_ID,
+		    TO_CHAR(USR.LAST_APPROACH_TIME, 'YYYY-MM-DD HH24:MI:SS') AS LAST_APPROACH_TIME 
+			, USR.TITL_TYPE_CD
+      , '' AS ORG_CONFIRM
+       FROM TB_USER_MST USR LEFT OUTER JOIN TB_ORG_MST ORG ON USR.DEPT_TEAM_CD = ORG.ORG_ID
+       WHERE USR.USER_STATUS_CD IN ('U', 'X')
+			 <!-- AND USR.USER_ID = 'T000068892' -->
+       <choose>
+					<when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(USER_ID)">
+       		AND USR.USER_ID = #{USER_ID}
+       		</when>
+	       	<when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(LOGIN_ID)">
+	       	AND USR.LOGIN_ID = #{LOGIN_ID}
+	       	</when>
+	       	<otherwise>
+	       	AND	1=2
+	       	</otherwise>
+			</choose>
+       AND ROWNUM = 1 
+	</select>
+	
+	<!-- 테스트 로그인 이용 가능자 -->
+    <select id="selectTestUser" resultType="com.codej.base.utils.DataMap">
+		SELECT
+			USR.USER_ID,
+			USR.LOGIN_ID,
+			USR.USER_NM AS USER_NAME,
+			USR.USER_TYPE_CD,
+			USR.DEPT_TEAM_CD AS DEPARTMENT_CD,
+			USR.MOBILE_PHONE_NUM,
+			USR.TEL_NUM,
+			USR.EMAIL,
+			USR.APPROVAL_TYPE_CD,
+			USR.USER_STATUS_CD,
+			ORG.CONN_ALLOW_YN_CD,
+			ORG.ORG_NM AS DEPARTMENT_NAME,
+			ORG.TEAM_TYPE_CD,
+			ORG.HIGHER_ORG_ID,
+			TO_CHAR(USR.LAST_APPROACH_TIME, 'YYYY-MM-DD HH24:MI:SS') AS LAST_APPROACH_TIME,
+			USR.TITL_TYPE_CD
+		FROM
+			TB_CONST_SUPER_ADMIN SUPER,
+			TB_USER_MST USR,
+			TB_ORG_MST ORG
+		WHERE
+			SUPER.SUPERMAN_ID = USR.USER_ID
+			AND USR.DEPT_TEAM_CD = ORG.ORG_ID
+			AND USR.USER_STATUS_CD = 'U'
+    </select>
+   
+   	<!-- 테스트 로그인 이용 가능자2 -->
+    <select id="selectBooleanSuperUser" resultType="java.lang.String" parameterType="java.util.HashMap">
+		SELECT	CASE	COUNT(*)	WHEN	0	THEN	'N'
+									ELSE				'Y'	
+				END		YN
+		FROM
+			TB_CONST_SUPER_ADMIN
+		WHERE	SUPERMAN_ID	=	#{USER_ID}
+    </select>
+    
+</mapper>

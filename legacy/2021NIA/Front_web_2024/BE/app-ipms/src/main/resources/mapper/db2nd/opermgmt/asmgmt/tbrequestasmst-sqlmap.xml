@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.asmgmt.dao.TbRequestAsMstDao">
+	<resultMap id="tbRequestAsMstVoResult" type="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		<result column="NREQUEST_AS_SEQ" property="nrequestAsSeq" jdbcType="BIGINT" />
+		<result column="SREQUEST_AS_TYPE_CD" property="srequestAsTypeCd" jdbcType="CHAR" />
+		<result column="SREQUEST_AS_TYPE_NM" property="srequestAsTypeNm" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="SCREATE_NM" property="screateNm" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		<result column="SMODIFY_NM" property="smodifyNm" jdbcType="VARCHAR" />
+		
+		<result column="SREQUEST_AS_CTM" property="srequestAsCtm" jdbcType="VARCHAR" />
+		<result column="APY_DT" property="apyDt" jdbcType="TIMESTAMP" />
+		<result column="APY_USER_ID" property="apyUserId" jdbcType="VARCHAR" />
+		<result column="APY_USER_NM" property="apyUserNm" jdbcType="VARCHAR" />
+		<result column="SREQUEST_AS_OBJ_NM1" property="srequestAsObjNm1" jdbcType="VARCHAR" />
+		<result column="SREQUEST_AS_OBJ_LLNUM1" property="srequestAsObjLlnum1" jdbcType="VARCHAR" />
+		<result column="SREQUEST_AS_OBJ_NM2" property="srequestAsObjNm2" jdbcType="VARCHAR" />
+		<result column="SREQUEST_AS_OBJ_LLNUM2" property="srequestAsObjLlnum2" jdbcType="VARCHAR" />
+		
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NREQUEST_AS_SEQ, A.SREQUEST_AS_TYPE_CD, A.SREQUEST_AS_TYPE_NM, A.SCOMMENT
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+		, B.SUSER_NM AS SCREATE_NM
+		, C.SUSER_NM AS SMODIFY_NM		
+		, D.SREQUEST_AS_CTM
+		, D.DCREATE_DT AS APY_DT
+		, D.SCREATE_ID AS APY_USER_ID
+		, E.SUSER_NM AS APY_USER_NM
+		, D.SREQUEST_AS_OBJ_NM1
+		, D.SREQUEST_AS_OBJ_LLNUM1
+		, D.SREQUEST_AS_OBJ_NM2
+		, D.SREQUEST_AS_OBJ_LLNUM2
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SCREATE_NM
+		, A.SMODIFY_NM		
+		, A.SREQUEST_AS_CTM
+		, A.APY_DT
+		, A.APY_USER_ID
+		, A.APY_USER_NM
+		, A.SREQUEST_AS_OBJ_NM1
+		, A.SREQUEST_AS_OBJ_LLNUM1
+		, A.SREQUEST_AS_OBJ_NM2
+		, A.SREQUEST_AS_OBJ_LLNUM2
+	</sql>
+	
+	<sql id="Append_From_Clause">
+		, MST.TB_USER_BAS B
+		, MST.TB_USER_BAS C
+		, (SELECT A.NREQUEST_AS_APY_TXN_SEQ, A.NREQUEST_AS_SEQ, A.SREQUEST_AS_CTM
+				, A.SREQUEST_AS_OBJ_NM1, A.SREQUEST_AS_OBJ_LLNUM1, A.DREQUEST_AS_OBJ_OPEN_DT1, A.SREQUEST_AS_OBJ_IP_BLOCK1
+				, A.SREQUEST_AS_OBJ_NM2, A.SREQUEST_AS_OBJ_LLNUM2, A.DREQUEST_AS_OBJ_OPEN_DT2, A.SREQUEST_AS_OBJ_IP_BLOCK2
+				, A.SREQUEST_AS_TYPE_CD, A.SAS_TPIC_NM, A.SAS_TPIC_ORG, A.SEXIST_SP_LINE
+				, A.NEXIST_SALES, A.SALT_SP_LINE, A.NALT_SALES, A.DAPV_DT
+				, A.SAPVUSER_ID, A.SCOMMENT	, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+			FROM MST.TB_REQUEST_AS_APY_TXN A , (
+			SELECT   NREQUEST_AS_SEQ , MAX(NREQUEST_AS_APY_TXN_SEQ ) AS  NREQUEST_AS_APY_TXN_SEQ FROM  MST.TB_REQUEST_AS_APY_TXN
+			WHERE SREQUEST_AS_TYPE_CD = 'RS0202'
+			 GROUP BY NREQUEST_AS_SEQ ) B
+			WHERE A.NREQUEST_AS_APY_TXN_SEQ = B.NREQUEST_AS_APY_TXN_SEQ ) D
+ 		, MST.TB_USER_BAS E
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND A.SCREATE_ID = B.SUSER_ID(+)
+		AND A.SMODIFY_ID = C.SUSER_ID(+)
+		AND A.NREQUEST_AS_SEQ =  D.NREQUEST_AS_SEQ(+)
+		AND D.SCREATE_ID = E.SUSER_ID(+)
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NREQUEST_AS_SEQ = #{nrequestAsSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nrequestAsSeq)">
+				AND A.NREQUEST_AS_SEQ = #{nrequestAsSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(srequestAsTypeCd)">
+				AND A.SREQUEST_AS_TYPE_CD = #{srequestAsTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(srequestAsTypeNm)">
+				AND A.SREQUEST_AS_TYPE_NM = #{srequestAsTypeNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+				AND A.NREQUEST_AS_SEQ = #{searchWrd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+					AND A.DMODIFY_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+				</if>
+			</if>
+		</trim>
+	</sql>
+	
+	<insert id="insertTbRequestAsMstVo" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		INSERT
+		INTO MST.TB_REQUEST_AS_MST (
+			SREQUEST_AS_TYPE_CD
+			,	SREQUEST_AS_TYPE_NM
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{srequestAsTypeCd, jdbcType=CHAR}
+			,	#{srequestAsTypeNm, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbRequestAsMstVo" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		UPDATE
+		MST.TB_REQUEST_AS_MST A
+		SET
+			A.DMODIFY_DT = current_timestamp
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(srequestAsTypeCd)">
+				,A.SREQUEST_AS_TYPE_CD = #{srequestAsTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(srequestAsTypeNm)">
+				, A.SREQUEST_AS_TYPE_NM = #{srequestAsTypeNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbRequestAsMstVo" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		DELETE
+		FROM MST.TB_REQUEST_AS_MST A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbRequestAsMstVo" resultMap="tbRequestAsMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_REQUEST_AS_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbRequestAsMstVo" resultMap="tbRequestAsMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_REQUEST_AS_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbRequestAsMstVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_REQUEST_AS_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbRequestAsMstVo" resultMap="tbRequestAsMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_REQUEST_AS_MST A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				ORDER BY NREQUEST_AS_SEQ ASC
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbRequestAsMstVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_REQUEST_AS_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	<select id="useCountListTbRequestAsMstVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT
+			count(1) useCount
+		FROM MST.TB_REQUEST_AS_MST A
+		WHERE SREQUEST_AS_TYPE_CD = 'Y'
+	</select>
+	
+	<select id="selectMinNrequestAsSeq" resultMap="tbRequestAsMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo">
+		SELECT MIN(NREQUEST_AS_SEQ) AS nrequestAsSeq
+		FROM MST.TB_REQUEST_AS_MST A
+		WHERE SREQUEST_AS_TYPE_CD = #{srequestAsTypeCd, jdbcType=CHAR}
+	</select>
+	
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.web.mapper.db1st.DataMapper">
+
+    <select id="selectDataList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    -- [command=${command}, sqlId=${sqlId}] 주석에 파라미터 바인딩 여부 테스트. 결론은 '#'는 안되고 '$'만 된다
+    SELECT  #{command} AS name,
+            TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS timestamp
+    UNION ALL
+    SELECT  '1' AS name,
+            TO_CHAR(SYSDATE+1, 'YYYY-MM-DD HH24:MI:SS') AS timestamp
+    UNION ALL
+    SELECT  '2' AS name,
+            TO_CHAR(SYSDATE+2, 'YYYY-MM-DD HH24:MI:SS') AS timestamp
+    UNION ALL
+    SELECT  '3' AS name,
+            TO_CHAR(SYSDATE+3, 'YYYY-MM-DD HH24:MI:SS') AS timestamp
+    </select>
+
+    <select id="selectSqlList" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT * FROM (
+    ${sql}
+) AS SQL_QUERY LIMIT 200
+    </select>
+
+    <select id="executeSql" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    ${sql}
+    </select>
+
+</mapper>

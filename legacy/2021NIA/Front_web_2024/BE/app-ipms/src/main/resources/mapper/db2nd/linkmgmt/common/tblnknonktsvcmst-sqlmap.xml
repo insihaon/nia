@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkNonKtSvcMstDao">
+	<resultMap id="tbLnkNonKtSvcMstVoResult" type="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		<result column="NNON_KT_SVC_MST_SEQ" property="nnonKtSvcMstSeq" jdbcType="BIGINT" />
+		<result column="SODRNUM" property="sodrnum" jdbcType="VARCHAR" />
+		<result column="SREGYN" property="sregyn" jdbcType="CHAR" />
+		<result column="SWORKERID" property="sworkerid" jdbcType="VARCHAR" />
+		<result column="SWORKERNAME" property="sworkername" jdbcType="VARCHAR" />
+		<result column="SSAID" property="ssaid" jdbcType="VARCHAR" />
+		<result column="SLLNUM" property="sllnum" jdbcType="VARCHAR" />
+		<result column="SCUSTNAME" property="scustname" jdbcType="VARCHAR" />
+		<result column="NIPMS_SVC_SEQ" property="nipmsSvcSeq" jdbcType="BIGINT" />
+		<result column="SSVC_USE_TYPE_CD" property="ssvcUseTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_USE_TYPE_NM" property="ssvcUseTypeNm" jdbcType="VARCHAR" />
+		<result column="SEX_SVC_CD" property="sexSvcCd" jdbcType="CHAR" />
+		<result column="SEX_SVC_NM" property="sexSvcNm" jdbcType="VARCHAR" />
+		<result column="SINSTALLADDRESS" property="sinstalladdress" jdbcType="VARCHAR" />
+		<result column="SINSTALLROADADDRESS" property="sinstallroadaddress" jdbcType="VARCHAR" />
+		<result column="SOFFICECODE" property="sofficecode" jdbcType="VARCHAR" />
+		<result column="SICISOFFICESCODE" property="sicisofficescode" jdbcType="VARCHAR" />
+		<result column="SEN_CUSTNAME" property="senCustname" jdbcType="VARCHAR" />
+		<result column="SASNUM" property="sasNum" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_SVC_Column_List">
+		A.NNON_KT_SVC_MST_SEQ, A.SODRNUM, A.SREGYN, A.SWORKERID
+		, A.SWORKERNAME, A.SSAID, A.SLLNUM, A.SCUSTNAME
+		, A.NIPMS_SVC_SEQ, A.SSVC_USE_TYPE_CD, A.SEX_SVC_CD, A.SINSTALLADDRESS
+		, A.SINSTALLROADADDRESS, A.SOFFICECODE, A.SICISOFFICESCODE, A.SEN_CUSTNAME
+		, A.SASNUM, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT
+		, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_SVC_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_SVC_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_SVC_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_SVC_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_SVC_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NNON_KT_SVC_MST_SEQ = #{nnonKtSvcMstSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_SVC_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nnonKtSvcMstSeq)">
+				AND A.NNON_KT_SVC_MST_SEQ = #{nnonKtSvcMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sodrnum)">
+				AND A.SODRNUM = #{sodrnum, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sregyn)">
+				AND A.SREGYN = #{sregyn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkerid)">
+				AND A.SWORKERID = #{sworkerid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkername)">
+				AND A.SWORKERNAME = #{sworkername, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+				AND A.SSAID = #{ssaid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+				AND A.SLLNUM = #{sllnum, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scustname)">
+				AND A.SCUSTNAME = #{scustname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipmsSvcSeq)">
+				AND A.NIPMS_SVC_SEQ = #{nipmsSvcSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcUseTypeCd)">
+				AND A.SSVC_USE_TYPE_CD = #{ssvcUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexSvcCd)">
+				AND A.SEX_SVC_CD = #{sexSvcCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinstalladdress)">
+				AND A.SINSTALLADDRESS = #{sinstalladdress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinstallroadaddress)">
+				AND A.SINSTALLROADADDRESS = #{sinstallroadaddress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sofficecode)">
+				AND A.SOFFICECODE = #{sofficecode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sicisofficescode)">
+				AND A.SICISOFFICESCODE = #{sicisofficescode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(senCustname)">
+				AND A.SEN_CUSTNAME = #{senCustname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sasNum)">
+				AND A.SASNUM = #{sasNum, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbLnkNonKtSvcMstVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		INSERT
+		INTO BIF.TB_NON_KT_SVC_MST (
+			SREGYN
+			,	SWORKERID
+			,	SWORKERNAME
+			,	SSAID
+			,	SLLNUM
+			,	SCUSTNAME
+			,	SSVC_USE_TYPE_CD
+			,	SEX_SVC_CD
+			,	SINSTALLADDRESS
+			,	SINSTALLROADADDRESS
+			,	SOFFICECODE
+			,	SICISOFFICESCODE
+			,	SEN_CUSTNAME
+			,	SASNUM
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+				#{sregyn, jdbcType=CHAR}
+			,	#{sworkerid, jdbcType=VARCHAR}
+			,	#{sworkername, jdbcType=VARCHAR}
+			,	#{ssaid, jdbcType=VARCHAR}
+			,	#{sllnum, jdbcType=VARCHAR}
+			,	#{scustname, jdbcType=VARCHAR}
+			,	#{ssvcUseTypeCd, jdbcType=CHAR}
+			,	#{sexSvcCd, jdbcType=CHAR}
+			,	#{sinstalladdress, jdbcType=VARCHAR}
+			,	#{sinstallroadaddress, jdbcType=VARCHAR}
+			,	#{sofficecode, jdbcType=VARCHAR}
+			,	#{sicisofficescode, jdbcType=VARCHAR}
+			,	#{senCustname, jdbcType=VARCHAR}
+			,	#{sasNum, jdbcType=BIGINT}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbLnkNonKtSvcMstVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		UPDATE
+		BIF.TB_NON_KT_SVC_MST A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sregyn)">
+				 A.SREGYN = #{sregyn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkerid)">
+				, A.SWORKERID = #{sworkerid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkername)">
+				, A.SWORKERNAME = #{sworkername, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+				, A.SSAID = #{ssaid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+				, A.SLLNUM = #{sllnum, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scustname)">
+				, A.SCUSTNAME = #{scustname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipmsSvcSeq)">
+				, A.NIPMS_SVC_SEQ = #{nipmsSvcSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcUseTypeCd)">
+				, A.SSVC_USE_TYPE_CD = #{ssvcUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexSvcCd)">
+				, A.SEX_SVC_CD = #{sexSvcCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinstalladdress)">
+				, A.SINSTALLADDRESS = #{sinstalladdress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinstallroadaddress)">
+				, A.SINSTALLROADADDRESS = #{sinstallroadaddress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sofficecode)">
+				, A.SOFFICECODE = #{sofficecode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sicisofficescode)">
+				, A.SICISOFFICESCODE = #{sicisofficescode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(senCustname)">
+				, A.SEN_CUSTNAME = #{senCustname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sasNum)">
+				, A.SASNUM = #{sasNum, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_SVC_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbLnkNonKtSvcMstVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		DELETE
+		FROM BIF.TB_NON_KT_SVC_MST A
+		<include refid="Vo_SVC_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbLnkNonKtSvcMstVo" resultMap="tbLnkNonKtSvcMstVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		SELECT
+		<include refid="Base_SVC_Column_List" />
+		<include refid="Append_SVC_Column_List"/>
+		FROM BIF.TB_NON_KT_SVC_MST A
+		<include refid="Append_SVC_From_Clause"/>
+		<include refid="Vo_SVC_Where_Clause" />
+		<include refid="Append_SVC_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbLnkNonKtSvcMstVo" resultMap="tbLnkNonKtSvcMstVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		SELECT
+		<include refid="Base_SVC_Column_List" />
+		<include refid="Append_SVC_Column_List"/>
+		FROM BIF.TB_NON_KT_SVC_MST A
+		<include refid="Append_SVC_From_Clause"/>
+		<include refid="List_SVC_Where_Clause" />
+		<include refid="Append_SVC_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbLnkNonKtSvcMstVo" resultType="int" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_NON_KT_SVC_MST A
+		<include refid="Append_SVC_From_Clause"/>
+		<include refid="List_SVC_Where_Clause" />
+		<include refid="Append_SVC_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbLnkNonKtSvcMstVo" resultMap="tbLnkNonKtSvcMstVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		SELECT <include refid="Base_SVC_Column_List" />
+			   <include refid="Append_SVC_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_SVC_Column_List" />
+				   <include refid="Append_SVC_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_SVC_Column_List" />
+				<include refid="Append_SVC_Column_List"/>
+				FROM BIF.TB_NON_KT_SVC_MST A
+				<include refid="Append_SVC_From_Clause"/>
+				<include refid="List_SVC_Where_Clause" />
+				<include refid="Append_SVC_Where_Clause"/>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbLnkNonKtSvcMstVo" resultType="int" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_NON_KT_SVC_MST A
+		<include refid="Append_SVC_From_Clause"/>
+		<include refid="List_SVC_Where_Clause" />
+		<include refid="Append_SVC_Where_Clause"/>
+	</select>
+	
+</mapper>

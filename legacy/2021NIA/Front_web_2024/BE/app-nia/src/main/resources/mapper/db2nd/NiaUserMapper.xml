@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.nia.mapper.db2nd.NiaUserMapper">
+   <select id="SELECT_LOGIN_USER" parameterType="hashmap" resultType="com.codej.base.dto.DbUser">
+        SELECT  U.ID AS "uid"
+                , U.NAME AS "name"
+                , U.PW AS "password"
+                , U.PHONE_NUMBER AS "mobile"
+                , U.EMAIL AS "email"
+                , U.AGENCY_NAME AS "agencyName"
+                , U.LVL AS "lvl"
+                <!-- , (SELECT STRING_AGG(roles, ',') FROM USER_ROLES UR WHERE UR.USER_UID = U.UID) AS "roles" -->
+        FROM    nia.tb_user U
+        WHERE   U.ID = #{uid} 
+        LIMIT 1
+    </select>
+
+    <!-- 업데이트 마지막 로그인 -->
+    <update id="UPDATE_LOGIN_DATE" parameterType="hashmap">
+        UPDATE nia.tb_user
+        SET    last_login = NOW()
+        WHERE  ID         = #{uid}
+    </update>
+
+    <insert id="INSERT_USER" parameterType="com.codej.base.dto.DbUser">
+        INSERT
+        INTO    nia.tb_user
+        (
+            id
+            , pw
+            , name 
+            , lvl 
+            , last_login
+            , update_time
+            , phone_number
+            , email
+            , agency_name
+        )
+        VALUES
+        (
+            #{uid}
+            , #{password}
+            , #{name}
+            , 1::INT
+            , NOW()
+            , NOW()
+            , #{mobile}
+            , #{email}
+            , #{agencyName}
+        )
+    </insert>
+
+    <update id ="UPSERT_USER" parameterType="hashmap">
+        WITH UPSERT AS
+        ( UPDATE nia.tb_user
+        <set>
+            <if test="password != null">
+                , PW = #{password}
+            </if>
+            <if test="name != null">
+                , NAME = #{name}
+            </if>
+            <if test="mobile != null">
+                , PHONE_NUMBER = #{mobile}
+            </if>
+            <if test="email != null">
+                , EMAIL = #{email}
+            </if>
+            <if test="agencyName != null">
+                , AGENCY_NAME = #{agencyName}
+            </if>
+            , update_time = NOW()
+        </set>
+        WHERE ID = #{uid} RETURNING * )
+        INSERT
+        INTO nia.tb_user
+        (
+            ID
+            , PW
+            , LVL 
+            , LAST_LOGIN
+            , UPDATE_TIME
+            <if test="name != null">
+            , NAME
+            </if>
+            <if test="mobile != null">
+            , PHONE_NUMBER
+            </if>
+            <if test="email != null">
+            , EMAIL
+            </if>
+            <if test="agencyName != null">
+            , AGENCY_NAME
+            </if>
+        )
+        SELECT 
+            #{uid}
+            , #{password}
+            , 1::INT
+            , NOW()
+            , NOW()
+            <if test="name != null">
+            , #{name}
+            </if>
+            <if test="mobile != null">
+            , #{mobile}
+            </if>
+            <if test="email != null">
+            , #{email}
+            </if>
+            <if test="agencyName != null">
+            , #{agencyName}
+            </if>
+        WHERE NOT EXISTS
+        (SELECT *
+        FROM UPSERT)
+    </update>
+
+    <delete id="DELETE_USER_MAP" parameterType="hashmap">
+        DELETE FROM
+            nia.tb_user
+        WHERE ID = #{uid}
+    </delete>
+</mapper>

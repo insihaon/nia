@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.orgmgmt.dao.TbLvlRoleDao">
+	<resultMap id="tbLvlRoleVoResult" type="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		<result column="SLVL_CD" property="slvlCd" jdbcType="CHAR" />
+		<result column="SVCNETCODE" property="svcnetcode" jdbcType="CHAR" />
+		<result column="HEADORGSCODE" property="headorgscode" jdbcType="CHAR" />
+		<result column="POFFICECODE" property="pofficecode" jdbcType="CHAR" />
+		<result column="POFFICE_NM" property="pofficeNm" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		SLVL_CD, SVCNETCODE, HEADORGSCODE, POFFICECODE
+		, POFFICE_NM, SCOMMENT, DCREATE_DT, SCREATE_ID
+		, DMODIFY_DT, SMODIFY_ID
+
+	</sql>
+
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			SLVL_CD = #{slvlCd, jdbcType=CHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slvlCd)">
+				AND SLVL_CD = #{slvlCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(svcnetcode)">
+				AND SVCNETCODE = #{svcnetcode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(headorgscode)">
+				AND HEADORGSCODE = #{headorgscode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pofficecode)">
+				AND POFFICECODE = #{pofficecode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pofficeNm)">
+				AND POFFICE_NM = #{pofficeNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbLvlRoleVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		INSERT
+			
+		INTO MST.TB_LVL_ROLE (
+			SLVL_CD
+			,	SVCNETCODE
+			,	HEADORGSCODE
+			,	POFFICECODE
+			,	POFFICE_NM
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{slvlCd, jdbcType=CHAR}
+			,	#{svcnetcode, jdbcType=CHAR}
+			,	#{headorgscode, jdbcType=CHAR}
+			,	#{pofficecode, jdbcType=CHAR}
+			,	#{pofficeNm, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{dmodifyDt, jdbcType=TIMESTAMP}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbLvlRoleVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		UPDATE
+			
+		MST.TB_LVL_ROLE
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(svcnetcode)">
+			SVCNETCODE = #{svcnetcode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(headorgscode)">
+			,	HEADORGSCODE = #{headorgscode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pofficecode)">
+			,	POFFICECODE = #{pofficecode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pofficeNm)">
+			,	POFFICE_NM = #{pofficeNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+			,	SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+			,	DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+			,	SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+			,	DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+			,	SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbLvlRoleVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		DELETE
+			
+		FROM MST.TB_LVL_ROLE
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbLvlRoleVo" resultMap="tbLvlRoleVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_LVL_ROLE
+		<include refid="Vo_Where_Clause" />
+	</select>
+	
+	<select id="selectListTbLvlRoleVo" resultMap="tbLvlRoleVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_LVL_ROLE
+		<include refid="List_Where_Clause" />
+	</select>
+	
+	<select id="selectListPageTbLvlRoleVo" resultMap="tbLvlRoleVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		SELECT <include refid="Base_Column_List" /> , A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />, ROWNUM RNUM FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				FROM MST.TB_LVL_ROLE
+				<include refid="List_Where_Clause" />
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbLvlRoleVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_LVL_ROLE
+		<include refid="List_Where_Clause" />
+	</select>
+	
+</mapper>

@@ -1,0 +1,44 @@
+//=================================================================//
+// common-ws
+//=================================================================//
+bootJar {
+	enabled = false
+}
+jar {
+	enabled = true
+}
+
+dependencies {
+	implementation project(':common-base')
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// <<< lombok : 컴파일시 @Slf4j 나 log  에러가 발생할 경우
+	// Lombok: 공통 메서드에 대한 주석을 제공하여 보일러플레이트 코드를 줄이는 도구
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	// >>> lombok 
+
+	// JJWT (JSON Web Token): JSON Web Token 작업을 위한 Java 라이브러리
+	// JwtTokenProvider : WebSocket
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	/* 
+		jsonwebtoken 0.11.2 버전은 mac os에서 다음과 같은 에러가 발생할 수 있다.
+		The signing key's size is 104 bits which is not secure enough for the HS256 algorithm.
+	*/
+	// implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	// runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+
+	// Jackson Databind: Jackson JSON 처리 라이브러리의 일부로 데이터 바인딩 기능을 제공
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	// Gson: JSON 직렬화/역직렬화를 위한 Java 라이브러리: HttpUtil, JsonUtil
+	implementation 'com.google.code.gson:gson'
+
+	// JSON: 간단한 JSON 처리를 위한 라이브러리
+	implementation 'org.json:json:20231013'
+}

@@ -1,0 +1,26 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": null,
+        "total": null,
+        "result": {
+            "m": "895c9c0345f4f4a1b8384fc444b0fd9d4345ad8ff227f8eca0099a1ea2ad3acafe55512cf5cc9a836edafb24eee04144d0d562139d70117e33ffd5a02031eecb81e39044453d70ce0349a0a4090eeab989d998d0dd75e4d60c4c9fd5f33039dad0e4d8543a0ffe4c419f89123fabf6c6f5ad0a17af6139d0aac94f273713d2f7",
+            "e": "10001"
+        }
+    },
+    "status": 200,
+    "config": {
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "getkey",
+        "urlOrigin": "getkey",
+        "params": null,
+        "data": "{\"encrypt\":\"L/oGGgplpAgP2yzZ3gc=\"}",
+        "cmd": "{ \"url\": \"getkey\", \"sqlId\": \"\", \"param\": {\"encrypt\":\"L/oGGgplpAgP2yzZ3gc=\"} }",
+        "requestTime": "2026-02-23 13:51:17.016",
+        "responseTime": "2026-02-23 13:51:18.279",
+        "duration": 1264,
+        "jsonFileName": "getkey_.json"
+    }
+}

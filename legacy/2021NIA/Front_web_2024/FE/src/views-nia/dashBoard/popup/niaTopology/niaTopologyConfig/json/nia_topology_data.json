@@ -1,0 +1,156 @@
+{
+  "config1": {
+    "options": {
+      "select": {
+        "color": "rgb(86, 202, 255)"
+      },
+      "node": {
+        "fix_size": 2,
+        "show_r": false,
+        "r": 45,
+        "width": 60,
+        "height": 45,
+        "badge_size": 25,
+        "text_size": 24,
+        "invisible_node": true
+      },
+      "link": {
+        "displayField": "none",
+        "stroke_width": 2,
+        "text_size": 6,
+        "badge_size": 15
+      },
+      "link_traffic": {
+        "show_arrow": false,
+        "r": 1,
+        "color": "#fff"
+      },
+      "link_type": "line"
+    },
+    "map": {
+      "width": "100%",
+      "height": "120%",
+      "path": "images/background3.png",
+      "opacity": "0.5"
+    },
+    "zoom": {
+      "reset": true,
+      "initScale": 1.2,
+      "node": {
+        "min_scale": 1,
+        "max_scale": 3
+      },
+      "nodeError": {
+        "min_scale": 1,
+        "max_scale": 3
+      },
+      "initPos": {
+        "x": 600,
+        "y": 540
+      }
+    }
+  },
+  "config2": {
+    "options": {
+      "select": {
+        "color": "rgb(86, 202, 255)"
+      },
+      "node": {
+        "fix_size": 1.6,
+        "show_r": false,
+        "r": 55,
+        "width": 40,
+        "height": 35,
+        "badge_size": 25,
+        "text_size": 24
+      },
+      "link": {
+        "displayField": "none",
+        "stroke_width": 2,
+        "text_size": 6,
+        "badge_size": 15
+      },
+      "link_traffic": {
+        "show_arrow": false,
+        "r": 1,
+        "color": "#fff"
+      },
+      "link_type": "line",
+      "min_zoom_scale": 0.5,
+      "max_zoom_scale": 7
+    },
+    "map": {
+      "width": "100%",
+      "height": "100%",
+      "opacity": "0.5"
+    },
+    "zoom": {
+      "reset": true,
+      "initScale": 1.8,
+      "node": {
+        "min_scale": 1,
+        "max_scale": 3
+      },
+      "nodeError": {
+        "min_scale": 1,
+        "max_scale": 3
+      },
+      "initPos": {
+        "x": 842,
+        "y": 530
+      }
+    }
+  },
+  "config3": {
+    "options": {
+      "select": {
+        "color": "rgb(86, 202, 255)"
+      },
+      "node": {
+        "fix_size": 1.6,
+        "show_r": false,
+        "r": 35,
+        "width": 40,
+        "height": 35,
+        "badge_size": 25,
+        "text_size": 24
+      },
+      "link": {
+        "displayField": "none",
+        "stroke_width": 2,
+        "text_size": 6,
+        "badge_size": 15
+      },
+      "link_traffic": {
+        "show_arrow": false,
+        "r": 1,
+        "color": "#fff"
+      },
+      "link_type": "line",
+      "min_zoom_scale": 0.5,
+      "max_zoom_scale": 7
+    },
+    "map": {
+      "width": "100%",
+      "height": "100%",
+      "opacity": "0.5",
+      "bg_element": true
+    },
+    "zoom": {
+      "reset": true,
+      "initScale": 1.8,
+      "node": {
+        "min_scale": 1,
+        "max_scale": 3
+      },
+      "nodeError": {
+        "min_scale": 1,
+        "max_scale": 3
+      },
+      "initPos": {
+        "x": 900,
+        "y": 530
+      }
+    }
+  }
+}

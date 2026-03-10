@@ -1,0 +1,42 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            NREN_ID,\n            NREN_NAME,\n            NREN_IP\n        FROM RESOURCE.TB_USER_ORGAN_IP\n         WHERE (  NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = 'daejeon-n9k') )"
+        ],
+        "total": 3,
+        "result": [
+            {
+                "nren_ip": "143.248.119.98/27",
+                "nren_id": "daejeon-n9k_Ethernet1/4",
+                "nren_name": "대전KAIST"
+            },
+            {
+                "nren_ip": "203.255.248.65/28",
+                "nren_id": "daejeon-n9k_Ethernet1/4",
+                "nren_name": "대전KAIST"
+            },
+            {
+                "nren_ip": "103.22.220.129/28",
+                "nren_id": "daejeon-n9k_Ethernet1/4",
+                "nren_name": "대전KAIST"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_AGENCY_IP_LIST",
+        "urlOrigin": "/selectList/SELECT_AGENCY_IP_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"daejeon-n9k\",\"encrypt\":\"5FKD6Xyjn9WTju9w/to=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_AGENCY_IP_LIST\", \"sqlId\": \"SELECT_AGENCY_IP_LIST\", \"param\": {\"node_id\":\"daejeon-n9k\",\"encrypt\":\"5FKD6Xyjn9WTju9w/to=\"} }",
+        "requestTime": "2026-02-23 13:34:38.239",
+        "responseTime": "2026-02-23 13:34:38.446",
+        "duration": 207,
+        "jsonFileName": "SELECTAGENCYIPLIST_nodeiddaejeonn9k.json"
+    }
+}

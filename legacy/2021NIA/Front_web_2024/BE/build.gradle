@@ -1,0 +1,118 @@
+//=================================================================//
+// ROOT
+//=================================================================//
+
+buildscript {
+	ext {
+		springBootVersion = '2.7.17'
+	}
+	repositories {
+		mavenCentral()
+		// maven {
+		// 	url "https://plugins.gradle.org/m2/"
+		// }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE')
+		classpath "com.palantir.gradle.docker:gradle-docker:0.26.0"
+	}
+}
+
+task cleanAll() {
+	group = '_custom'
+	subprojects.each { project ->
+		cleanAll.dependsOn("${project.path}:clean")
+	}
+}
+
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+	// apply plugin: 'com.palantir.docker'
+	
+
+	version = ''
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+		
+	repositories {
+		mavenLocal()  // Maven 로컬 저장소를 사용
+		mavenCentral()
+	}
+
+	dependencies {
+		implementation fileTree(dir: 'libs', include: ['**/*.jar'])
+
+		// PEM 형식의 인증서와 개인키를 로드하여 SSL 인증서를 적용
+		implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    	implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+					
+		// developmentOnly 'org.springframework.boot:spring-boot-devtools' 주의 사용시 @Cacheable 에 ClassCastException 문제가 발생함. 
+		implementation 'org.springframework.boot:spring-boot-starter'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+		testImplementation 'junit:junit:4.13.2'
+		implementation 'org.springframework:spring-test'
+
+		// <<< lombok : 컴파일시 @Slf4j 나 log  에러가 발생할 경우
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		testRuntimeOnly 'org.projectlombok:lombok'  
+		testAnnotationProcessor 'org.projectlombok:lombok'
+		implementation 'org.projectlombok:lombok:1.18.22'
+		// >>> lombok
+			
+		// <<< Log4j2 보안취약점 대응. https://logging.apache.org/log4j/2.x/changes-report.html
+		implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
+		implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.17.1'
+		implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+		// >>> Log4j2 보안취약점 대응
+
+		implementation 'com.squareup.okhttp3:okhttp:4.9.1' // for KongUtil
+
+		implementation 'com.opencsv:opencsv:5.5' 
+
+	}
+
+	task doBootJar(dependsOn: bootJar) {
+		group = '_custom'
+		doFirst {
+			println("doBootJar doFirst-baseName: " + bootJar.baseName)
+			println("doBootJar doFirst-project: " + project.name)
+		
+			println()
+			println("doBootJar project.name: " + project.name)
+			println("doBootJar project.bootJar.enabled: " + project.bootJar.enabled)
+			println("doBootJar project.jar.enabled: " + project.jar.enabled)
+			println()
+		}
+		doLast {
+			println("doBootJar doLast: " + bootJar.baseName)
+			println("doBootJar output: ${tasks.jar.archivePath}")
+			println()
+			println("done. " + new java.util.Date().format('yyyy-MM-dd HH:mm:ss'))
+		}
+	}
+	
+	task copyDistDir() {
+		group = '_custom'
+		doLast {
+			copy {
+				from "../FE/dist"
+				include "**"
+				into "src/main/resources/static"
+			}
+		}
+	}
+	tasks.bootJar.dependsOn(copyDistDir)
+
+	test {
+		maxHeapSize = "4g" //원하는 만큼 변경
+		useJUnitPlatform()
+	}
+}
+

@@ -1,0 +1,163 @@
+import { AppOptions } from '@/class/appOptions'
+import { LocationHistory } from '@/class/locationHistory'
+import Layout from '@/layout'
+import Vue from 'vue'
+import vueDebounce from 'vue-debounce'
+import Router from 'vue-router'
+import { isEmptyObject } from '@/utils'
+
+Vue.use(Router)
+Vue.use(vueDebounce, {
+  listenTo: ['input', 'keyup'] // 요소에 첨부된 사용자 지정 이벤트 설정
+})
+
+export const _var = { Layout }
+const isDebug = (AppOptions.instance.debug === true)
+const isOnlyFront = (AppOptions.instance.isOnlyFront === true)
+const { project } = AppOptions.instance
+
+const { dataHubHome, dataHubLogin, dataHubRoute } = require('./dataHub/index')
+// const { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } = require('./aiTemplate/index')
+import { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } from './aiTemplate/index'
+const { niaHome, niaLogin, niaRoute } = require('./nia/index')
+const { ipmsHome, ipmsLogin, ipmsRoute } = require('./ipms/index')
+
+let loginView
+let projectRoute
+let projectHome = '/'
+switch (project) {
+  case 'datahub':
+    loginView = dataHubLogin
+    projectRoute = dataHubRoute
+    projectHome = dataHubHome
+    break
+  case 'ai': // layout, grid sample
+    loginView = aiTemplateLogin
+    projectRoute = aiTemplateRoute
+    projectHome = aiTemplateHome
+    break
+  case 'nia':
+    loginView = niaLogin
+    projectRoute = niaRoute
+    projectHome = niaHome
+    break
+  case 'ipms':
+    loginView = ipmsLogin
+    projectRoute = ipmsRoute
+    projectHome = ipmsHome
+    break
+  default:
+    break
+}
+
+export let constantRoutes = [
+  {
+    name: 'ROOT',
+    path: '/',
+    component: Layout,
+    redirect: '/home'
+  },
+  {
+    name: 'Home',
+    path: '/home',
+    component: Layout,
+    redirect: projectHome
+  },
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        name: 'Redirect',
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
+    name: 'Login',
+    path: '/login',
+    component: () => loginView,
+    hidden: true
+  },
+  {
+    name: 'ComponentTestPage',
+    path: '/ComponentTestPage',
+    hidden: true,
+    component: () => import('@/test/ComponentTestPage'),
+    children: [
+      {
+        path: ':componentName(.*)'
+      }
+    ]
+  },
+  {
+    name: 'AuthRedirect',
+    path: '/auth-redirect',
+    component: () => import('@/views/login/auth-redirect'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/error-page/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/error-page/401'),
+    hidden: true
+  },
+].filter(v => v.disable !== true)
+
+export const asyncRoutes = [
+  ...projectRoute,
+].filter(v => v.disable !== true)
+
+if (isOnlyFront) {
+  constantRoutes = constantRoutes.concat(constantRoutes, asyncRoutes)
+}
+
+const createRouter = () => {
+  var router = new Router({
+    // mode: 'history', // history 모드를 사용하면 Responsive 을 이용한 반응형 웹 테스트 화면이 404에러로 뜬다
+    scrollBehavior(to, from, savedPosition) {
+      const fromHistory = Boolean(savedPosition)
+      LocationHistory.instance.update({
+        fromHistory, to, from
+      })
+      return savedPosition || { x: 0, y: 0 }
+    },
+    routes: [...constantRoutes],
+    routes2: [...asyncRoutes]
+  })
+
+  router.afterEach((to, from) => {
+    const { meta } = to
+    if (to.name !== 'Login' && meta && isEmptyObject(meta)) {
+      window.location.href = window.location.origin
+    } else {
+      window.$route = to
+    }
+
+    // UI Evidence Collection: 라우트 변경 시 증거 수집
+    if (window.__emitEvidence && typeof window.__emitEvidence === 'function') {
+      window.__emitEvidence('route_change', {
+        from: from.path,
+        to: to.path,
+        name: to.name
+      })
+    }
+  })
+
+  return router
+}
+
+const router = createRouter()
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
+export default router

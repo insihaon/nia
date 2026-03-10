@@ -1,0 +1,62 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+BE/HELP.md
+BE/.gradle
+BE/gradle/wrapper/gradle-wrapper.jar
+BE*/**/build/
+BE*/**/logs
+BE*/**/bin
+BE*/**/src/main/resources/static*
+BE*/**/uploads
+BE*/**/rabbitmq
+FE/.DS_Store
+FE/**/node_modules/
+FE/publishing/**/package-lock.json
+FE/dist/
+FE/npm-debug.log*
+FE/yarn-debug.log*
+FE/yarn-error.log*
+FE/package-lock.json
+**/json.zip
+# FE/src/min/base.js
+# FE/src/min/global.js
+# FE/src/min/modal.js
+# FE/src/min/http.js
+# FE/src/min/route.js
+# FE/src/min/webSocketManager.js
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+.history/
+*.class
+node_modules
+package-lock.json
+logs/*
