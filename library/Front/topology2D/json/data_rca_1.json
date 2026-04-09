@@ -1,0 +1,42 @@
+{
+    "config": {
+        "converter": "rca",
+        "options": {
+            "node_fix_size": true,
+            "node_r_width": 30,
+            "node_width": 40,
+            "node_height": 35,
+            "node_badge_size": 25,
+            "node_text_size": 12,
+            "link_text_field": "name",
+            "link_traffic_arrow_show": false,
+            "link_traffic_r": 5,
+            "link_traffic_r_color": "#fff",
+            "grid_mode": false,
+            "nodeImage": {
+                "SERVICE": { "path": "images/node/cloud-city.png" },
+                "PTN": { "path": "images/node/ptn.png" },
+                "ROADM": { "path": "images/node/roadm.png" }
+            }
+        },
+        "zoom": {
+            "disable": false,
+            "initScale": 0.7,
+            "node": {
+                "min_scale": 1
+            }
+        }
+    },
+    "data": [
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 4655162, "crname": "남청주/충영동/10/TF1101", "sysnamea": "남청주-PTS-1103-01-01", "sysnamez": "충영동-PTS-0108-01-01", "nealiasa": "PTS-1103-01", "nealiasz": "PTS-0108-01", "nescodea": "CBCJ21966", "nescodez": "CBYDS0344", "pportida": "010301003", "pportidz": "010101001", "wdmnamea": "남청중-ROADM-8005", "wdmnamez": "영동중-ROADM-8103", "instlocationa": "CBCJB0002", "instlocationz": "CBYDB0001", "ptpnamea": "S3-P3", "ptpnamez": "S1-P1", "equiptypea": "PTNTFM5480", "equiptypez": "PTNTFM5480", "modelnamea": "TEF_M5480(M1000)", "modelnamez": "TEF_M5480(M1000)", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 3543727, "crname": "남청중/W800R/0001", "sysnamea": null, "sysnamez": null, "nealiasa": "ROADM-8005", "nealiasz": "ROADM-8102", "nescodea": "CBCJ16583", "nescodez": "CBBU01282", "pportida": "01010801001", "pportidz": "01010301001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "CBCJB0701", "instlocationz": "CBBUB0001", "ptpnamea": null, "ptpnamez": null, "equiptypea": null, "equiptypez": null, "modelnamea": "COW_UTRANS6000P", "modelnamez": "COW_UTRANS6000P", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 3543727, "crname": "남청중/W800R/0001", "sysnamea": null, "sysnamez": null, "nealiasa": "ROADM-8210", "nealiasz": "ROADM-8005", "nescodea": "CBOC01778", "nescodez": "CBCJ16583", "pportida": "01010801001", "pportidz": "01010301001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "CBOCB0134", "instlocationz": "CBCJB0701", "ptpnamea": null, "ptpnamez": null, "equiptypea": null, "equiptypez": null, "modelnamea": "COW_UTRANS6000P", "modelnamez": "COW_UTRANS6000P", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 3543727, "crname": "남청중/W800R/0001", "sysnamea": null, "sysnamez": null, "nealiasa": "ROADM-8103", "nealiasz": "ROADM-8210", "nescodea": "CBYD02093", "nescodez": "CBOC01778", "pportida": "01010801001", "pportidz": "01010301001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "CBYDB0187", "instlocationz": "CBOCB0134", "ptpnamea": null, "ptpnamez": null, "equiptypea": null, "equiptypez": null, "modelnamea": "COW_UTRANS6000P", "modelnamez": "COW_UTRANS6000P", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 3543727, "crname": "남청중/W800R/0001", "sysnamea": null, "sysnamez": null, "nealiasa": "ROADM-8102", "nealiasz": "ROADM-8103", "nescodea": "CBBU01282", "nescodez": "CBYD02093", "pportida": "01010801001", "pportidz": "01010301001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "CBBUB0001", "instlocationz": "CBYDB0187", "ptpnamea": null, "ptpnamez": null, "equiptypea": null, "equiptypez": null, "modelnamea": "COW_UTRANS6000P", "modelnamez": "COW_UTRANS6000P", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 4758884, "crname": "충영동/CB양강우체국/G1/TF1101", "sysnamea": "충영동-PTS-0108-01-01", "sysnamez": "CB양강우체국-PTS-0101-01-01", "nealiasa": "PTS-0108-01", "nealiasz": "PTS-0101-01", "nescodea": "CBYDS0344", "nescodez": "CBYDS0514", "pportida": "010701036", "pportidz": "010101001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "CBYDB0001", "instlocationz": "CBYDP0219", "ptpnamea": "S7-P36", "ptpnamez": "S1-P1", "equiptypea": "PTNTFM5480", "equiptypez": "PTNTFM1010", "modelnamea": "TEF_M5480(M1000)", "modelnamez": "TEF_M1010", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 4800428, "crname": "남청주/대전중/10/TF1101", "sysnamea": "남청주-PTS-1103-01-01", "sysnamez": "대전중-PTS-1321-01-01", "nealiasa": "PTS-1103-01", "nealiasz": "PTS-1321-01", "nescodea": "CBCJ21966", "nescodez": "DJJG08790", "pportida": "010301001", "pportidz": "010301002", "wdmnamea": null, "wdmnamez": "대전중-ROADM-8807", "instlocationa": "CBCJB0002", "instlocationz": "DJJGB0378", "ptpnamea": "S3-P1", "ptpnamez": "S3-P2", "equiptypea": "PTNTFM5480", "equiptypez": "PTNTFM5480", "modelnamea": "TEF_M5480(M1000)", "modelnamez": "TEF_M5480(M1000)", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 4802098, "crname": "대전중/대전중/10/TF4101", "sysnamea": "대전중-PTS-0106-04-04", "sysnamez": "대전중-PTS-1321-01-01", "nealiasa": "PTS-0106-04", "nealiasz": "PTS-1321-01", "nescodea": "DJJGS2775", "nescodez": "DJJG08790", "pportida": "010101003", "pportidz": "010101004", "wdmnamea": null, "wdmnamez": null, "instlocationa": "DJJGB0378", "instlocationz": "DJJGB0378", "ptpnamea": "S1-P3", "ptpnamez": "S1-P4", "equiptypea": "PTNTFM3300", "equiptypez": "PTNTFM5480", "modelnamea": "TEF_M3300", "modelnamez": "TEF_M5480(M1000)", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 4801701, "crname": "대전중/CN충청우정청/10/TF3101", "sysnamea": "대전중-PTS-0106-03-03", "sysnamez": "CN충청우정청-PTS-0101-01-01", "nealiasa": "PTS-0106-03", "nealiasz": "PTS-0101-01", "nescodea": "DJJGS2774", "nescodez": "DJSGX0977", "pportida": "010201001", "pportidz": "010101001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "DJJGB0378", "instlocationz": "DJSGB1701", "ptpnamea": "S2-P1", "ptpnamez": "S1-P1", "equiptypea": "PTNTFM3300", "equiptypez": "PTNTFM3300", "modelnamea": "TEF_M3300", "modelnamez": "TEF_M3300", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }, 
+        { "llnum": "345815501044", "llname": "CN충청우정청/충영동/LL/000007", "ll": 4831217, "cr": 4729789, "crname": "CN충청우정청/CN충청우정청/10/TF1101", "sysnamea": "CN충청우정청-PTS-0101-01-01", "sysnamez": "CN충청우정청-PTS-0101-02-01", "nealiasa": "PTS-0101-01", "nealiasz": "PTS-0101-02", "nescodea": "DJSGX0977", "nescodez": "DJSGX0978", "pportida": "010201001", "pportidz": "010101001", "wdmnamea": null, "wdmnamez": null, "instlocationa": "DJSGB1701", "instlocationz": "DJSGB1701", "ptpnamea": "S2-P1", "ptpnamez": "S1-P1", "equiptypea": "PTNTFM3300", "equiptypez": "PTNTFM3300", "modelnamea": "TEF_M3300", "modelnamez": "TEF_M3300", "wdmnescodea": null, "wdmequiptypea": null, "wdmnescodez": null, "wdmequiptypez": null, "tc_instlocationa": "DJSGB1701", "tc_instlocationz": "CBYDB0001" }
+    ]
+}

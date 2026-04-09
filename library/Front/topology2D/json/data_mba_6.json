@@ -1,0 +1,117 @@
+{
+  "config": {
+    "converter": "mba_v2",
+    "options": {
+      "node_fix_size": true,
+      "node_r_width": 30,
+      "node_width": 40,
+      "node_height": 35,
+      "node_badge_size": 25,
+      "node_r_opacity": 0,
+      "node_text_size": 12,
+      "node_info_show": true,
+      "link_text_field": "name",
+      "link_traffic_show": false,
+      "link_traffic_arrow_show": true,
+      "link_traffic_r": 5,
+      "grid_mode": false,
+      "link_type": "arc"
+    },
+    "trunk_name": "구로-북대구-W8T-1221",
+    "reason": "case_2",
+    "zoom": {
+      "initScale": 1,
+      "sscale": 2
+    }
+  },
+  "data": {
+    "links": [],
+    "nodes": [
+      {
+        "name_code": "ROADM",
+        "nescode": "SLGAS5012",
+        "rx_tx": "-3.9/20.0",
+        "transcircuitname": "구로/북대구/W8T/1221",
+        "end_time": "2023-09-26T09:30:00.000+0000",
+        "trunk_name": "구로-북대구-W8T-1221",
+        "span_gain": "/",
+        "transcircuitseq": 4873014.0,
+        "routenum": 0.0,
+        "node_total_deviation": 0,
+        "officename": "구로국사",
+        "officescode": "R00437",
+        "sysname": "구로-ROADM-0520-01",
+        "direction": "DOWN",
+        "equip_type": "ROADM8THW"
+      },
+      {
+        "name_code": "REPEATER",
+        "nescode": "CNCAX1869",
+        "rx_tx": "-5.5/19.0",
+        "transcircuitname": "구로/북대구/W8T/1221",
+        "end_time": "2023-09-26T09:30:00.000+0000",
+        "trunk_name": "구로-북대구-W8T-1221",
+        "span_gain": "25.5/24.5",
+        "transcircuitseq": 4873014.0,
+        "routenum": 1.0,
+        "node_total_deviation": -1.0,
+        "officename": "천안국사",
+        "officescode": "R02131",
+        "sysname": "천안중-ROADM-0610-01-01_구로1-대구2",
+        "direction": "DOWN",
+        "equip_type": "ROADM8THW"
+      },
+      {
+        "name_code": "REPEATER",
+        "nescode": "DJJGS2787",
+        "rx_tx": "-2.7/17.3",
+        "transcircuitname": "구로/북대구/W8T/1221",
+        "end_time": "2023-09-26T09:30:00.000+0000",
+        "trunk_name": "구로-북대구-W8T-1221",
+        "span_gain": "21.7/20.0",
+        "transcircuitseq": 4873014.0,
+        "routenum": 3.0,
+        "node_total_deviation": -2.7,
+        "officename": "대전안내국",
+        "officescode": "F03563",
+        "sysname": "대전중-ROADM-1313-01-01_구로1-대구2",
+        "direction": "DOWN",
+        "equip_type": "ROADM8THW"
+      },
+      {
+        "name_code": "REPEATER",
+        "nescode": "GBGCS1315",
+        "rx_tx": "-6.6/16.4",
+        "transcircuitname": "구로/북대구/W8T/1221",
+        "end_time": "2023-09-26T09:30:00.000+0000",
+        "trunk_name": "구로-북대구-W8T-1221",
+        "span_gain": "23.9/23.0",
+        "transcircuitseq": 4873014.0,
+        "routenum": 5.0,
+        "node_total_deviation": -3.6,
+        "officename": "김천국사",
+        "officescode": "R01641",
+        "sysname": "김천-ROADM-0535-01-01-중계기",
+        "direction": "DOWN",
+        "equip_type": "ROADM8THW"
+      },
+      {
+        "name_code": "ROADM",
+        "nescode": "DGBGX1187",
+        "rx_tx": "-2.7/16.5",
+        "transcircuitname": "구로/북대구/W8T/1221",
+        "end_time": "2023-09-26T09:30:00.000+0000",
+        "trunk_name": "구로-북대구-W8T-1221",
+        "span_gain": "19.1/19.2",
+        "transcircuitseq": 4873014.0,
+        "routenum": 20.0,
+        "node_total_deviation": -3.5,
+        "officename": "북대구국사",
+        "officescode": "R01475",
+        "sysname": "북대구-ROADM-1026-02-구로1_부산2_대전2",
+        "direction": "DOWN",
+        "equip_type": "ROADM8THW"
+      }
+    ]
+  }
+}

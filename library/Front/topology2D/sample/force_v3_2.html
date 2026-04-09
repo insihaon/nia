@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .controls {
+      margin-bottom: 10px;
+    }
+
+    .controls input {
+      font-size: 30px;
+      text-align: center;
+    }
+
+    .controls span {
+      font-family: sans-serif;
+      font-size: 30px;
+      color: gray;
+      margin: 0 5px;
+    }
+
+    svg {
+      border: 1px solid;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+  <div class="controls">
+    <span>Categories</span> <input type="number" min="1" max="15" />
+  </div>
+
+  <script>
+    const DATA_SIZE = 100;
+    var categories = 2; // how many categories
+
+    var width = 500,
+      height = 500;
+
+    var fill = d3.scale.category10();
+
+    var force = null;
+
+    var input = d3.select("input").attr('value', categories).on('input', handleInputChange);
+
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    render();
+
+    function getNodes() {
+      return d3.range(100).map(i => ({
+        category: i % categories + 1
+      }))
+    }
+
+    function handleInputChange() {
+      categories = Number(this.value);
+      render();
+    }
+
+
+    function getTargets() {
+      if (categories === 1) {
+        return [{
+          x: width / 2,
+          y: height / 2
+        }]
+      }
+
+      const radius = Math.min(width, height) / 2;
+
+      const pie = d3.layout.pie()
+        .value(() => 1)(d3.range(categories));
+
+      const arcs = d3.svg.arc()
+        .outerRadius(radius - 40)
+        .innerRadius(radius - 40)
+
+      return d3.range(categories).map(i => {
+        const [x, y] = arcs.centroid(pie[i]);
+        return {
+          x: x + width / 2,
+          y: y + height / 2,
+        }
+      })
+    }
+
+
+    function render() {
+
+      var nodes = getNodes();
+      var targets = getTargets();
+      if (force) {
+        force.stop();
+      }
+
+      force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .on("tick", tick)
+        .start();
+
+      var node = svg.selectAll(".node")
+        .data(nodes)
+
+      node.enter().append("circle")
+        .attr("class", "node")
+
+      node.attr("cx", function (d) {
+        return d.x;
+      })
+        .attr("cy", function (d) {
+          return d.y;
+        })
+        .attr("r", 8)
+        .style("fill", function (d, i) {
+          return fill(d.category);
+        })
+        .style("stroke", function (d, i) {
+          return d3.rgb(fill(d.category)).darker(2);
+        })
+        .call(force.drag)
+        .on("mousedown", function () {
+          d3.event.stopPropagation();
+        });
+
+      d3.select("svg")
+        .on("mousedown", mousedown);
+
+
+      function tick(e) {
+        // Push different nodes in different directions for clustering.
+
+        var k = e.alpha / 8; // how strong to apply this force
+
+        nodes.forEach(function (o, i) {
+          o.y += (targets[o.category - 1].y - o.y) * k;
+          o.x += (targets[o.category - 1].x - o.x) * k;
+        });
+
+        node.attr("cx", function (d) {
+          return d.x;
+        })
+          .attr("cy", function (d) {
+            return d.y;
+          });
+      }
+
+      function mousedown() {
+        nodes.forEach(function (o, i) {
+          o.x += (Math.random() - .5) * 40;
+          o.y += (Math.random() - .5) * 40;
+        });
+        force.resume();
+      }
+    }
+  </script>
+</body>
+
+</html>
