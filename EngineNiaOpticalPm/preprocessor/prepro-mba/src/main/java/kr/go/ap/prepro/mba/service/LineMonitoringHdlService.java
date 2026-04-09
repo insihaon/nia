@@ -50,7 +50,7 @@ public class LineMonitoringHdlService {
                 ticketDataService.setTicketData(lowOptPerfDtoList);
             }
         } catch (NullPointerException | PersistenceException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("lineMonitoringHdlProcessor : ",e);
         }
     }
 }

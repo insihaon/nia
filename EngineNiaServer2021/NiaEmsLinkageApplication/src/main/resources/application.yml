@@ -61,6 +61,10 @@ spring:
     niaPerformanceFailQueue: nia.NiaPerformanceFailIndexDirectly
     niaPerformanceFailRoutingKey: NiaPerformanceFailIndexDirectly
 
+    mbaAiModelExchange: nia.exchangeMbaAiModelDirectly
+    mbaAiModelQueue: nia.MbaAiModelIndexDirectly
+    mbaAiModelRoutingKey: MbaAiModelIndexDirectly
+
 
   task:
     poolSize: 100
@@ -149,6 +153,10 @@ spring:
     niaPerformanceFailQueue: nia.NiaPerformanceFailIndexDirectly
     niaPerformanceFailRoutingKey: NiaPerformanceFailIndexDirectly
 
+    mbaAiModelExchange: nia.exchangeMbaAiModelDirectly
+    mbaAiModelQueue: nia.MbaAiModelIndexDirectly
+    mbaAiModelRoutingKey: MbaAiModelIndexDirectly
+
 
   task:
     poolSize: 100
@@ -235,6 +243,10 @@ spring:
     niaPerformanceFailExchange: nia.exchangeNiaPerformanceFailDirectly
     niaPerformanceFailQueue: nia.NiaPerformanceFailIndexDirectly
     niaPerformanceFailRoutingKey: NiaPerformanceFailIndexDirectly
+
+    mbaAiModelExchange: nia.exchangeMbaAiModelDirectly
+    mbaAiModelQueue: nia.MbaAiModelIndexDirectly
+    mbaAiModelRoutingKey: MbaAiModelIndexDirectly
 
   task:
     poolSize: 100
@@ -324,6 +336,10 @@ spring:
     niaPerformanceFailQueue: nia.NiaPerformanceFailIndexDirectly
     niaPerformanceFailRoutingKey: NiaPerformanceFailIndexDirectly
 
+    mbaAiModelExchange: nia.exchangeMbaAiModelDirectly
+    mbaAiModelQueue: nia.MbaAiModelIndexDirectly
+    mbaAiModelRoutingKey: MbaAiModelIndexDirectly
+
   task:
     poolSize: 100
     keepAlive: 600000
@@ -409,6 +425,10 @@ spring:
     niaPerformanceFailQueue: nia.NiaPerformanceFailIndexDirectly
     niaPerformanceFailRoutingKey: NiaPerformanceFailIndexDirectly
 
+    mbaAiModelExchange: nia.exchangeMbaAiModelDirectly
+    mbaAiModelQueue: nia.MbaAiModelIndexDirectly
+    mbaAiModelRoutingKey: MbaAiModelIndexDirectly
+
   task:
     poolSize: 100
     keepAlive: 600000
@@ -493,6 +513,10 @@ spring:
     niaPerformanceFailExchange: nia.exchangeNiaPerformanceFailDirectly
     niaPerformanceFailQueue: nia.NiaPerformanceFailIndexDirectly
     niaPerformanceFailRoutingKey: NiaPerformanceFailIndexDirectly
+
+    mbaAiModelExchange: nia.exchangeMbaAiModelDirectly
+    mbaAiModelQueue: nia.MbaAiModelIndexDirectly
+    mbaAiModelRoutingKey: MbaAiModelIndexDirectly
 
   task:
     poolSize: 100

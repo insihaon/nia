@@ -112,7 +112,7 @@ var dialogOpenMixin = {
           component: () => import('@/views-nia/layout/sideBar/popup/systemMonitoringFilter'),
           pageTitle: '시스템 모니터링 필터',
           width: '600',
-          height: '380',
+          height: '600',
           resizeble: true,
         },
         disabilityStatusHistoryManagement: {

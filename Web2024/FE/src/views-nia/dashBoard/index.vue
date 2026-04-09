@@ -190,6 +190,7 @@ export default {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' }, },
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
+        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.changeFocusAlertMode.bind(this) }, },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
         { type: '', prop: '', name: '조치', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this), }, },
@@ -211,20 +212,6 @@ export default {
         { type: '', prop: 'ip_addr', name: 'IP주소', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy },
       ]
-
-      if (AppOptions.instance.debug) {
-        columns.splice(2, 0, {
-          type: '',
-          prop: '',
-          name: '어시스턴트',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.changeFocusAlertMode.bind(this) },
-        })
-      }
 
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return {
@@ -386,12 +373,25 @@ export default {
         case this.chatbotCommand.focusModeCheckAlarm.action:
           // prettier-ignore
           (async () => {
-            switch (this.alarmFocusTicketData.ticket_type) {
-              default:
-                this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { /* width: 800, height: 580, */ addX: -580, addY: -150 })
-                await new Promise(resolve => setTimeout(resolve, 1000))
-                this.openAiResponse(this.alarmFocusTicketData, { addX: 700, addY: 170 })
-                break
+            // 통합 뷰 모드: chatbot 우측 패널에 토폴로지 + AI응답 상/하 분할 표시
+            if (window.chatbotIsEmbeddedMode && window.chatbotIsEmbeddedMode()) {
+              const ticketData = this.alarmFocusTicketData
+              const aiResponsePopupName = ticketData.ticket_type === 'ATT2_AI' ? 'aiResponse_ATT_AI'
+                : ['NTT', 'NTT_AI'].includes(ticketData.ticket_type) ? 'aiResponse_NTT_AI'
+                : 'aiResponse'
+              await window.chatbotOpenMultiView([
+                { popupName: 'niaTopology', data: { params: ticketData } },
+                { popupName: aiResponsePopupName, data: { params: ticketData } },
+              ])
+            } else {
+              // 일반 모드: 기존대로 별도 팝업 2개
+              switch (this.alarmFocusTicketData.ticket_type) {
+                default:
+                  this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { /* width: 800, height: 580, */ addX: -580, addY: -150 })
+                  await new Promise(resolve => setTimeout(resolve, 1000))
+                  this.openAiResponse(this.alarmFocusTicketData, { addX: 700, addY: 170 })
+                  break
+              }
             }
           })()
           break
@@ -431,14 +431,28 @@ export default {
       }
       this.onChangeSidePaneSize(sideSize)
     },
+    '$store.state.nia.ipNetworkList'(nVal) {
+      if (nVal && nVal !== this.ipNetworkList) {
+        this.ipNetworkList = nVal
+      }
+    },
+    '$store.state.nia.transmissionNetworkList'(nVal) {
+      if (nVal && nVal !== this.transmissionNetworkList) {
+        this.transmissionNetworkList = nVal
+      }
+    },
   },
   async mounted() {
     await this.onLoadDashboardStatistics()
     await this.onLoadSelfProcessStatistics()
 
     this.$nextTick(async () => {
-      await this.onLoadIpAlarmList()
-      await this.onLoadTransmissionAlarmList()
+      // store polling에서 데이터가 아직 없으면 직접 조회 후 store에 반영
+      if (!this.$store.state.nia.initialized) {
+        await this.$store.dispatch('nia/fetchAll')
+      }
+      this.ipNetworkList = this.$store.state.nia.ipNetworkList
+      this.transmissionNetworkList = this.$store.state.nia.transmissionNetworkList
 
       this.ipFilterGroup = new BaseFilterGroup(this, {
         onFilterChanged: () => this.onFilterChanged('ip'),

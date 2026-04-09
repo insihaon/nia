@@ -21,19 +21,19 @@ public class PmDailyService {
         try {
             createPmDailyData();
         }catch (PersistenceException e){
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("createPmDailyData : ",e);
         }
 
         try {
             createPmDailyNtdData();
         }catch (PersistenceException e){
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("createPmDailyNtdData : ",e);
         }
 
         try {
             createPmDailyReferencedData();
         }catch (PersistenceException e){
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("createPmDailyReferencedData : ",e);
         }
 
         aiPmDataSendService.sendPmData();

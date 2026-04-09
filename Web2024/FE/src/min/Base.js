@@ -10,13 +10,12 @@ import moment from 'moment'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import XLSX from 'xlsx'
-import xxtea from 'xxtea'
 import CONSTANTS from './constants'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 // eslint-disable-next-line no-import-assign
 XLSX = require('sheetjs-style')
-export const _var = { CONSTANTS, xxtea }
+export const _var = { CONSTANTS }
 
 const Base = {
   filters: {
@@ -67,7 +66,7 @@ const Base = {
       devt: (state) => state.devt,
       dataHub: (state) => state.dataHub,
       aam: (state) => state.aam,
-      untact: (state) => state.untact,
+      rcaTicket: (state) => state.rcaTicket,
       aamPersisted: (state) => state.aamPersisted,
       influenceCircitStore: (state) => state.influenceCircitStore,
       pmmlte: (state) => state.pmmlte,

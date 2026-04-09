@@ -255,12 +255,29 @@ export default {
     this.addScript(['./extlib/map2d/lib/index_nia_bundle.js'], async)
   },
   async mounted() {
+    if (window._map2dActive && window._map2dActive !== 'niaTopology') {
+      this.$message.warning(`토폴로지가 다른 화면(${window._map2dActive})에서 사용 중입니다. 새로 고침 후  다시 시도해주세요.`)
+      this._map2dBlocked = true
+      return
+    }
+    if (document.querySelector('script[src*="map2d_untact"]')) {
+      this.$message.warning('순단장애/예지보전 토폴로지가 이전에 사용되었습니다. 정상 표시를 위해 페이지를 새로고침해주세요.')
+      this._map2dBlocked = true
+      return
+    }
+    window._map2dActive = 'niaTopology'
+
     await this.setTicketDataForChatbotTicketData()
 
     setTimeout(() => {
       this.onInit()
       this.popupShowCommand()
     }, 500)
+  },
+  beforeDestroy() {
+    if (window._map2dActive === 'niaTopology') {
+      window._map2dActive = null
+    }
   },
   methods: {
     async setTicketDataForChatbotTicketData(isSwitchingTicket) {

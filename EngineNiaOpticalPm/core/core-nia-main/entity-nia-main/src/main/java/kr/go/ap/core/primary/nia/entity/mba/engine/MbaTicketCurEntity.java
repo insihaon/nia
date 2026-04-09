@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @ToString
 @Table(name = "TB_MBA_TICKET_CURRENT", schema = "MBA")
-//@Table(name = "TB_RCA_TICKET_TMP", schema = "MBA")
 public class MbaTicketCurEntity {
 
     @Id

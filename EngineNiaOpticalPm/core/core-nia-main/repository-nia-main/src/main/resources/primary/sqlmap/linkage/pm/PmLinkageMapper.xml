@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.go.ap.core.repository.primary.mapper.linkage.pm.PmLinkageMapper">
-    <select id="callPmPrepro" parameterType="string">
-        SELECT MBA.FC_SET_PERFORMANCE_PREPROCESSOR(#{ocrTime})
-    </select>
+    <update id="callPmPrepro" parameterType="string">
+        SELECT MBA.FC_SET_PERFORMANCE_PREPROCESSOR(CAST(#{ocrTime} AS TIMESTAMP))
+    </update>
 
     <insert id="insertPmData" parameterType="java.util.HashMap">
         <if test="pmDtoList.size != 0">

@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -250,7 +250,7 @@ class TicketCreateServiceTest {
             ticketCreateService.createMbaTicket(dto);
 
             // Then
-            verify(lowOptPerfRepository, times(1)).save(any(RoadmLowOpticalPerformanceEntity.class));
+            verify(lowOptPerfRepository, times(1)).saveAll(anyList());
         }
 
         @Test

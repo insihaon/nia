@@ -23,7 +23,7 @@ public class EngineToUiTicketPrdAmqp {
 			rabbitTemplate.convertAndSend(rcaEngineResult);
 			//Thread.sleep(1000);
 		} catch (Exception e) {
-            log.error("=====> [sendMessageCmd] : error " + ExceptionUtils.getStackTrace(e)+ " <=====");
+            log.error("=====> [sendMessageCmd] : error " ,e, " <=====");
 		}
 	}
 }

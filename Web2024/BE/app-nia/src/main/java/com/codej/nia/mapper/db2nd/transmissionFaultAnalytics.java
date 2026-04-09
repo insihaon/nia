@@ -10,17 +10,11 @@ import com.codej.web.mapper.db1st.BaseDataMapper;
 
 @Mapper
 public interface transmissionFaultAnalytics extends BaseDataMapper {
-    public List<ResultMap> SELECT_TICKET_CUR_LIST(HashMap<String, Object> map);
-
-    public List<ResultMap> SELECT_TICKET_ROOT_ALARM_LIST(HashMap<String, Object> map);
-
     public List<ResultMap> SELECT_MBA_REPEATER_SLOT_DATA(HashMap<String, Object> map);
 
     public List<ResultMap> SELECT_MBA_LOW_ALARM_LIST(HashMap<String, Object> map);
 
     public List<ResultMap> SELECT_MBA_TOPOLOGY_LIST(HashMap<String, Object> map);
-
-    public List<ResultMap> SELECT_MBA_PMM_INFLUENCECIRCUIT_LIST(HashMap<String, Object> map);
 
     public List<ResultMap> SELECT_TICKET_PMM_LIST(HashMap<String, Object> map);
 
@@ -34,16 +28,12 @@ public interface transmissionFaultAnalytics extends BaseDataMapper {
 
     public List<ResultMap> SELECT_TICKET_ALARM_BATCH_LIST(HashMap<String, Object> map);
 
-    public List<ResultMap> SELECT_FAULTREASON_LV1_LIST(HashMap<String, Object> map);
-
-    public List<ResultMap> SELECT_FAULTREASON_LV2_LIST(HashMap<String, Object> map);
-
-    public List<ResultMap> SELECT_FAULTREASON_LV3_LIST(HashMap<String, Object> map);
-
-    public List<ResultMap> SELECT_FAULTCHARGE_LV1_LIST(HashMap<String, Object> map);
-
-    public List<ResultMap> SELECT_FAULTCHARGE_LV2_LIST(HashMap<String, Object> map);
-
     public List<ResultMap> SELECT_TICKET_HANDLING_CURRENT_LIST(HashMap<String, Object> map);
+
+    public List<ResultMap> SELECT_MBA_TICKET_CUR_LIST(HashMap<String, Object> map);
+
+    public List<ResultMap> SELECT_MBA_TICKET_ROOT_ALARM_LIST(HashMap<String, Object> map);
+
+    public int USER_PROCESS_MBA(HashMap<String, Object> map);
 
 }

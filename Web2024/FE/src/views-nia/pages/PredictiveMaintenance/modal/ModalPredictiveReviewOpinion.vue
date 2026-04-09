@@ -12,13 +12,13 @@
         :modal="modal"
         :close-on-click-modal="closeOnClickModal"
         :loading="loading"
+        class="nia-dialog"
         :class="{ [name]: true }"
       >
         <span slot="title">
-          <i class="el-icon-tickets" /> 광모듈 장애 예측 검토 의견
-          <hr>
+          <i class="el-icon-tickets mr-2 text-base" /> 광모듈 장애 예측 검토 의견
         </span>
-        <comp-ag-grid ref="reviewGrid" v-model="reviewGrid" style="height: calc(100% - 80px);" />
+        <comp-ag-grid ref="reviewGrid" v-model="reviewGrid" style="height: 300px;" />
         <hr>
         <el-row style="height: 70px;">
           <el-form
@@ -34,18 +34,14 @@
                   type="textarea"
                   clearable
                 />
-                <el-button class="completeBtn" size="medium" @click="handleInsertOperatorResult('등록')">등록</el-button>
+                <el-button type="primary" size="mini" @click="handleInsertOperatorResult('등록')">등록</el-button>
               </el-form-item>
             </el-col>
           </el-form>
         </el-row>
 
         <div slot="footer" class="dialog-footer">
-          <hr>
-          <!-- <el-button class="completeBtn" size="medium" @click="handleInsertOperatorResult()">
-            등록
-          </el-button> -->
-          <el-button size="medium" class="closeBtn" @click="close()">
+          <el-button size="mini" type="info" icon="el-icon-close" @click="close()">
             닫기
           </el-button>
         </div>
@@ -59,14 +55,14 @@ import { Modal } from '@/min/Modal.min.js'
 import { apiRcaRequest } from '@/api/nia'
 import elDragDialog from '@/directive/el-drag-dialog'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import UntactCellRenderButtons from '@/views-nia/components/cellRenderer/UntactCellRenderButtons'
+import RcaCellRenderButtons from '@/views-nia/components/cellRenderer/RcaCellRenderButtons'
 
 const routeName = 'ModalPredictiveReviewOpinion'
 
 const _component = {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, UntactCellRenderButtons },
+  components: { CompAgGrid, RcaCellRenderButtons },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -82,13 +78,13 @@ const _component = {
   },
   computed: {
     reviewGrid() {
-      const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 25 }
+      const options = { name: this.name, checkable: false, rowGroupPanel: false }
       const columns = [
         { type: '', prop: 'handling_user', name: '작성자', width: 120 },
         { type: '', prop: 'handling_dept', name: '소속', width: 180 },
         { type: '', prop: 'handling_content', name: '의견', width: 480 },
         { type: '', prop: 'handling_time', name: '작성 시각', width: 200, format: (row) => { return this.moment(row.handling_time).format('YYYY-MM-DD HH:mm:ss') } },
-        { type: '', prop: '-', name: '기능', width: 170, cellRendererFramework: 'UntactCellRenderButtons', cellRendererParams: { action: this.onClickEditButton.bind(this) } }
+        { type: '', prop: '-', name: '기능', width: 170, cellRendererFramework: 'RcaCellRenderButtons', cellRendererParams: { action: this.onClickEditButton.bind(this) } }
       ]
       return { options, columns, data: this.reviewList || [] }
     }
@@ -105,9 +101,10 @@ const _component = {
         ticketno: model.ticketno,
         issue_date: model.issue_date,
         handling_user: this.$store.state.user.name,
-        handling_dept: this.untact.authority?.workarea || '', // 담당 부서
-        handling_agency: this.untact.authority?.workarea?.split(' ')[0] || '', // 소속 본부,
-        handling_content: ''
+        handling_dept: this.rcaTicket.authority?.workarea || '', // 담당 부서
+        handling_agency: this.rcaTicket.authority?.workarea?.split(' ')[0] || '', // 소속 본부,
+        handling_content: '',
+        seqnum: null
       }
       this.infoForm = this._cloneDeep(info)
       this.loadReviewList()
@@ -143,7 +140,8 @@ const _component = {
       }
       this.$confirm(`검토 의견을 ${_process} 하시겠습니까?`, '검토 의견', {
         confirmButtonText: '확인',
-        cancelButtonText: '취소'
+        cancelButtonText: '취소',
+        customClass: 'nia-message-box',
       }).then(async() => {
         try {
           const form = this.infoForm
@@ -186,23 +184,7 @@ export default _component
 </script>
 
 <style lang="scss" scoped>
- .ModalPredictiveReviewOpinion::v-deep {
-  font-family: 'NanumSquare';
-  transform: skew(0.03deg);
-  .el-dialog {
-    border: 1px solid #043644;
-    border-bottom: 11px solid #043644d6;
-    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
-    border-radius: 5px;
-    height: 440px;
-  }
-  .el-dialog__header {
-    transform: skew(0.03deg);
-    span {
-      font-size: 15px;
-      font-weight: 800;
-    }
-  }
+.ModalPredictiveReviewOpinion::v-deep {
   .el-dialog__body {
     height: calc(100% - 130px);
     padding: 0 15px;
@@ -216,7 +198,6 @@ export default _component
       font-weight: 800;
       display: flex;
       align-items: center;
-      transform: rotate(0.03deg);
     }
     .textarea .el-form-item {
       width: 100%;
@@ -226,29 +207,12 @@ export default _component
         width: calc(100% - 40px);
         button.completeBtn {
           margin-left: 5px;
-          background-color: #043644;
-          color: white;
-          border: 1px solid #043644;
         }
       }
     }
     .el-textarea__inner {
       resize: none;
       height: 65px;
-    }
-  }
-  .el-dialog__footer {
-    height: 60px !important;
-    padding: 0 20px;
-
-    button.closeBtn {
-      color: #043644;
-      background-color: white;
-      border: 1px solid #043644;
-    }
-    button:not(.is-disable):hover {
-      color: #fff;
-      background-color: #043644;
     }
   }
 }

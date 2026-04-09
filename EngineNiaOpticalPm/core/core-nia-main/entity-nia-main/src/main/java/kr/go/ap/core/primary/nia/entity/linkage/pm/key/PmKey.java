@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Embeddable
 @Builder
 @NoArgsConstructor
@@ -16,4 +18,11 @@ public class PmKey {
     private String sysname;
     @Column(name = "port")
     private String port;
+    @Column(name="ocrtime")
+    private Timestamp ocrtime;
+
+
+    public void setOcrtime(Timestamp ocrtime) {
+        this.ocrtime = ocrtime;
+    }
 }

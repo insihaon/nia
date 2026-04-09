@@ -86,4 +86,17 @@ public class RabbitMQConfig {
         template.setMessageConverter(jsonMessageConverter());
         return template;
     }
+
+    @Bean(name="MbaAiModel_Queue")
+    public Queue mbaAiModelQueue() {
+        return new Queue(rabbitMQVo.getMbaAiModelQueue());
+    }
+
+    @Bean(name="MbaAiModel_RabbitTemplate")
+    public RabbitTemplate rabbitTemplateMbaAiModel() {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        template.setRoutingKey(rabbitMQVo.getMbaAiModelQueue());
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
+    }
 }

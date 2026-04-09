@@ -26,7 +26,7 @@ export class TopasFilter {
       (this.options.allItem && (index === 'All' || index === 0)) ? this.onAllClick() : this.onFilterClick(index)
     } else {
       this.parent.changeSetItemSelected(this.propertyName, index)
-      this.parent.refVue.$store.dispatch('untact/changeSelectedSingleButton', this._data[index])
+      this.parent.refVue.$store.dispatch('rcaTicket/changeSelectedSingleButton', this._data[index])
     }
     this.parent.refVue.$refs.aggrid.externalFilterChanged({ name: 'TopasFilter', data: filters })
     this.parent.onFilterChanged()

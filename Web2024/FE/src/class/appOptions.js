@@ -28,7 +28,7 @@ export class AppOptions extends Storage {
       isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
       mobile: Device.instance.mobile ?? false,
       mock: process.env.VUE_APP_MOCK || '',
-      projectList: ['datahub', 'nia', 'ipms'],
+      projectList: ['nia'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
@@ -70,7 +70,7 @@ export class AppOptions extends Storage {
   }
 
   get dark() {
-    return ['ipms'].includes(this._data.project)
+    return false
   }
 
   get encrypt() {

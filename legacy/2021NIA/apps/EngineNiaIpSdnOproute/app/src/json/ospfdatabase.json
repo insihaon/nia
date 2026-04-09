@@ -1,5 +1,0 @@
-{
-    "data":null,
-    "message":"Remote Measurement Command Execution Fail. -> could not execute statement; SQL [n/a]; constraint [null]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
-    "status":false
-}

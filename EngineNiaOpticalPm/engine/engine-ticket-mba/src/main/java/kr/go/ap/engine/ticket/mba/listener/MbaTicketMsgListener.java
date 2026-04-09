@@ -27,7 +27,7 @@ public class MbaTicketMsgListener  {
 
             ticketCreateService.createMbaTicket(engineLowPmDataListDto);
         } catch (Exception e) {
-            log.error("onMessage error "+ ExceptionUtils.getStackTrace(e));
+            log.error("onMessage error ", e);
 		}
 	}
 }

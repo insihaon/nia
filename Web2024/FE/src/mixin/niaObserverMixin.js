@@ -14,6 +14,8 @@ var niaObserverMixin = {
         }),
 
         isFocusModeButNotFocus() {
+            // 통합 뷰(임베디드) 모드일 때는 항상 포커스 상태로 간주
+            if (this.wdata && this.wdata.isChatbotEmbedded) return false
             return this.currentMode === 'alarmFocusMode' && !this.$parent.isFocusWindow
         }
     },

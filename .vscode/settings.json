@@ -1,0 +1,30 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.gradle.home": "",
+    "java.project.sourcePaths": [],
+    "java.import.exclusions": [
+        "**/Engine_nia_server_2021/**",
+        "**/Engine_nia_optical_pm/**",
+        "**/Engine_nia_ip_sdn_oproute/**",
+        "**/legacy/**",
+        "**/library/**",
+        "**/node_modules/**",
+        "**/.gradle/**",
+        "**/build/**"
+    ],
+    "files.exclude": {
+        "**/legacy": true,
+        "**/library": true,
+        "**/node_modules": true,
+        "**/build": true,
+        "**/.gradle": true
+    },
+    "search.exclude": {
+        "**/legacy": true,
+        "**/library": true,
+        "**/node_modules": true,
+        "**/build": true,
+        "**/.gradle": true
+    }
+}

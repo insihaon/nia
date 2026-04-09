@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -146,7 +146,7 @@ class TicketCreationIntegrationTest {
             ticketCreateService.createMbaTicket(lowPmData);
 
             // Then: 히스토리 데이터가 저장됨
-            verify(lowOptPerfRepository, atLeastOnce()).save(any(RoadmLowOpticalPerformanceEntity.class));
+            verify(lowOptPerfRepository, atLeastOnce()).saveAll(anyList());
         }
 
         @Test

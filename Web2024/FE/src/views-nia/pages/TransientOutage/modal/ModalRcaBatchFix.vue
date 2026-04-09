@@ -12,10 +12,10 @@
         :modal="modal"
         :close-on-click-modal="closeOnClickModal"
         :loading="loading"
-        class="untact-modal h-100"
+        class="nia-dialog"
         :class="{ [name]: true}"
       >
-        <span slot="title" style="transform: skew(0.03deg);">
+        <span slot="title">
           <i class="el-icon-s-tools" /> 조치사항 입력
           <hr>
         </span>
@@ -28,11 +28,10 @@
             show-word-limit
           />
         </div>
-        <span slot="footer" class="dialog-footer" style="text-align: right">
-          <hr>
-          <el-button type="primary" plain @click="handleClickFix()">확인</el-button>
-          <el-button class="gray-btn" @click="close()">닫기</el-button>
-        </span>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" type="primary" @click="handleClickFix()">확인</el-button>
+          <el-button size="mini" type="info" icon="el-icon-close" @click="close()">닫기</el-button>
+        </div>
       </el-dialog>
     </transition>
   </div>
@@ -43,7 +42,7 @@ import { Modal } from '@/min/Modal.min'
 import elDragDialog from '@/directive/el-drag-dialog'
 // import moment from 'moment'
 
-const routeName = 'ModalRcaBatchFIx'
+const routeName = 'ModalRcaBatchFix'
 
 const _component = {
   name: routeName,
@@ -70,19 +69,20 @@ const _component = {
     onOpen(model, actionMode) {
     },
     handleClickFix() {
-      this.fixValue = this.fixProcess
+      if (!this.fixProcess) {
+        this.$message({ type: 'warning', message: '조치사항을 입력해 주세요.' })
+        return
+      }
+      this.$emit('closeModal', this.fixProcess)
       this.close()
     },
     onClose() {
-      this.$emit('closeModal', this.fixValue)
       this.fixProcess = ''
-      this.fixValue = ''
     }
   }
 }
 export default _component
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
 </style>

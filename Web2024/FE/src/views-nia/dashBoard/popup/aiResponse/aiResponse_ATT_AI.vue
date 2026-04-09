@@ -137,7 +137,8 @@ import constants from '@/min/constants'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import moment from 'moment'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
-import TEST_TICKET_SAMPLE from '@/views-nia/js/simulationData/TEST_TICKET_SELECT_ATT_TICKET_TOTAL_DATA_LIST.json'
+import TEST_TCA_TICKET_SAMPLE from '@/views-nia/js/simulationData/TEST_TICKET_SELECT_ATT_TICKET_TOTAL_DATA_LIST.json'
+import TEST_PREDICT_TICKET_SAMPLE from '@/views-nia/js/simulationData/TEST_TICKET_SELECT_ATT_PREDICT_TICKET_TOTAL_DATA_LIST.json'
 
 const verticalLinePlugin = {
   id: 'verticalLine',
@@ -694,8 +695,10 @@ export default {
         if (okLoading) this.openLoading(target, { text: '차트 불러오는 중..' })
         if (this.selectedRow.ticket_id === '1702448') {
           // 테스트 데이터입니다.
-          this.chartDataOriginList = TEST_TICKET_SAMPLE
+          this.chartDataOriginList = TEST_TCA_TICKET_SAMPLE
           this.tcaModel = { 'if_num': '1720141987272', 'tca_alert_time': '2026-01-28T00:02:00.000+09:00', 'tca_alert_yn': 'Y', 'id': 8604, 'model_id': '59684', 'node_num': '1720140269083', 'tca_alert_direction': 'out' }
+        } else if (this.selectedRow.ticket_id === '1725687') {
+          this.chartDataOriginList = TEST_PREDICT_TICKET_SAMPLE
         } else {
           this.chartDataOriginList = await this.loadAiChartData()
         }

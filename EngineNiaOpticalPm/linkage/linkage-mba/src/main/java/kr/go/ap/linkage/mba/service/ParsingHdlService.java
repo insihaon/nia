@@ -117,7 +117,7 @@ public class ParsingHdlService {
 
                     if (!CollectionUtils.isEmpty(eqmntSipcEntityList)) {
                         eqmntSipcRepository.deleteByEqmntSipcKey_Tid(tid);
-                        log.info("parsingHdl RTRV-SIPC size: {}", eqmntSipcEntityList.size());
+                        log.info("parsingHdl RTRV-SIPC size: {}, list = {}", eqmntSipcEntityList.size(), eqmntSipcEntityList.toString());
                         eqmntSipcRepository.saveAll(eqmntSipcEntityList);
                     }
 

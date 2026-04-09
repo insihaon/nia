@@ -14,7 +14,7 @@
         <AppMain v-if="!popupLayout" ref="appmain" :style="{ height: appMainHeight }" />
         <BottomBar ref="bottombar" />
       </div>
-      <chatbotIcon v-show="!existChatbotPopup && isDebug" />
+      <chatbotIcon v-show="!existChatbotPopup" />
     </div>
     <WindowBase v-for="window in $store.getters.windows" :key="window.id" :type="window.type" :wdata="window" :target="window.target" />
   </div>
@@ -155,12 +155,14 @@ export default {
     this.$nextTick(() => {
       this.setShowBottombar()
       this.subscribeEvent()
+      this.$store.dispatch('nia/startPolling')
     })
   },
   beforeDestroy() {
     EventBus.$off('simulateTest')
     this.removeWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
     this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
+    this.$store.dispatch('nia/stopPolling')
   },
   methods: {
     simulateTest(param) {

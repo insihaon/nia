@@ -60,7 +60,7 @@ public class EmsMmcHdlService {
             sipcMmc();
             pmMmc();
         } catch (Exception e) {
-            log.error("pmCollectHdl error", ExceptionUtils.getStackTrace(e));
+            log.error("pmCollectHdl error ", e);
         } finally {
             closeQuietly(this.client);
             this.client = null;
@@ -90,7 +90,7 @@ public class EmsMmcHdlService {
                 }
             }
         } catch (PersistenceException | IndexOutOfBoundsException | IOException | InterruptedException e) {
-            log.error("sipcMmc error ", ExceptionUtils.getStackTrace(e));
+            log.error("sipcMmc error ", e);
             Thread.currentThread().interrupt();
         }
     }
@@ -140,7 +140,7 @@ public class EmsMmcHdlService {
             }
         } catch (PersistenceException | IOException | InterruptedException e) {
 //            log.error(e.toString());
-            log.error("pmMmc error ", ExceptionUtils.getStackTrace(e));
+            log.error("pmMmc error ", e);
             if (e instanceof InterruptedException) Thread.currentThread().interrupt();
         }
     }

@@ -90,6 +90,13 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
         boolean isAddAlarm = false;
 
         try {
+            if (basicAlarmVo.getSysname() == null) {
+                LOGGER.info(">>>>>>>>>>[AlarmClusterService][NULL_SYSNAME] clustering() sysname is null, " +
+                        "alarmNo={}, equipType={}, alarmType={}, tmpClusterNo={}, receivetime={} <<<<<<<<<<<<<<<<<",
+                        basicAlarmVo.getAlarmno(), basicAlarmVo.getEquiptype(), basicAlarmVo.getAlarmType(),
+                        tmpClusterNo, basicAlarmVo.getReceivetime());
+            }
+
             StringBuffer strLog = new StringBuffer();
             strLog.append("=====> [AlarmClusterService] clustering <=====\n");
             strLog.append("tmpClusterno : " + basicAlarmVo.getTmpClusterno() + "\n");
@@ -318,6 +325,13 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
     public void createCluster(BasicAlarmVo basicAlarmVo) {
         LOGGER.info(">>>>>>>>>>[AlarmClusterService] createCluster <<<<<<<<<<<<<<<<<");
         try {
+            if (basicAlarmVo.getSysname() == null) {
+                LOGGER.info(">>>>>>>>>>[AlarmClusterService][NULL_SYSNAME] createCluster() sysname is null, " +
+                        "alarmNo={}, equipType={}, alarmType={}, tmpClusterNo={}, receivetime={} <<<<<<<<<<<<<<<<<",
+                        basicAlarmVo.getAlarmno(), basicAlarmVo.getEquiptype(), basicAlarmVo.getAlarmType(),
+                        tmpClusterNo, basicAlarmVo.getReceivetime());
+            }
+
             String clusterNo = null;
             ClusterInfoVo clusterInfoVo = null;
             ClusterObject clusterObject = null;

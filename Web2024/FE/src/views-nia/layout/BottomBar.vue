@@ -329,7 +329,10 @@ export default {
 
   .system-tooltip {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    height: fit-content;
     cursor: pointer;
 
     .tooltip-text {
@@ -450,7 +453,7 @@ export default {
     height: 36px;
     line-height: 1;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .group-badge {
@@ -485,13 +488,6 @@ export default {
     color: #ffffff;
     border-color: rgba(59, 130, 246, 1);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
-  .system-tooltip {
-    line-height: 1;
-    height: fit-content;
-    display: flex;
-    align-items: center;
   }
 
   .statusBarWrap {

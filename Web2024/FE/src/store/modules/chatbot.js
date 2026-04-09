@@ -48,7 +48,7 @@ export function getRecommendedCommand(tikcetData) {
     return {
         type: constants.nia.chatType.botAnswer,
         content: '<div class="chatbot-command-header">추천 명령어</div>' +
-            '<b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b>' +
+            '<b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b><br>' +
             (
                 ticketType === 'NTT_AI'
                     ? (makeOpenPopupNumberText(1, chatbotKeyMap.aiResponse_NTT_AI.key))

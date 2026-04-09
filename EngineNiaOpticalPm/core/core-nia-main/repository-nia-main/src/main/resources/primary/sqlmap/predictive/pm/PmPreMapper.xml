@@ -85,7 +85,7 @@
                AND WPM.PTPNAME = OPD.PTPNAME
                AND WPM.IN_OUT = OPD.IN_OUT
                AND WPM.COLLECTION_DATE = OPD.COLLECTION_DATE
-            <if test="updateYn != Y">
+            <if test="_parameter != 'Y'">
               LEFT OUTER JOIN MBA.TB_ROADM_PREDICTIVE_MAINTENANCE_TICKET PMT
                 ON PMT.TRUNK_NAME = WPM.TRUNK_NAME
                AND PMT.DIRECTION = OPD.DIRECTION

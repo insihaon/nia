@@ -411,6 +411,7 @@
         <if test="IS_POLLING != null and IS_POLLING == true">
             AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
         </if>
+        AND (TICKET_TYPE != 'PF' or sysname is not null)
     ORDER BY ALARMTIME DESC
 </select>
 
@@ -2470,8 +2471,6 @@ UPDATE RESOURCE.TB_USER_ORGAN_IP
         , AVG(predict.out_y) AS out_y
         , AVG(predict.in_weekly) AS in_weekly
         , AVG(predict.out_weekly) AS out_weekly
-        , AVG(predict.in_trend) AS in_trend
-        , AVG(predict.out_trend) AS out_trend
         , MAX(predict.reg_datetime) AS reg_datetime
     FROM nia.tb_ai_model model
     LEFT OUTER JOIN nia.tb_ai_model_accuracy accuracy on model.model_id = accuracy.model_id

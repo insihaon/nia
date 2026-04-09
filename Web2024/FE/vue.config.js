@@ -87,17 +87,8 @@ function getOutputDir() {
 
   if (process.env.VUE_APP_MOCK !== 'FE') {
     switch (process.env.VUE_APP_PROJECT) {
-      case 'datahub':
-        dir = '../BE/app-dataHub/src/main/resources/static'
-        break
-      case 'demo':
-        dir = '../BE/app-demo/src/main/resources/static'
-        break
       case 'nia':
         dir = '../BE/app-nia/src/main/resources/static'
-        break
-      case 'ipms':
-        dir = '../BE/app-ipms/src/main/resources/static'
         break
     }
   }
@@ -131,10 +122,17 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    // HTTPS 백엔드 프록시 (자체 서명 인증서 사용 시)
     // proxy: {
+    //   '/api': {
+    //     target: 'https://127.0.0.1:8081',
+    //     secure: false, // 자체 서명 인증서 허용
+    //     changeOrigin: true
+    //   },
     //   '/ws-stomp': {
-    //     target: 'http://127.0.0.1:8070',
+    //     target: 'https://127.0.0.1:8081',
     //     ws: true,
+    //     secure: false,
     //     changeOrigin: true
     //   }
     // },

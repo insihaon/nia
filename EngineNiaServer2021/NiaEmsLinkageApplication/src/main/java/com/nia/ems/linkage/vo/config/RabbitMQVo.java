@@ -39,4 +39,11 @@ public class RabbitMQVo implements Serializable {
     private String niaPerformanceFailRoutingKey;
     @Value("${spring.rabbitmq.niaPerformanceFailQueue}")
     private String niaPerformanceFailQueue;
+
+    @Value("${spring.rabbitmq.mbaAiModelExchange}")
+    private String mbaAiModelExchange;
+    @Value("${spring.rabbitmq.mbaAiModelRoutingKey}")
+    private String mbaAiModelRoutingKey;
+    @Value("${spring.rabbitmq.mbaAiModelQueue}")
+    private String mbaAiModelQueue;
 }

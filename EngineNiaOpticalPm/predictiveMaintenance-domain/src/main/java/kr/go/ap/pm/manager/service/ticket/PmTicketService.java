@@ -22,25 +22,25 @@ public class PmTicketService {
         try {
             ticketCaseOneService.ticketCaseOneHdlProcessor();
         } catch (NullPointerException | IndexOutOfBoundsException | PersistenceException e) {
-            log.error("ticketHdlProcessor ticketCaseOneHdlProcessor : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketHdlProcessor ticketCaseOneHdlProcessor : " , e);
         } catch (Exception e) {
-            log.error("ticketHdlProcessor ticketCaseOneHdlProcessor : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketHdlProcessor ticketCaseOneHdlProcessor : " , e);
         }
 
         try {
             pmWarningDateService.warningDateCheck();
         } catch (NullPointerException | IndexOutOfBoundsException | PersistenceException e) {
-            log.error("ticketHdlProcessor warningDateCheck : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketHdlProcessor warningDateCheck : " ,e);
         } catch (Exception e) {
-            log.error("ticketHdlProcessor warningDateCheck : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketHdlProcessor warningDateCheck : " , e);
         }
 
         try {
             ticketCaseTwoService.ticketCaseTwoHdlProcessor();
         } catch (NullPointerException | IndexOutOfBoundsException | PersistenceException e) {
-            log.error("ticketHdlProcessor ticketCaseTwoHdlProcessor : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketHdlProcessor ticketCaseTwoHdlProcessor : " , e);
         } catch (Exception e) {
-            log.error("ticketHdlProcessor ticketCaseTwoHdlProcessor : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketHdlProcessor ticketCaseTwoHdlProcessor : ", e);
         }
     }
 }

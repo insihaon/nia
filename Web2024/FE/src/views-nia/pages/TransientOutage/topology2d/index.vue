@@ -86,8 +86,24 @@ export default {
     }
   },
   mounted() {
+    if (window._map2dActive && window._map2dActive !== 'TransientOutage') {
+      this.$message.warning(`토폴로지가 다른 화면(${window._map2dActive})에서 사용 중입니다. 새로 고침 후  다시 시도해주세요.`)
+      this._map2dBlocked = true
+      return
+    }
+    if (document.querySelector('script[src*="index_nia_bundle"]')) {
+      this.$message.warning('대시보드 토폴로지가 이전에 사용되었습니다. 정상 표시를 위해 페이지를 새로고침해주세요.')
+      this._map2dBlocked = true
+      return
+    }
+    window._map2dActive = 'TransientOutage'
     const ctrl = this
     ctrl.initMap()
+  },
+  beforeDestroy() {
+    if (window._map2dActive === 'TransientOutage') {
+      window._map2dActive = null
+    }
   },
   created() {
     this.addLink([
@@ -155,14 +171,9 @@ export default {
       try {
         this.openLoading(target)
         const params = {
-          TICKET_TYPE: 'RT',
-          TICKET_ID: ticket.ticket_id,
-          ISMBA: true,
-          FAULT_TIME: moment(ticket.fault_time).format('YYYY-MM-DD HH:mm:ss'),
-          DIRECTION: ticket.direction || '',
-          MAX_DAYS: 31
+          TICKET_ID: ticket.ticket_id
         }
-        await apiRcaRequest('SELECT_TICKET_ROOT_ALARM_LIST', params).then(async(result) => {
+        await apiRcaRequest('SELECT_MBA_TICKET_ROOT_ALARM_LIST', params).then(async(result) => {
           const result2 = await apiRcaRequest('SELECT_MBA_TOPOLOGY_LIST', { TRUNK_NAME: ticket.trunk_name || '' })
           const nodeList = result2?.result || []
           const linkList = result?.result || []
@@ -187,19 +198,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  :root {
-      --focus-color: rgba(0, 0, 0, 0.7);
-  }
-
-.MbaTopology2D {
+<style lang="scss" scoped>
+.MbaTopology2D::v-deep {
+  --focus-color: rgba(0, 0, 0, 0.7);
   // 상세정보 테이블 깜빡임
-  @keyframes blinking {
+  @keyframes mba-blinking {
       0% {background-color: rgba(255, 0, 0, 0.7);}
       100% {background-color: transparent;}
   }
   // 링크/노드 선택 시 dash 움직임
-  @keyframes stroke {
+  @keyframes mba-stroke {
       to {
           stroke-dashoffset: 0;
       }
@@ -313,7 +321,7 @@ export default {
   div.template.TSS-160 div.table-wapper > div {padding: 10px 10px;}
   div.template.TSS-160 div.table-wapper table {table-layout:initial !important;}
   div.template.TSS-160 div.table-wapper tr td {width: 30px;}
-  .animation-blink {animation: blinking 1s infinite;}
+  .animation-blink {animation: mba-blinking 1s infinite;}
 
   svg#topology_container {
       width: 100%;
@@ -357,7 +365,7 @@ export default {
       fill: none;
       stroke: #000;
       stroke-dasharray: 4px;
-      animation: stroke 0.2s linear infinite;
+      animation: mba-stroke 0.2s linear infinite;
       shape-rendering: geometricPrecision;
       stroke-dashoffset: 8px;
   }

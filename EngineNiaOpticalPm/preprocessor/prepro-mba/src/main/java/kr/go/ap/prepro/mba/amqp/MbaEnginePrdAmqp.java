@@ -23,7 +23,7 @@ public class MbaEnginePrdAmqp {
             log.info("sendMessageCmd : " + engineLowPmDataListDto.getLowPmDataDtoList().toString());
 		    rabbitTemplate.convertAndSend(engineLowPmDataListDto);
 		} catch (Exception e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("sendMessageCmd : ",e);
 		}
 	}
 }

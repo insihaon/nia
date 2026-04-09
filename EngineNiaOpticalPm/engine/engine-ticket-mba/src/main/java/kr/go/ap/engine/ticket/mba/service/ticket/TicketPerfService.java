@@ -78,7 +78,7 @@ public class TicketPerfService {
             }
 
         } catch (NullPointerException | IllegalArgumentException | PersistenceException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("addPerfData : ",e);
         }
     }
 
@@ -94,7 +94,7 @@ public class TicketPerfService {
             plusTime = curTime.plusMinutes(15);
             optPerfHistEntitiyList = perfHistRepository.findHistByTrunkIdAndDirectionAndOcrTime(ticketPerfDataCheckEntity.getTrunkId(), ticketPerfDataCheckEntity.getDirection(), Timestamp.valueOf(plusTime)).orElseThrow();
         } catch (NullPointerException | IllegalArgumentException | PersistenceException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("setRowSignalDataHist : ",e);
         }
 
         return optPerfHistEntitiyList;

@@ -6,11 +6,13 @@ import jakarta.persistence.Table;
 import kr.go.ap.core.primary.nia.entity.mba.resource.eqmnt.key.EqmntSipcKey;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Table(name = "TB_EQUIP_SIPC", schema = "NIA")
+@Table(name = "TB_EQUIP_SIPC_TMP", schema = "NIA")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class EqmntSipcEntity {
 
     @EmbeddedId

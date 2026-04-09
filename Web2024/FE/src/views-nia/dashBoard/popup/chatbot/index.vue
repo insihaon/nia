@@ -1,75 +1,112 @@
 <template>
   <div ref="chatbot-total" :class="{ [name]: true, 'w-full h-full': true }">
-    <div class="chatbot-body">
-      <div class="chat-header">
-        <h3>
-          어시스턴트 <span :style="{ color: isQuestionMode ? 'red' : 'green' }">[{{ isQuestionMode ? 'OFF' : 'ON' }}]</span>
-        </h3>
-        <div v-if="isQuestionMode">현재 어시스턴트는 휴면중입니다</div>
-        <div v-else>
-          <div v-if="alarmFocusMode_TicketData.ticket_type == 'NTT_AI'">
-            <span>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
-            <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
-            <span>[장애유형 : {{ alarmFocusNTTAIDetailInfo.traffic_type }}]</span>
-            <br />
-            <span>[탐지기간 : {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.oldest_timestamp, 'YY/MM/DD-HH:mm:ss') }} ~ {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.latest_timestamp, 'YY/MM/DD-HH:mm:ss') }}]</span>
-            <span>[탐지량 : {{ alarmFocusNTTAIDetailInfo.row_cnt }}]</span>
-          </div>
+    <div class="chatbot-body" :class="{ 'chatbot-split-mode': isEmbeddedMode }" @click="focusChatInput">
+      <div class="chatbot-left-panel">
+        <div class="chat-header">
+          <h3>
+            어시스턴트 <span :style="{ color: isQuestionMode ? 'red' : 'green' }">[{{ isQuestionMode ? 'OFF' : 'ON' }}]</span>
+          </h3>
+          <div v-if="isQuestionMode">현재 어시스턴트는 휴면중입니다</div>
           <div v-else>
-            <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
-            <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
-            <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
-            <br />
-            <span>[IP주소: {{ alarmFocusMode_TicketData.ip_addr }}] </span>
-            <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}] </span>
-            <span>[인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]</span>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="isQuestionMode" ref="chatMessagesBox" class="chat-messages">
-        <div v-for="(message, index) in questionMode_chatMessages" :key="index" :class="['message', message.type]">
-          <div :style="{ display: message.type !== botAlertText || isActiveBotAlert ? visible : none }">
-            <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
-            <div class="message-time">
-              {{ message.time }}
+            <div v-if="alarmFocusMode_TicketData.ticket_type == 'NTT_AI'">
+              <span>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
+              <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
+              <span>[장애유형 : {{ alarmFocusNTTAIDetailInfo.traffic_type }}]</span>
+              <br />
+              <span>[탐지기간 : {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.oldest_timestamp, 'YY/MM/DD-HH:mm:ss') }} ~ {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.latest_timestamp, 'YY/MM/DD-HH:mm:ss') }}]</span>
+              <span>[탐지량 : {{ alarmFocusNTTAIDetailInfo.row_cnt }}]</span>
+            </div>
+            <div v-else>
+              <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
+              <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
+              <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
+              <br />
+              <span>[IP주소: {{ alarmFocusMode_TicketData.ip_addr }}] </span>
+              <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}] </span>
+              <span>[인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]</span>
             </div>
           </div>
         </div>
-      </div>
-      <div v-else ref="chatMessagesBox" class="chat-messages">
-        <div v-loading="donutChartLoading" class="chatbot-donut-chart-container">
-          <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart1" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" style="margin-bottom: 10px" />
-          <DoughnutChart v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart2" class="chatbot-donut-chart" :chart-data="nttChartData" :options="nttChartOptions" />
+
+        <div v-if="isQuestionMode" ref="chatMessagesBox" class="chat-messages">
+          <div v-for="(message, index) in questionMode_chatMessages" :key="index" :class="['message', message.type]">
+            <div :style="{ display: message.type !== botAlertText || isActiveBotAlert ? visible : none }">
+              <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+              <div class="message-time">
+                {{ message.time }}
+              </div>
+            </div>
+          </div>
         </div>
-        <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
-          <div v-if="message.type !== botAlertText || isActiveBotAlert">
-            <div
-              ref="messageContent"
-              v-loading="mailSendingLoading && message.content.includes('chatbot-mail-send-btn')"
-              class="message-content"
-              :class="{ 'mail-content-loading': mailSendingLoading && message.content.includes('chatbot-mail-send-btn') }"
-              @click="handlePathClick($event, message.content)"
-              v-html="formatMessage(message.content)"
-            ></div>
+        <div v-else ref="chatMessagesBox" class="chat-messages">
+          <div v-loading="donutChartLoading" class="chatbot-donut-chart-container">
+            <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart1" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" style="margin-bottom: 10px" />
+            <DoughnutChart v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart2" class="chatbot-donut-chart" :chart-data="nttChartData" :options="nttChartOptions" />
+          </div>
+          <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
+            <div v-if="message.type !== botAlertText || isActiveBotAlert">
+              <div
+                ref="messageContent"
+                class="message-content"
+                @click="handlePathClick($event, message.content)"
+                v-html="formatMessage(message.content)"
+              ></div>
             <!-- <div class="message-time">
               {{ message.time }}
             </div> -->
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="utility-buttons">
-        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
-        <button :disabled="recognizing || isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
-        <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
-        <button :disabled="isQuestionMode" class="utility-button" @click="showWindowList">창목록</button>
-        <button :disabled="isQuestionMode" class="utility-button" @click="isTest">간편 상황전파</button>
-      </div>
+        <div class="utility-buttons">
+          <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
+          <button :disabled="recognizing || isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
+          <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
+          <button :disabled="isQuestionMode" class="utility-button" @click="showWindowList">창목록</button>
 
-      <div class="chat-input">
-        <input v-model="userInput" :disabled="isQuestionMode" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
-        <button :disabled="!userInput.trim() || isQuestionMode" @click="sendMessage">전송</button>
+          <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isEmbeddedMode ? '#409EFF' : '#e5e7eb', color: isEmbeddedMode ? 'white' : '#4b5563' }" @click="toggleEmbeddedMode">통합 뷰</button>
+        </div>
+
+        <div class="chat-input">
+          <input ref="chatInput" v-model="userInput" :disabled="isQuestionMode" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
+          <button :disabled="!userInput.trim() || isQuestionMode" @click="sendMessage">전송</button>
+        </div>
+      </div><!-- chatbot-left-panel 끝 -->
+
+      <!-- 통합 뷰: 우측 임베디드 Vue 컴포넌트 영역 -->
+      <div v-if="isEmbeddedMode" ref="rightPanel" class="chatbot-right-panel" :class="{ 'chatbot-right-panel-multi': embeddedComponents.length > 1 }">
+        <template v-if="embeddedComponents.length > 0">
+          <div v-for="(item, idx) in embeddedComponents" :key="idx" class="chatbot-embedded-resizable" :style="getEmbeddedWrapperStyle(item, idx)">
+            <div class="chatbot-embedded-wrapper">
+              <component :is="item.component" :wdata="item.wdata" />
+            </div>
+            <!-- 리사이즈 핸들: 4변 + 4꼭지 -->
+            <div class="resize-handle resize-handle-n" @mousedown="onResizeStart($event, idx, 'n')"></div>
+            <div class="resize-handle resize-handle-s" @mousedown="onResizeStart($event, idx, 's')"></div>
+            <div class="resize-handle resize-handle-w" @mousedown="onResizeStart($event, idx, 'w')"></div>
+            <div class="resize-handle resize-handle-e" @mousedown="onResizeStart($event, idx, 'e')"></div>
+            <div class="resize-handle resize-handle-nw" @mousedown="onResizeStart($event, idx, 'nw')"></div>
+            <div class="resize-handle resize-handle-ne" @mousedown="onResizeStart($event, idx, 'ne')"></div>
+            <div class="resize-handle resize-handle-sw" @mousedown="onResizeStart($event, idx, 'sw')"></div>
+            <div class="resize-handle resize-handle-se" @mousedown="onResizeStart($event, idx, 'se')"></div>
+          </div>
+        </template>
+        <div v-else-if="embeddedComponent" class="chatbot-embedded-resizable" :style="embeddedSingleSize || { width: (Number(embeddedViewSize.width) + 4) + 'px', height: (Number(embeddedViewSize.height) + 4) + 'px' }">
+          <div class="chatbot-embedded-wrapper">
+            <component :is="embeddedComponent" :wdata="embeddedComponentData" />
+          </div>
+          <div class="resize-handle resize-handle-n" @mousedown="onResizeStart($event, -1, 'n')"></div>
+          <div class="resize-handle resize-handle-s" @mousedown="onResizeStart($event, -1, 's')"></div>
+          <div class="resize-handle resize-handle-w" @mousedown="onResizeStart($event, -1, 'w')"></div>
+          <div class="resize-handle resize-handle-e" @mousedown="onResizeStart($event, -1, 'e')"></div>
+          <div class="resize-handle resize-handle-nw" @mousedown="onResizeStart($event, -1, 'nw')"></div>
+          <div class="resize-handle resize-handle-ne" @mousedown="onResizeStart($event, -1, 'ne')"></div>
+          <div class="resize-handle resize-handle-sw" @mousedown="onResizeStart($event, -1, 'sw')"></div>
+          <div class="resize-handle resize-handle-se" @mousedown="onResizeStart($event, -1, 'se')"></div>
+        </div>
+        <div v-else class="chatbot-embedded-empty">
+          <span>NO IMAGE</span>
+        </div>
       </div>
     </div>
   </div>
@@ -88,14 +125,6 @@ import constants from '@/min/constants'
 import hotkeys from 'hotkeys-js'
 import _ from 'lodash'
 import html2canvas from 'html2canvas'
-import {
-  collectRequestContentData,
-  generateRequestContentHtml,
-  handleSendEmail,
-  decodeBase64Html,
-  encodeBase64Html,
-} from '@/views-nia/dashBoard/commonLogic/requestForActionLogic'
-import { apiSendMQ, apiSelectUserList } from '@/api/nia'
 
 const routeName = 'chatbot'
 
@@ -214,13 +243,13 @@ export default {
           },
         },
       },
-      userList: [],
-      selectedUsers: null, // 단일 선택이므로 객체 또는 null
-      mailContentHtml: '',
-      mailContentData: null,
-      mailSendingLoading: false,
-      mailContentBodyHtml: '', // 메일 본문 HTML (button/select 제외)
-      mailButtonContainerHtml: '', // button과 select 컨테이너 HTML (재사용용)
+      isEmbeddedMode: false, // 통합 뷰 모드
+      embeddedComponent: null, // 현재 임베디드로 표시할 Vue 컴포넌트
+      embeddedComponentData: {}, // 임베디드 컴포넌트에 전달할 wdata
+      embeddedViewSize: { width: '800', height: '600' }, // 임베디드 뷰 사이즈 (dialogList 기준)
+      embeddedComponents: [], // 다중 컴포넌트 배열 [{ component, wdata, size }]
+      embeddedSingleSize: null, // 단일 컴포넌트 리사이즈 시 사이즈 오버라이드
+      resizeState: null, // { idx, direction, startX, startY, startW, startH }
     }
   },
   computed: {
@@ -295,14 +324,28 @@ export default {
     this.scrollToBottom()
 
     const chatbotPopup = getChatbotMdiObject()
+    // input/textarea에서도 alt+ 단축키 동작하도록 filter 오버라이드
+    hotkeys.filter = (e) => {
+      if (e.altKey) return true
+      const tag = (e.target || e.srcElement).tagName
+      return !(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT')
+    }
+    // 통합 뷰 embedded Vue 컴포넌트 내부에서 발생한 키 이벤트만 무시
+    const isEmbeddedTarget = (e) => {
+      if (!this.$refs.rightPanel) return false
+      const wrappers = this.$refs.rightPanel.querySelectorAll('.chatbot-embedded-wrapper')
+      return Array.from(wrappers).some(w => w.contains(e.target))
+    }
     if (this.isDebug) {
       hotkeys(`alt+q`, (e, h) => {
+        if (isEmbeddedTarget(e)) return
         if (chatbotPopup) {
           // 챗봇 팝업 앞으로
           this.allWaysFrontWindowChatbot()
         }
       })
       hotkeys(`alt+w`, (e, h) => {
+        if (isEmbeddedTarget(e)) return
         if (chatbotPopup) {
           // 챗봇 사이즈 조정
           const heightValue = parseInt(chatbotPopup.height)
@@ -319,18 +362,21 @@ export default {
         }
       })
       hotkeys(`alt+z`, (e, h) => {
+        if (isEmbeddedTarget(e)) return
         if (chatbotPopup) {
           // 채팅초기화
           this.resetChat()
         }
       })
       hotkeys(`alt+v`, (e, h) => {
+        if (isEmbeddedTarget(e)) return
         if (chatbotPopup) {
           // voice ON/OFF
           this.switchVoiceRecording()
         }
       })
       hotkeys(`alt+l`, (e, h) => {
+        if (isEmbeddedTarget(e)) return
         if (chatbotPopup) {
           // 창 목록
           this.showWindowList()
@@ -347,6 +393,11 @@ export default {
       statusField: 'recognizing', // 상태가 저장될 필드명
       lang: 'ko-KR',
     })
+    // 외부에서 다중 뷰 표시 호출 가능하도록 노출
+    window.chatbotOpenMultiView = this.openMultiViewInChatbot.bind(this)
+    window.chatbotOpenView = this.openViewInChatbot.bind(this)
+    window.chatbotIsEmbeddedMode = () => this.isEmbeddedMode
+    window.chatbotToggleEmbeddedMode = this.toggleEmbeddedMode.bind(this)
   },
 
   beforeDestroy() {
@@ -354,161 +405,15 @@ export default {
     if (this.voiceRecognition) {
       this.voiceRecognition.destroy()
     }
+    window.chatbotOpenMultiView = null
+    window.chatbotOpenView = null
+    window.chatbotIsEmbeddedMode = null
+    window.chatbotToggleEmbeddedMode = null
+    document.removeEventListener('mousemove', this.onResizeMove)
+    document.removeEventListener('mouseup', this.onResizeEnd)
   },
 
   methods: {
-    async isTest() {
-      try {
-        // 사용자 목록이 없으면 로드
-        if (!this.userList || this.userList.length === 0) {
-          await this.onLoadUserList()
-        }
-
-        // 테스트용 데이터 생성 (현재 선택된 티켓 데이터 사용 또는 기본값)
-        const selectedRow = this.alarmFocusTicketData || {
-          ticket_id: 'TEST_TICKET_001',
-          ticket_type: 'ATT2',
-          fault_time: new Date().toISOString(),
-          ticket_result: '테스트 장애',
-          sender: '테스트 사용자',
-        }
-
-        const userInfo = this.$store.state.user.info || {
-          uid: 'test_user',
-          name: '테스트 사용자',
-          agencyName: '테스트 기관',
-        }
-
-        // 데이터 수집
-        const collectedData = await collectRequestContentData({
-          selectedRow,
-          userInfo,
-          options: {
-            loadTrafficInfo: !['SYSLOG', 'RT'].includes(selectedRow.ticket_type),
-            loadSyslogInfo: selectedRow.ticket_type === 'SYSLOG',
-            loadSopHist: true,
-            loadAiDetection: true,
-          },
-        })
-
-        // 시스템 URL 생성 (간단한 테스트용)
-        const mailToSystemUrl = '#'
-
-        // HTML 생성 (버튼 포함 - select 박스는 템플릿에서 직접 표시)
-        const contentWithButton = generateRequestContentHtml({
-          data: collectedData,
-          selectedUsers: this.selectedUsers ? [this.selectedUsers] : [], // 단일 값을 배열로 변환
-          mailToSystemUrl,
-          formatterTimeStamp: (time, formatStr = 'YYYY-MM-DD HH:mm:ss') => {
-            if (!time) return ''
-            // Modal을 extends하므로 moment 사용 가능
-            return this.moment(time).format(formatStr)
-          },
-          includeButton: true,
-          buttonOptions: {
-            className: 'chatbot-mail-send-btn',
-            wrapperClass: 'chatbot-message-body',
-          },
-          includeSelect: true, // select 박스는 템플릿에서 직접 표시
-          userList: this.userList,
-        })
-
-        // 본문과 button/select 컨테이너 분리
-        const buttonContainerMatch = contentWithButton.match(/<div class="chatbot-message-body"[^>]*>[\s\S]*?<\/div>\s*$/)
-        if (buttonContainerMatch) {
-          this.mailButtonContainerHtml = buttonContainerMatch[0]
-          this.mailContentBodyHtml = contentWithButton.replace(buttonContainerMatch[0], '')
-        } else {
-          this.mailContentBodyHtml = contentWithButton
-          this.mailButtonContainerHtml = ''
-        }
-
-        // 메일 내용 및 데이터 저장
-        this.mailContentHtml = contentWithButton
-        this.mailContentData = collectedData
-
-        // 메시지 전송
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: contentWithButton,
-        })
-
-        // HTML에 포함된 select 박스 동적 마운트
-        this.$nextTick(() => {
-          this.bindSelectChangeEvent()
-        })
-      } catch (error) {
-        console.error('isTest 오류:', error)
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: `<div class="chatbot-message-body">테스트 실행 중 오류가 발생했습니다: ${error.message}</div>`,
-        })
-      }
-    },
-
-    async handleMailSendClick(event) {
-      event.preventDefault()
-      const button = event.target.closest('.chatbot-mail-send-btn')
-      if (!button) return
-
-      // base64 인코딩된 HTML 디코딩
-      const encodedHtml = button.getAttribute('data-html-content')
-      if (!encodedHtml) {
-        this.$alert('메일 내용을 찾을 수 없습니다.', '알림', {
-          confirmButtonText: '확인',
-        })
-        return
-      }
-
-      const htmlContent = decodeBase64Html(encodedHtml)
-
-      // 선택된 사용자가 없으면 알림
-      if (!this.selectedUsers) {
-        this.$alert('담당 직원을 선택해주세요.', '알림', {
-          confirmButtonText: '확인',
-        })
-        return
-      }
-
-      // 티켓 정보
-      const ticketInfo = this.alarmFocusTicketData || {
-        ticket_id: 'TEST_TICKET_001',
-        ticket_type: 'ATT2',
-        ticket_result: '테스트 장애',
-      }
-
-      // 공통 메일 전송 함수 사용 (단일 선택이지만 배열로 변환)
-      await handleSendEmail({
-        htmlContent,
-        receiverUsers: [this.selectedUsers], // 단일 값을 배열로 변환
-        ticketInfo,
-        userInfo: this.$store.state.user.info,
-        isBase64Encoded: false,
-        apiSendMQ,
-        onLoading: () => {
-          this.mailSendingLoading = true
-        },
-        onSuccess: (res) => {
-          this.mailSendingLoading = false
-          this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
-            confirmButtonText: '확인',
-          })
-
-          // 성공 메시지 표시
-          if (res.success) {
-            this.$store.dispatch('chatbot/botPushAnswerMessage', {
-              content: `<div class="chatbot-message-body">메일이 성공적으로 전송되었습니다.</div>`,
-            })
-          }
-        },
-        onError: (error) => {
-          this.mailSendingLoading = false
-          console.error('메일 전송 오류:', error)
-          this.$alert(error.message || '메일 전송 중 오류가 발생했습니다.', '오류', {
-            confirmButtonText: '확인',
-          })
-        },
-      })
-    },
-
     showWindowList() {
       let count = 0
       let text = '<div class="chatbot-command-header">열려있는 창 목록</div>'
@@ -519,195 +424,6 @@ export default {
 
       this.$store.dispatch('chatbot/botPushAnswerMessage', {
         content: text,
-      })
-    },
-
-    async onLoadUserList() {
-      try {
-        const res = await apiSelectUserList()
-        this.userList = res?.result ?? []
-      } catch (error) {
-        console.error('사용자 목록 로드 실패:', error)
-      }
-    },
-
-    onSelectedUsersChange() {
-      // 선택된 사용자 변경 시 HTML 업데이트
-      if (this.mailContentData) {
-        this.updateMailContentHtml()
-      }
-    },
-
-    bindSelectChangeEvent() {
-      // HTML에 포함된 select 박스를 동적으로 마운트
-      this.$nextTick(() => {
-        const selectWrappers = document.querySelectorAll('.chatbot-user-select-wrapper')
-        selectWrappers.forEach((wrapper) => {
-          // 기존에 마운트된 el-select가 있으면 완전히 제거 (el-tag 문제 방지)
-          const existingSelect = wrapper.querySelector('.el-select')
-          if (existingSelect) {
-            // Vue 인스턴스가 있으면 제거
-            if (existingSelect.__vue__) {
-              const vueInstance = existingSelect.__vue__
-              if (vueInstance.$parent) {
-                vueInstance.$parent.$destroy()
-              }
-            }
-            // DOM에서 제거
-            existingSelect.remove()
-          }
-
-          // data 속성에서 데이터 가져오기
-          const userListEncoded = wrapper.getAttribute('data-user-list')
-          const selectedUsersEncoded = wrapper.getAttribute('data-selected-users')
-
-          if (!userListEncoded || !selectedUsersEncoded) {
-            return
-          }
-
-          try {
-            // Base64 디코딩
-            const userListJson = decodeBase64Html(userListEncoded)
-            const selectedUsersJson = decodeBase64Html(selectedUsersEncoded)
-            const userList = JSON.parse(userListJson)
-            const selectedUserEmails = JSON.parse(selectedUsersJson)
-
-            // 선택된 사용자 객체 (단일 선택이므로 첫 번째 값만 사용)
-            const selectedUser = selectedUserEmails.length > 0
-              ? userList.find((user) => user.email === selectedUserEmails[0])
-              : null
-
-            // Vue 컴포넌트 동적 생성
-            // eslint-disable-next-line vue/one-component-per-file
-            const SelectComponent = this.$root.constructor.extend({
-              data() {
-                return {
-                  localSelectedUser: selectedUser,
-                  localUserList: userList,
-                }
-              },
-              render(h) {
-                return h(
-                  'el-select',
-                  {
-                    props: {
-                      value: this.localSelectedUser,
-                      multiple: false, // 단일 선택으로 명시
-                      filterable: false,
-                      size: 'mini',
-                      placeholder: '담당 직원을 선택하세요',
-                      clearable: true, // 선택 해제 가능
-                    },
-                    style: {
-                      width: '100%',
-                    },
-                    on: {
-                      input: (value) => {
-                        this.localSelectedUser = value
-                        // 부모 컴포넌트의 selectedUsers 업데이트 (단일 값)
-                        if (this.$parent && this.$parent.selectedUsers !== undefined) {
-                          this.$parent.selectedUsers = value
-                          this.$parent.updateMailContentHtml()
-                        }
-                      },
-                    },
-                  },
-                  this.localUserList.map((user) => {
-                    return h('el-option', {
-                      key: user.email, // key 명시적으로 설정
-                      props: {
-                        label: `${user.name} (${user.email})`,
-                        value: user,
-                      },
-                      scopedSlots: {
-                        default: () => [
-                          h('span', { style: { float: 'left' } }, user.name),
-                          h('span', { style: { float: 'right', color: '#8492a6', fontSize: '13px' } }, user.email),
-                        ],
-                      },
-                    })
-                  })
-                )
-              },
-            })
-
-            // 새 Vue 인스턴스 생성 및 마운트
-            const selectInstance = new SelectComponent({
-              parent: this,
-            })
-            selectInstance.$mount()
-            wrapper.appendChild(selectInstance.$el)
-          } catch (error) {
-            console.error('Select 컴포넌트 마운트 실패:', error)
-          }
-        })
-      })
-    },
-
-    updateMailContentHtml() {
-      if (!this.mailContentData) return
-
-      // 본문만 재생성 (button/select 컨테이너는 재사용)
-      const mailToSystemUrl = '#'
-      const bodyHtml = generateRequestContentHtml({
-        data: this.mailContentData,
-        selectedUsers: this.selectedUsers ? [this.selectedUsers] : [], // 단일 값을 배열로 변환
-        mailToSystemUrl,
-        formatterTimeStamp: (time, formatStr = 'YYYY-MM-DD HH:mm:ss') => {
-          if (!time) return ''
-          return this.moment(time).format(formatStr)
-        },
-        includeButton: false, // button/select는 재사용하므로 생성하지 않음
-        includeSelect: false,
-        userList: [],
-      })
-
-      // 본문과 button/select 컨테이너 결합
-      const updatedHtml = bodyHtml + this.mailButtonContainerHtml
-      this.mailContentHtml = updatedHtml
-      this.mailContentBodyHtml = bodyHtml
-
-      // 채팅 메시지 업데이트 (마지막 메시지가 메일 내용인 경우)
-      this.$nextTick(() => {
-        const messages = this.alarmFocusMode_chatMessages
-        if (messages.length > 0 && messages[messages.length - 1].content.includes('chatbot-mail-send-btn')) {
-          // 마지막 메시지 내용 업데이트
-          const lastMessage = messages[messages.length - 1]
-          lastMessage.content = updatedHtml
-          // select 박스 재마운트 (el-tag 문제 방지를 위해 완전히 재생성)
-          this.bindSelectChangeEvent()
-        }
-      })
-    },
-
-    updateSelectSelectedUsers() {
-      // select 박스의 data-selected-users 속성만 업데이트
-      this.$nextTick(() => {
-        const selectWrappers = document.querySelectorAll('.chatbot-user-select-wrapper')
-        selectWrappers.forEach((wrapper) => {
-          // 단일 선택이므로 이메일 배열로 변환 (기존 로직과 호환)
-          const selectedUserEmails = this.selectedUsers ? [this.selectedUsers.email] : []
-          const selectedUsersJson = JSON.stringify(selectedUserEmails)
-          const selectedUsersEncoded = encodeBase64Html(selectedUsersJson)
-          wrapper.setAttribute('data-selected-users', selectedUsersEncoded)
-
-          // 이미 마운트된 el-select가 있으면 값 업데이트
-          const selectInstance = wrapper.querySelector('.el-select')
-          if (selectInstance && selectInstance.__vue__) {
-            const vueInstance = selectInstance.__vue__
-            if (vueInstance.$parent && vueInstance.$parent.localSelectedUser !== undefined) {
-              vueInstance.$parent.localSelectedUser = this.selectedUsers
-            }
-          }
-        })
-
-        // button의 data-html-content도 업데이트 (본문이 변경되었으므로)
-        const buttons = document.querySelectorAll('.chatbot-mail-send-btn')
-        buttons.forEach((button) => {
-          const encodedHtml = encodeBase64Html(this.mailContentHtml)
-          const safeEncodedHtml = encodedHtml.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
-          button.setAttribute('data-html-content', safeEncodedHtml)
-        })
       })
     },
 
@@ -825,6 +541,7 @@ export default {
 
     resetChat() {
       this.$store.commit('chatbot/RESET_CHAT', { ticketData: this.alarmFocusTicketData })
+      this.userInput = ''
     },
 
     getTicketTypeHangle(ticketType) {
@@ -862,15 +579,197 @@ export default {
     },
 
     openSop() {
-      this.fn_openWindow('sopHistory', { isChatbotGenerated: true })
+      if (this.isEmbeddedMode) {
+        this.openViewInChatbot('sopHistory', { isChatbotGenerated: true, params: this.alarmFocusTicketData })
+      } else {
+        this.fn_openWindow('sopHistory', { isChatbotGenerated: true })
+      }
     },
 
     openConfigTest() {
-      this.fn_openWindow('configTest', { isChatbotGenerated: true })
+      if (this.isEmbeddedMode) {
+        this.openViewInChatbot('configTest', { isChatbotGenerated: true, params: this.alarmFocusTicketData })
+      } else {
+        this.fn_openWindow('configTest', { isChatbotGenerated: true })
+      }
     },
 
     toggleIsActiveBotAlert() {
       this.isActiveBotAlert = !this.isActiveBotAlert
+    },
+
+    focusChatInput(e) {
+      // embedded Vue 컴포넌트 내부 클릭은 제외
+
+      if (this.$refs.rightPanel) {
+        const wrappers = this.$refs.rightPanel.querySelectorAll('.chatbot-embedded-wrapper')
+        if (Array.from(wrappers).some(w => w.contains(e.target))) return
+      }
+      if (this.$refs.chatInput && !this.isQuestionMode) {
+        this.$refs.chatInput.focus()
+      }
+    },
+
+    toggleEmbeddedMode() {
+      this.isEmbeddedMode = !this.isEmbeddedMode
+      const chatbotPopup = getChatbotMdiObject()
+      if (!chatbotPopup) return
+
+      if (this.isEmbeddedMode) {
+        // 좌우 + 상하 최대화 (여백 30px)
+        chatbotPopup.width = window.innerWidth - 60
+        chatbotPopup.height = window.innerHeight - 60
+        chatbotPopup.x = 30
+        chatbotPopup.y = 30
+      } else {
+        // 기존 alt+w 기본 사이즈로 복원
+        chatbotPopup.height = '900'
+        chatbotPopup.width = '600'
+        chatbotPopup.x = 10
+        chatbotPopup.y = window.innerHeight - chatbotPopup.height - 60
+        this.embeddedComponent = null
+        this.embeddedComponentData = {}
+        this.embeddedComponents = []
+        this.embeddedSingleSize = null
+      }
+    },
+
+    getEmbeddedWrapperStyle(item, idx) {
+      // 사용자가 리사이즈한 사이즈가 있으면 우선 사용
+      if (item._userWidth || item._userHeight) {
+        const style = {}
+        if (item._userWidth) style.width = item._userWidth + 'px'
+        if (item._userHeight) style.height = item._userHeight + 'px'
+        return style
+      }
+      // 다중 컴포넌트일 때 상/하 균등 분할, 단일일 때 기존 사이즈 사용
+      if (this.embeddedComponents.length > 1) {
+        return {
+          width: '100%',
+          height: `calc(${100 / this.embeddedComponents.length}% - ${(this.embeddedComponents.length - 1) * 4 / this.embeddedComponents.length}px)`,
+        }
+      }
+      return {
+        width: (Number(item.size?.width || 800) + 4) + 'px',
+        height: (Number(item.size?.height || 600) + 4) + 'px',
+      }
+    },
+
+    // 리사이즈 핸들 mousedown
+    onResizeStart(event, idx, direction) {
+      event.preventDefault()
+      event.stopPropagation()
+      const target = event.target.parentElement // .chatbot-embedded-resizable
+      const rect = target.getBoundingClientRect()
+      this.resizeState = {
+        idx,
+        direction,
+        startX: event.clientX,
+        startY: event.clientY,
+        startW: rect.width,
+        startH: rect.height,
+      }
+      document.addEventListener('mousemove', this.onResizeMove)
+      document.addEventListener('mouseup', this.onResizeEnd)
+      const cursorMap = { n: 'ns-resize', s: 'ns-resize', e: 'ew-resize', w: 'ew-resize', nw: 'nwse-resize', se: 'nwse-resize', ne: 'nesw-resize', sw: 'nesw-resize' }
+      document.body.style.cursor = cursorMap[direction] || 'nwse-resize'
+      document.body.style.userSelect = 'none'
+    },
+
+    onResizeMove(event) {
+      if (!this.resizeState) return
+      const { idx, direction, startX, startY, startW, startH } = this.resizeState
+      const dx = event.clientX - startX
+      const dy = event.clientY - startY
+      const minW = 200
+      const minH = 120
+
+      // 방향별 너비/높이 계산: e/w는 좌우, n/s는 상하, 대각은 조합
+      const resizeE = direction.includes('e')
+      const resizeW = direction.includes('w')
+      const resizeS = direction.includes('s')
+      const resizeN = direction.includes('n')
+
+      let newW = startW
+      let newH = startH
+      if (resizeE) newW = Math.max(minW, startW + dx)
+      if (resizeW) newW = Math.max(minW, startW - dx)
+      if (resizeS) newH = Math.max(minH, startH + dy)
+      if (resizeN) newH = Math.max(minH, startH - dy)
+
+      if (idx === -1) {
+        // 단일 컴포넌트 모드
+        this.embeddedSingleSize = {
+          width: newW + 'px',
+          height: newH + 'px',
+        }
+      } else {
+        // 다중 컴포넌트 모드
+        const item = this.embeddedComponents[idx]
+        if (!item) return
+        if (resizeE || resizeW) this.$set(item, '_userWidth', newW)
+        if (resizeS || resizeN) this.$set(item, '_userHeight', newH)
+      }
+    },
+
+    onResizeEnd() {
+      this.resizeState = null
+      document.removeEventListener('mousemove', this.onResizeMove)
+      document.removeEventListener('mouseup', this.onResizeEnd)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    },
+
+    // 여러 컴포넌트를 우측 패널에 상/하 분할로 표시
+    // views: [{ popupName, data }, ...]
+    async openMultiViewInChatbot(views) {
+      this.embeddedComponent = null
+      this.embeddedComponentData = {}
+      this.embeddedComponents = []
+
+      const results = await Promise.all(
+        views.map(async (view) => {
+          const dialogInfo = this.dialogList[view.popupName]
+          if (!dialogInfo || !dialogInfo.component) return null
+          const module = await dialogInfo.component()
+          return {
+            component: module.default,
+            wdata: { ...view.data, isChatbotEmbedded: true },
+            size: { width: dialogInfo.width || '800', height: dialogInfo.height || '600' },
+          }
+        })
+      )
+
+      this.embeddedComponents = results.filter(Boolean)
+      this.$nextTick(() => {
+        this.scrollToBottom()
+      })
+    },
+
+    openViewInChatbot(popupName, data) {
+      // dialogList에서 동적 import를 resolve하여 embeddedComponent에 할당
+      const dialogInfo = this.dialogList[popupName]
+      if (!dialogInfo || !dialogInfo.component) return false
+
+      // 다중 컴포넌트 모드 해제
+      this.embeddedComponents = []
+      this.embeddedSingleSize = null
+
+      // dialogList에 정의된 사이즈 저장
+      this.embeddedViewSize = {
+        width: dialogInfo.width || '800',
+        height: dialogInfo.height || '600',
+      }
+
+      dialogInfo.component().then((module) => {
+        this.embeddedComponent = module.default
+        this.embeddedComponentData = { ...data, isChatbotEmbedded: true }
+
+        this.$nextTick(() => {
+          this.scrollToBottom()
+        })
+      })
+      return true
     },
 
     async sendMessage() {
@@ -953,10 +852,18 @@ export default {
             }
           }
 
-          this.fn_openWindow(popupName, { isChatbotGenerated: true })
+          if (this.isEmbeddedMode) {
+            this.openViewInChatbot(popupName, { isChatbotGenerated: true, params: this.alarmFocusTicketData })
+          } else {
+            this.fn_openWindow(popupName, { isChatbotGenerated: true })
+          }
 
           const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
-          text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 팝업을 활성화했습니다. `
+          if (this.isEmbeddedMode) {
+            text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 화면을 표시했습니다. `
+          } else {
+            text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 팝업을 활성화했습니다. `
+          }
           text += `<br>${constants.nia.chatbotIcon.success} ${constants.nia.chatbotComment.parameterChange}`
           newName = this.dialogList[dialogKey].chatbotParameterKeyName
         }
@@ -1042,8 +949,8 @@ export default {
 
     formatMessage(content) {
       try {
-        // 이미 HTML이 포함된 경우 (chatbot-command-header, chatbot-mail-send-btn 등이 있는 경우) 그대로 반환
-        if (content.includes('chatbot-command-header') || content.includes('chatbot-mail-send-btn')) {
+        // 이미 HTML이 포함된 경우 (chatbot-command-header 등이 있는 경우) 그대로 반환
+        if (content.includes('chatbot-command-header')) {
           return content
         }
 
@@ -1059,18 +966,6 @@ export default {
     },
 
     async handlePathClick(event, content) {
-      // select 박스 클릭은 이벤트 전파 중단
-      if (event.target.closest('.chatbot-user-select-wrapper') || event.target.classList.contains('chatbot-user-select')) {
-        event.stopPropagation()
-        return
-      }
-
-      // 메일 전송 버튼 클릭 처리
-      if (event.target.classList.contains('chatbot-mail-send-btn')) {
-        await this.handleMailSendClick(event)
-        return
-      }
-
       // this.captureContentToClipboard()
 
       // if (event.target.classList.contains('move-link')) {
@@ -1216,27 +1111,6 @@ export default {
   margin-bottom: 10px;
 }
 
-::v-deep .chatbot-mail-send-btn {
-  background-color: #409EFF;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  margin-top: 10px;
-  transition: background-color 0.3s;
-}
-
-::v-deep .chatbot-mail-send-btn:hover {
-  background-color: #66b1ff;
-}
-
-::v-deep .chatbot-mail-send-btn:active {
-  background-color: #3a8ee6;
-}
-
 ::v-deep .chatbot-body {
   display: flex;
   flex-direction: column;
@@ -1358,6 +1232,174 @@ export default {
   color: #64748b;
   margin-top: 0.25rem;
   text-align: right;
+}
+
+// 통합 뷰: 좌우 분할 레이아웃
+.chatbot-split-mode {
+  flex-direction: row !important;
+
+  .chatbot-left-panel {
+    flex: none;
+    width: 600px;
+  }
+}
+
+.chatbot-left-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+.chatbot-right-panel {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  border-left: 1px solid #e2e8f0;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatbot-right-panel-multi {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 4px;
+}
+
+.chatbot-embedded-resizable {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.chatbot-embedded-wrapper {
+  background: #ffffff;
+  border: 2px solid #1e293b;
+  border-radius: 8px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+}
+
+// 리사이즈 핸들 공통
+.resize-handle {
+  position: absolute;
+  z-index: 10;
+
+  &:hover,
+  &:active {
+    background: rgba(64, 158, 255, 0.3);
+  }
+}
+
+// 4변 핸들
+.resize-handle-n {
+  top: -4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.resize-handle-s {
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.resize-handle-w {
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.resize-handle-e {
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+// 4꼭지 핸들
+.resize-handle-nw,
+.resize-handle-ne,
+.resize-handle-sw,
+.resize-handle-se {
+  width: 14px;
+  height: 14px;
+  z-index: 11;
+
+  &:hover,
+  &:active {
+    background: transparent;
+  }
+}
+
+.resize-handle-nw {
+  top: -4px;
+  left: -4px;
+  cursor: nwse-resize;
+}
+
+.resize-handle-ne {
+  top: -4px;
+  right: -4px;
+  cursor: nesw-resize;
+}
+
+.resize-handle-sw {
+  bottom: -4px;
+  left: -4px;
+  cursor: nesw-resize;
+}
+
+.resize-handle-se {
+  bottom: -4px;
+  right: -4px;
+  cursor: nwse-resize;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #94a3b8;
+    border-bottom: 2px solid #94a3b8;
+  }
+
+  &:hover::after,
+  &:active::after {
+    border-color: #409EFF;
+  }
+}
+
+.chatbot-embedded-empty {
+  width: 100%;
+  height: 100%;
+  background: #1e293b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
 }
 
 // 편의 기능 버튼 스타일 추가

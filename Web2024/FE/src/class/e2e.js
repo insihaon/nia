@@ -5,8 +5,6 @@ import http from '@/min/http'
 import { exportServicelist, getServicelist, clearServicelist } from '@/min/route'
 import $store from '@/store'
 import { apis as niaApis } from '@/api/e2e/nia'
-import { apis as ipmsApis } from '@/api/e2e/ipms'
-import { apis as datahubApis } from '@/api/e2e/datahub'
 import { apis as testApis } from '@/api/e2e/test'
 
 export const filePath = __filename.replace(/\\/g, '/')
@@ -124,14 +122,6 @@ export class E2e {
 
   async nia(download = false, start = 0, end = 1100, buffer = 100,) {
     this.getData(niaApis, start, end, buffer, download)
-  }
-
-  async ipms(download = false, start = 0, end = 1100, buffer = 100,) {
-    this.getData(ipmsApis, start, end, buffer, download)
-  }
-
-  async datahub(download = false, start = 0, end = 1100, buffer = 100,) {
-    this.getData(datahubApis, start, end, buffer, download)
   }
 
   async test(download = false, start = 0, end = 1100, buffer = 100,) {

@@ -14,13 +14,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component 
+@Component
 @Scope(value = "prototype")
 @JsonInclude(Include.NON_NULL)
 @Data
 public class ClusterObject implements Serializable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClusterObject.class);
-	
+
 	private String clusterNo;
 	private String tmpClusterNo;
 	private List<String> equipList = new ArrayList<String>();
@@ -32,63 +32,77 @@ public class ClusterObject implements Serializable {
 	private String alarmType;
 
 	public void addAlarmNoList(BasicAlarmVo basicAlarmVo) {
-        //LOGGER.info("addEquipList : " + sysName);
-	    if(!findAlarmNo(basicAlarmVo)){
-            this.alarmObjectList.add(basicAlarmVo);
-        }
+		// LOGGER.info("addEquipList : " + sysName);
+		if (!findAlarmNo(basicAlarmVo)) {
+			this.alarmObjectList.add(basicAlarmVo);
+		}
 	}
 
 	public void addEquipList(String pSysName) {
+		if (pSysName == null) {
+			LOGGER.info(">>>>>>>>>>[ClusterObject][NULL_SYSNAME] addEquipList() skipped, clusterNo={}, tmpClusterNo={} <<<<<<<<<<<<<<<<<",
+					clusterNo, tmpClusterNo);
+			return;
+		}
 		String sysName;
-        //LOGGER.info("addEquipList : " + sysName);
+		// LOGGER.info("addEquipList : " + sysName);
 		sysName = pSysName.split("-")[0];
-	    if(!findSysName(sysName)){
-            this.equipList.add(sysName);
-        }
+		if (!findSysName(sysName)) {
+			this.equipList.add(sysName);
+		}
 	}
 
 	public void addTrunkIdList(String trunkId) {
-        //LOGGER.info("addEquipList : " + sysName);
-	    if(!findTrunkId(trunkId)){
-            this.trunkIdList.add(trunkId);
-        }
+		// LOGGER.info("addEquipList : " + sysName);
+		if (!findTrunkId(trunkId)) {
+			this.trunkIdList.add(trunkId);
+		}
 	}
 
-	public boolean findSysName(String pSysName){
+	public boolean findSysName(String pSysName) {
 		boolean isFind = false;
-		try{
-			if(equipList != null && equipList.size() > 0){
+		if (pSysName == null) {
+			LOGGER.info(">>>>>>>>>>[ClusterObject][NULL_SYSNAME] findSysName() skipped, clusterNo={}, tmpClusterNo={} <<<<<<<<<<<<<<<<<",
+					clusterNo, tmpClusterNo);
+			return false;
+		}
+		try {
+			if (equipList != null && equipList.size() > 0) {
 
-                isFind = equipList.stream().anyMatch(sysName -> pSysName.split("-")[0].equals(sysName));
+				isFind = equipList.stream().anyMatch(sysName -> pSysName.split("-")[0].equals(sysName));
 			}
-		}catch (Exception e) {
-			LOGGER.error(">>>>>>>>>>[ClusterObject] findSysName("+pSysName+") error : " + ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<<");
+		} catch (Exception e) {
+			LOGGER.error(">>>>>>>>>>[ClusterObject] findSysName(" + pSysName + ") error : "
+					+ ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
 		}
 		return isFind;
 	}
 
-	public boolean findTrunkId(String pTrunkId){
+	public boolean findTrunkId(String pTrunkId) {
 		boolean isFind = false;
-		try{
-			if(trunkIdList != null && trunkIdList.size() > 0){
+		try {
+			if (trunkIdList != null && trunkIdList.size() > 0) {
 
-                isFind = trunkIdList.stream().anyMatch(trunkId -> pTrunkId.equals(trunkId));
+				isFind = trunkIdList.stream().anyMatch(trunkId -> pTrunkId.equals(trunkId));
 			}
-		}catch (Exception e) {
-			LOGGER.error(">>>>>>>>>>[ClusterObject] findTrunkId("+pTrunkId+") error : " + ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<<");
+		} catch (Exception e) {
+			LOGGER.error(">>>>>>>>>>[ClusterObject] findTrunkId(" + pTrunkId + ") error : "
+					+ ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
 		}
 		return isFind;
 	}
 
-	public boolean findAlarmNo(BasicAlarmVo basicAlarmVo){
+	public boolean findAlarmNo(BasicAlarmVo basicAlarmVo) {
 		boolean isFind = false;
-		try{
-			if(alarmObjectList != null && alarmObjectList.size() > 0){
+		try {
+			if (alarmObjectList != null && alarmObjectList.size() > 0) {
 
-                isFind = alarmObjectList.stream().anyMatch(alarmVo -> alarmVo.getAlarmno().equals(basicAlarmVo.getAlarmno()));
+				isFind = alarmObjectList.stream()
+						.anyMatch(alarmVo -> alarmVo.getAlarmno().equals(basicAlarmVo.getAlarmno()));
 			}
-		}catch (Exception e) {
-			LOGGER.error(">>>>>>>>>>[ClusterObject] findAlarmNo("+basicAlarmVo.getAlarmno()+") error : " + ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<<");
+		} catch (Exception e) {
+			LOGGER.error(">>>>>>>>>>[ClusterObject] findAlarmNo(" + basicAlarmVo.getAlarmno() + ") error : "
+					+ ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
 		}
 		return isFind;
 	}

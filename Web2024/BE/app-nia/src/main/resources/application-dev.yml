@@ -25,3 +25,7 @@ spring:
     password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
     niaUiToEngine: nia.UiToEngineIndexDirectly
+
+myconf:
+  https:
+    enabled: true

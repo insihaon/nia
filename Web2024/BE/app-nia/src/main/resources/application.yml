@@ -81,6 +81,13 @@ jasypt:
 
 myconf:
   project: nia
+  https:
+    enabled: false
+    port: 8081
+    key-store: classpath:keystore-https.jks
+    key-store-password: nia2025ssl
+    key-alias: nia-https
+    key-store-type: JKS
   websocket:
     enabled: false
   auth:

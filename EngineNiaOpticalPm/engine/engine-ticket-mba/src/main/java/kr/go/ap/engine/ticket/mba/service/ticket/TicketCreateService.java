@@ -61,7 +61,7 @@ public class TicketCreateService {
                 ticketCableEntity = createTicketCableEntity(engineLowPmDataListDto, ticketCableEntity, ticketCableEntityList, ticketId);
 
 
-                if (ticketCableEntity != null) {
+                if (ticketEntity != null) {
 
                     log.info("ticket save : " + ticketEntity.toString());
                     ticketRepository.save(ticketEntity);
@@ -71,12 +71,14 @@ public class TicketCreateService {
 
                     lowPmDataDtoList = engineLowPmDataListDto.getLowPmHistDataDtoList();
 
-                    if (lowPmDataDtoList!=null && !lowPmDataDtoList.isEmpty()) {
+                    if (lowPmDataDtoList != null && !lowPmDataDtoList.isEmpty()) {
+                        List<RoadmLowOpticalPerformanceEntity> lowOptPerfEntityList = new ArrayList<>();
                         for (OpticalPerformanceDto lowPmDataDto : lowPmDataDtoList) {
                             RoadmLowOpticalPerformanceEntity lowOptPerfEntity = optPerfStructMapper.toLowOptPerfEntity(lowPmDataDto);
                             lowOptPerfEntity.setTicketId(ticketEntity.getTicketId());
-                            lowOptPerfRepository.save(lowOptPerfEntity);
+                            lowOptPerfEntityList.add(lowOptPerfEntity);
                         }
+                        lowOptPerfRepository.saveAll(lowOptPerfEntityList);
                     }
 
 
@@ -99,7 +101,7 @@ public class TicketCreateService {
                 }
             }
         } catch (NullPointerException | PersistenceException | IndexOutOfBoundsException e) {
-            log.error("createMbaTicket error " + ExceptionUtils.getStackTrace(e));
+            log.error("createMbaTicket error " , e);
         }
     }
 

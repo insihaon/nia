@@ -240,14 +240,21 @@ export default {
         data = { normal_traffic_ratio: '0', tcp_syn_flooding_ratio: '80', land_attack_ratio: '5', ping_of_death_ratio: '5', udp_flooding_ratio: '10' }
       } else {
         const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id })
-        data = res.result[0]
-        delete data.traffic_type
+        const rawData = res.result[0]
+        // 필요한 5개 필드만 추출
+        const allowedFields = ['ping_of_death_ratio', 'udp_flooding_ratio', 'normal_traffic_ratio', 'land_attack_ratio', 'tcp_syn_flooding_ratio']
+        data = {}
+        allowedFields.forEach(field => {
+          if (rawData[field] !== undefined) {
+            data[field] = rawData[field]
+          }
+        })
       }
 
       // 1. 객체의 항목들을 { key, value } 형태의 배열로 변환하고 값(value)을 숫자로 파싱
       const allRatios = Object.entries(data).map(([key, value]) => ({
         key: key,
-        value: Number(value),
+        value: Number(value.replace('%', '')),
       }))
 
       // 2. value를 기준으로 내림차순(큰 값부터) 정렬

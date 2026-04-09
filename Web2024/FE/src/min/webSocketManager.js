@@ -171,10 +171,10 @@ class WebSocketManager {
       case 'LOGOUT':
         {
           const project = AppOptions.instance.project
-          const { untact, uid } = store.getters
+          const { rcaTicket, uid } = store.getters
           const { subuserid, privilege, sender } = json
           if (project === 'untact') {
-            if (subuserid === uid && privilege === untact.authority.privilege && sender !== this.stompClient.ws.url) {
+            if (subuserid === uid && privilege === rcaTicket.authority.privilege && sender !== this.stompClient.ws.url) {
               Vue.prototype.$alert('"동일계정 동시 로그인(다중접속)을 금지" 정책에 따라 로그아웃 됩니다.')
               await wait(5000)
               await store.dispatch('user/logout')

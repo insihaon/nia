@@ -1,11 +1,17 @@
 <template>
-  <div class="chatbot-icon-container" :style="containerStyle" @click="toggleChatbot" @mouseenter="startFollow" @mouseleave="stopFollow" @mousemove="followMouse">
+  <div
+    class="chatbot-icon-container"
+    :style="containerStyle"
+    @mousedown="onMouseDown"
+    @mouseenter="tooltipVisible = true"
+    @mouseleave="tooltipVisible = false"
+  >
     <div class="chatbot-icon">
       <span class="icon-placeholder">
         <i class="el-icon-chat-dot-square" />
       </span>
     </div>
-    <div v-if="tooltipVisible" class="chatbot-tooltip">Chatbot</div>
+    <div v-if="tooltipVisible && !isDragging" class="chatbot-tooltip">Chatbot</div>
   </div>
 </template>
 
@@ -13,16 +19,23 @@
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import constants from '@/min/constants'
 
+const DRAG_THRESHOLD = 5
+
 export default {
   mixins: [dialogOpenMixin],
 
   data() {
     return {
       tooltipVisible: false,
-      isFollowing: false,
+      isDragging: false,
+      isMouseDown: false,
       offsetX: 20,
       offsetY: window.innerHeight - 120,
       assistantIcon: constants.nia.chatbotIcon.assistantIcon,
+      startX: 0,
+      startY: 0,
+      grabOffsetX: 0,
+      grabOffsetY: 0
     }
   },
   computed: {
@@ -33,25 +46,51 @@ export default {
       }
     },
   },
+  beforeDestroy() {
+    this.cleanup()
+  },
   methods: {
     toggleChatbot() {
       this.fn_openWindow('chatbot', null, null, { height: window.innerHeight - 135 })
     },
-    startFollow() {
-      this.isFollowing = true
-      this.tooltipVisible = true
+    onMouseDown(event) {
+      event.preventDefault()
+      this.isMouseDown = true
+      this.isDragging = false
+      this.startX = event.clientX
+      this.startY = event.clientY
+      this.grabOffsetX = event.clientX - this.offsetX
+      this.grabOffsetY = event.clientY - this.offsetY
+
+      document.addEventListener('mousemove', this.onMouseMove)
+      document.addEventListener('mouseup', this.onMouseUp)
     },
-    stopFollow() {
-      this.isFollowing = false
-      this.tooltipVisible = false
+    onMouseMove(event) {
+      if (!this.isMouseDown) return
+
+      const dx = event.clientX - this.startX
+      const dy = event.clientY - this.startY
+
+      if (!this.isDragging && (dx * dx + dy * dy) < DRAG_THRESHOLD * DRAG_THRESHOLD) return
+
+      this.isDragging = true
+      this.offsetX = event.clientX - this.grabOffsetX
+      this.offsetY = event.clientY - this.grabOffsetY
     },
-    followMouse(event) {
-      if (!this.isFollowing) return
-      const iconWidth = 50
-      const iconHeight = 50
-      this.offsetX = event.clientX - iconWidth / 2
-      this.offsetY = event.clientY - iconHeight / 2
+    onMouseUp() {
+      this.isMouseDown = false
+      document.removeEventListener('mousemove', this.onMouseMove)
+      document.removeEventListener('mouseup', this.onMouseUp)
+
+      if (!this.isDragging) {
+        this.toggleChatbot()
+      }
+      this.isDragging = false
     },
+    cleanup() {
+      document.removeEventListener('mousemove', this.onMouseMove)
+      document.removeEventListener('mouseup', this.onMouseUp)
+    }
   },
 }
 </script>

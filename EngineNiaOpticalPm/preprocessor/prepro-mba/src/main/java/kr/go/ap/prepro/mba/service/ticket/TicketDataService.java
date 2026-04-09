@@ -191,7 +191,7 @@ public class TicketDataService {
                 }
             }
         } catch (NullPointerException | PersistenceException | IllegalArgumentException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("setTicketData : ",e);
         }
     }
 
@@ -233,7 +233,7 @@ public class TicketDataService {
 
 
         } catch (NullPointerException | IllegalArgumentException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("setLowSignalDataHist : ",e);
         }
         return lowOpticalPerformanceHistList;
     }
@@ -249,7 +249,7 @@ public class TicketDataService {
                     .forEach(hist -> hist.setLowSignal(true));
 
         } catch (IndexOutOfBoundsException | NullPointerException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("histLowSignalCheck : ",e);
         }
         return lowOptHistList;
     }

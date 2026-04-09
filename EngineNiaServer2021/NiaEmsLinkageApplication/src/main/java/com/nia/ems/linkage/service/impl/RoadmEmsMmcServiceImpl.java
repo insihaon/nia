@@ -1,5 +1,6 @@
 package com.nia.ems.linkage.service.impl;
 
+import com.nia.ems.linkage.amqp.MbaAiModelAmqp;
 import com.nia.ems.linkage.amqp.PerformanceToAiPrdAmqp;
 import com.nia.ems.linkage.common.LinkageCodeInfo;
 import com.nia.ems.linkage.common.UtlDateHelper;
@@ -40,6 +41,9 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     private PerformanceToAiPrdAmqp performanceToAiPrdAmqp;
 
     @Autowired
+    private MbaAiModelAmqp mbaAiModelAmqp;
+
+    @Autowired
     private org.springframework.beans.factory.ObjectFactory<RoadmEmsTL1Client> roadmEmsTL1ClientObjectFactory;
 
     @Autowired
@@ -49,7 +53,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     private RoadmEmsTL1Client roadmEmsTL1Client;
 
     @Override
-    public void roadmSipcMMC () {
+    public void roadmSipcMMC() {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmSipcMMC <=====");
 
         try {
@@ -63,7 +67,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                                 String mmc = "RTRV-SIPC:" + equip.getIp() + "-SH1::::;\r\n";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             } catch (Exception e) {
-                                LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC sendCommand error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+                                LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC sendCommand error() "
+                                        + ExceptionUtils.getStackTrace(e) + "<=====");
                                 break;
                             }
                         }
@@ -77,7 +82,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             strHashMap.put("key", "emsSipcKey");
                             commonMapper.updateLinkageYdKey(strHashMap);
                         } catch (Exception e) {
-                            LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC logout error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+                            LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC logout error() "
+                                    + ExceptionUtils.getStackTrace(e) + "<=====");
                         }
                     }
                 } else {
@@ -91,7 +97,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
             }
-            LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error(
+                    "=====> [RoadmEmsMmcService] roadmSipcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
@@ -102,15 +109,15 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void roadmPmMMC () {
+    public void roadmPmMMC() {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC <=====");
         Boolean isUpdateOk = true;
 
         try {
-            Thread.sleep(10*1000);
+            Thread.sleep(10 * 1000);
             long startTime = System.currentTimeMillis(); // 시작 시각
             long timeout = 10 * 60 * 1000; // 8분 = 480000ms
-            while(roadmEmsTL1Client.isConnected()){
+            while (roadmEmsTL1Client.isConnected()) {
                 long elapsed = System.currentTimeMillis() - startTime;
                 if (elapsed > timeout) {
                     LOGGER.error("=====> [RoadmEmsMmcService] roadmPmMMC 10분 경과, 전 작업이 너무 걸리므로 전 단계 연결 종료 후 실행 <=====");
@@ -119,7 +126,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
                 Thread.sleep(1000); // 과도한 CPU 사용 방지
             }
-            Thread.sleep(10*1000);
+            Thread.sleep(10 * 1000);
 
             List<EquipSipcVo> equipSipcVoList = equipmentMapper.selectEquipSipcList();
 
@@ -130,7 +137,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for (EquipSipcVo equipSipc : equipSipcVoList) {
                         try {
                             if (roadmEmsTL1Client.isConnected()) {
-                                String mmc = "RTRV-PM:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName() + "::::SIGNAL=AMPPWR,TYPE=15M,INTERVAL=CURR;\r\n";
+                                String mmc = "RTRV-PM:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName()
+                                        + "::::SIGNAL=AMPPWR,TYPE=15M,INTERVAL=CURR;\r\n";
 
                                 try {
                                     roadmEmsTL1Client.sendCommand(mmc, false);
@@ -150,7 +158,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             isUpdateOk = false;
                             break;
                         }
-//                        Thread.sleep(1500);
+                        // Thread.sleep(1500);
                     }
 
                     if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
@@ -166,6 +174,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
                         if (isUpdateOk) {
                             performanceToAiPrdAmqp.sendMessageCmd(getOcrTime() + "");
+                            mbaAiModelAmqp.sendMessageCmd(getOcrTime() + "");
+                            LOGGER.info("=====> Pm Queue Send Success <=====");
                         }
                     }
                 } else {
@@ -179,7 +189,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
             }
-            LOGGER.error("=====> [RoadmEmsMmcService] roadmPmMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error(
+                    "=====> [RoadmEmsMmcService] roadmPmMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
@@ -190,7 +201,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void roadmNetWorkMmc () {
+    public void roadmNetWorkMmc() {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmNetWorkMmc <=====");
         List<EquipVo> equipVoList;
         String mmc = null;
@@ -244,7 +255,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
             }
-            LOGGER.error("=====> [RoadmEmsMmcService] roadmNetWorkMmc error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error("=====> [RoadmEmsMmcService] roadmNetWorkMmc error() " + ExceptionUtils.getStackTrace(e)
+                    + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
@@ -253,7 +265,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void roadmAlarmMMC () {
+    public void roadmAlarmMMC() {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmAlarmMMC <=====");
         List<EquipSipcVo> equipSipcVoList;
         String mmc = null;
@@ -268,7 +280,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 if (roadmEmsTL1Client.login("D")) {
                     for (EquipSipcVo equipSipc : equipSipcVoList) {
                         if (roadmEmsTL1Client.isConnected()) {
-                            mmc = "RTRV-ALM:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName() + "::123;\r\n";
+                            mmc = "RTRV-ALM:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName()
+                                    + "::123;\r\n";
 
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
@@ -291,7 +304,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     roadmEmsTL1Client.logout();
                 }
             }
-            LOGGER.error("=====> [RoadmEmsMmcService] roadmAlarmMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error(
+                    "=====> [RoadmEmsMmcService] roadmAlarmMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 if (roadmEmsTL1Client.isConnected()) {
@@ -302,7 +316,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void roadmSlotMMC () {
+    public void roadmSlotMMC() {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmSlotMMC <=====");
         List<EquipSipcVo> equipSipcVoList;
         String mmc = null;
@@ -317,7 +331,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 if (roadmEmsTL1Client.login("D")) {
                     for (EquipSipcVo equipSipc : equipSipcVoList) {
                         if (roadmEmsTL1Client.isConnected()) {
-                            mmc = "RTRV-SLOT:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName() + "::123;\r\n";
+                            mmc = "RTRV-SLOT:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName()
+                                    + "::123;\r\n";
 
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
@@ -342,7 +357,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     roadmEmsTL1Client.logout();
                 }
             }
-            LOGGER.error("=====> [RoadmEmsMmcService] roadmSlotMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error(
+                    "=====> [RoadmEmsMmcService] roadmSlotMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 if (roadmEmsTL1Client.isConnected()) {
@@ -353,7 +369,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void createRoadmUniTopology () {
+    public void createRoadmUniTopology() {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmOpcMMC <=====");
         List<EquipSipcVo> equipSipcVoList;
         String mmc = null;
@@ -371,7 +387,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for (EquipSipcVo equipSipc : equipSipcVoList) {
                         if (equipSipc.getSysname().startsWith("192")) {
                             if (roadmEmsTL1Client.isConnected()) {
-                                mmc = "RTRV-OPC:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName() + "::123;\r\n";
+                                mmc = "RTRV-OPC:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName()
+                                        + "::123;\r\n";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             }
                         }
@@ -405,7 +422,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     roadmEmsTL1Client.logout();
                 }
             }
-            LOGGER.error("=====> [RoadmEmsMmcService] roadmOpcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error(
+                    "=====> [RoadmEmsMmcService] roadmOpcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 if (roadmEmsTL1Client.isConnected()) {
@@ -416,7 +434,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void getSystemList () {
+    public void getSystemList() {
         String mmc = null;
         RoadmEmsTL1Client roadmEmsTL1Client = null;
 
@@ -442,7 +460,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 LOGGER.info("=====> [RoadmEmsMmcService] getSystemList login fail <=====");
             }
         } catch (Exception e) {
-            LOGGER.error("=====> [RoadmEmsMmcService] getSystemList error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error(
+                    "=====> [RoadmEmsMmcService] getSystemList error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         } finally {
             if (roadmEmsTL1Client != null) {
                 if (roadmEmsTL1Client.isConnected()) {
@@ -453,7 +472,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
     @Override
-    public void updateSystemInfo () {
+    public void updateSystemInfo() {
         String mmc = null;
         ArrayList<String> tidList;
         ArrayList<EquipInfoVo> equipInfoList;
@@ -498,7 +517,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("=====> [RoadmEmsMmcService] updateSystemInfo error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+            LOGGER.error("=====> [RoadmEmsMmcService] updateSystemInfo error() " + ExceptionUtils.getStackTrace(e)
+                    + "<=====");
             equipmentMapper.deleteEquipMstYd();
         } finally {
             if (roadmEmsTL1Client != null) {
@@ -509,20 +529,27 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
         }
     }
 
-    private Timestamp getOcrTime(){
+    private Timestamp getOcrTime() {
         Timestamp ocrTime = null;
         String yyyyMMddHH = (UtlDateHelper.getCurrentDateTime() + "").substring(0, 14);
 
-        if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
+        if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00").getTime() <= UtlDateHelper.getCurrentDateTime()
+                .getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() > UtlDateHelper.getCurrentDateTime()
+                        .getTime()) {
             ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00");
-        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
+        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() <= UtlDateHelper.getCurrentDateTime()
+                .getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() > UtlDateHelper.getCurrentDateTime()
+                        .getTime()) {
             ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00");
-        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
+        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() <= UtlDateHelper.getCurrentDateTime()
+                .getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() > UtlDateHelper.getCurrentDateTime()
+                        .getTime()) {
             ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00");
-        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()) {
+        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() <= UtlDateHelper.getCurrentDateTime()
+                .getTime()) {
             ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00");
         }
 
@@ -530,4 +557,3 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     }
 
 }
-

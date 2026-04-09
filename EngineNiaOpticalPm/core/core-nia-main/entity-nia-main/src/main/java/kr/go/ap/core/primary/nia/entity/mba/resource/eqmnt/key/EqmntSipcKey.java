@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class EqmntSipcKey {
     @Column(name = "tid")
     private String tid;
-    @Column(name = "sysname")
+    @Column(name = "system_name")
     private String systemName;
 }

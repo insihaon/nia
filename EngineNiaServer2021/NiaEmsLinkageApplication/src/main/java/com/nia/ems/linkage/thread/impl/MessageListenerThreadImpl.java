@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Queue;
 
-
 @Service("MessageListenerThread")
 public class MessageListenerThreadImpl implements NiaEmsLinkageThread {
 	private final static Logger LOGGER = Logger.getLogger(MessageListenerThreadImpl.class);
 
-    @Autowired
+	@Autowired
 	private DataShareBean dataShareBean;
 
 	@Override
@@ -28,39 +27,52 @@ public class MessageListenerThreadImpl implements NiaEmsLinkageThread {
 
 				sendMsg();
 				try {
-                    Thread.sleep(50);
-                }catch (InterruptedException e){
-                    LOGGER.error("=====> [MessageListenerThreadImpl] thread run() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					LOGGER.error("=====> [MessageListenerThreadImpl] thread run() " + ExceptionUtils.getStackTrace(e)
+							+ "<=====");
+				}
 			}
-		}catch( Exception e ) {
-			LOGGER.error("=====> [MessageListenerThreadImpl] run error : "+ExceptionUtils.getStackTrace(e)+" <=====");
+		} catch (Exception e) {
+			LOGGER.error(
+					"=====> [MessageListenerThreadImpl] run error : " + ExceptionUtils.getStackTrace(e) + " <=====");
 		}
 	}
 
-	public void sendMsg(){
+	private <T> void transferMessage(Queue<T> src, Queue<T> dest) {
+		if (src != null && dest != null) {
+			T data = src.poll();
+			if (data != null) {
+				dest.offer(data);
+			}
+		}
+	}
+
+	public void sendMsg() {
 		try {
-			if(!((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE)).isEmpty()){
-//				LOGGER.info("=====> [MessageListenerThreadImpl] DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE " + (Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE) +" <=====");
+			// 과거코드
+			// if(!((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_PERFORMANCE_MSG_QUE)).isEmpty()){
+			// ((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_PERFORMANCE_QUE))
+			// .offer(((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_PERFORMANCE_MSG_QUE)).poll());
+			// }
 
-				((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_QUE))
-						.offer(((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE)).poll());
-			}
+			// 1. ROADM ALARM 메시지 처리
+			Queue<StringBuffer> alarmMsgQue = (Queue<StringBuffer>) dataShareBean
+					.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE);
+			Queue<StringBuffer> alarmQue = (Queue<StringBuffer>) dataShareBean
+					.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_QUE);
 
-//			if(!((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_PERFORMANCE_MSG_QUE)).isEmpty()){
-//				((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_PERFORMANCE_QUE))
-//						.offer(((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_PERFORMANCE_MSG_QUE)).poll());
-//			}
+			// 2. MMC 메시지 처리
+			Queue<String> mmcMsgQue = (Queue<String>) dataShareBean
+					.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE);
+			Queue<String> mmcQue = (Queue<String>) dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE);
 
-
-			if(!((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).isEmpty()){
-//				LOGGER.info("=====> [MessageListenerThreadImpl] DATA_SHARE_NAME_EMS_MMC_MSG_QUE " + (Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE) +" <=====");
-
-				((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE))
-						.offer(((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).poll());
-			}
-		}catch (Exception e){
-			LOGGER.error("=====> [MessageListenerThreadImpl] sendMsg error : "+ExceptionUtils.getStackTrace(e)+" <=====");
+			// 사용 시
+			transferMessage(alarmMsgQue, alarmQue);
+			transferMessage(mmcMsgQue, mmcQue);
+		} catch (Exception e) {
+			LOGGER.error("=====> [MessageListenerThreadImpl] sendMsg error : " + ExceptionUtils.getStackTrace(e)
+					+ " <=====");
 		}
 	}
 }

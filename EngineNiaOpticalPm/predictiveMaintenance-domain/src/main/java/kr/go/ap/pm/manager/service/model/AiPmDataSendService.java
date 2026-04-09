@@ -39,7 +39,7 @@ public class AiPmDataSendService {
                 }
             }
         }catch (NullPointerException | IndexOutOfBoundsException e){
-            log.error("sendPmData : "+ ExceptionUtils.getStackTrace(e));
+            log.error("sendPmData : ", e);
         }
     }
 

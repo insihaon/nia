@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "NiaApplication",
+            "request": "launch",
+            "mainClass": "com.codej.nia.NiaApplication",
+            "projectName": "app-nia",
+            "cwd": "${workspaceFolder}/apps/Web2024/BE/app-nia",
+            "vmArgs": "-Dspring.profiles.active=devoper",
+            "console": "integratedTerminal",
+        }
+    ]
+}

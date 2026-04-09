@@ -25,11 +25,11 @@
           @dblclick.native="onDoubleClickTicket(row)"
           @click.native="openDetail(row)"
         >
-          <div class="ticket d-flex" :style="{'height': !otherOtions.fold || ticketCtrl[row.ticketno].isOpen ? '140px': '110px'}">
+          <div class="ticket d-flex" :style="{'height': !otherOptions.fold || ticketCtrl[row.ticketno].isOpen ? '140px': '110px'}">
             <div class="section-l">
               <div class="ticket-id">전표 번호 #.{{ row.ticketno }}</div>
               <div class="alarm-title">{{ row.reason }} </div>
-              <div :class="{'d-none': otherOtions.fold && !ticketCtrl[row.ticketno].isOpen}">
+              <div :class="{'d-none': otherOptions.fold && !ticketCtrl[row.ticketno].isOpen}">
                 <span>경보 생성 날짜 :{{ getFormatterTime(row.issue_date) }}</span>
                 <span>경보 마감 날짜 :{{ row.clear_date ? getFormatterTime(row.clear_date): '' }}</span>
               </div>
@@ -81,39 +81,27 @@
     </div>
     <div style="width: calc(100% - 600px)" class="h-100 p-2">
       <div class="info-filter-container" style="height: 45px">
-        <el-radio-group v-model="topology_value">
+        <el-radio-group v-model="topologyValue">
           <el-radio-button label="rx_tx">Rx / Tx</el-radio-button>
           <el-radio-button label="span_gain">Span Loss / Node Gain</el-radio-button>
           <el-radio-button label="ntd">Node Total Deviation</el-radio-button>
         </el-radio-group>
       </div>
       <div class="trunkName">{{ selectedTicket.trunk_name ? '캐리어명: ' + selectedTicket.trunk_name : '' }}</div>
-      <splitpanes class="default-theme" horizontal style="height: calc(100% - 45px);">
-        <pane size="250" max-size="400">
-          <Comp2DTopology
-            ref="topology2d"
-            class="h-100"
-            :ticket="selectedTicket"
-            :node-info-option="topology_value"
-            @loadList="loadList"
-            @selectedTopologyItem="onChangeSelectedTopologyItem"
-          />
-        </pane>
-        <pane size="150" max-size="400">
-          <el-tabs class="border-card rca-alarm-tab h-100">
-            <el-tab-pane class="h-100">
-              <span slot="label"><i class="el-icon-document mr-1 ml-1" />영향회선 리스트</span>
-              <comp-ag-grid ref="influenceGrid" v-model="influenceGridTable" style="height: calc(100% - 30px);" />
-              <div class="footer">
-                <el-col class="total-count fr">
-                  TOTAL: <span style="color: #f37e7e;">{{ influencecircuitList.length }}</span> 개
-                </el-col>
-                <excel-btn class="fr mr-2" style="margin-top: 2px;" @click.native="exportExcel('influenceGrid')" />
-              </div>
-            </el-tab-pane>
-          </el-tabs>
-        </pane>
-      </splitpanes>
+      <div style="position: relative; height: calc(100% - 85px);">
+        <Comp2DTopology
+          ref="topology2d"
+          style="height: 100% !important;"
+          :ticket="selectedTicket"
+          :node-info-option="topologyValue"
+          @loadList="loadList"
+          @selectedTopologyItem="onChangeSelectedTopologyItem"
+        />
+        <div v-if="!selectedTicket.ticketno" class="topology-empty-overlay">
+          <i class="el-icon-connection" />
+          <p>전표를 더블클릭하면 토폴로지가 표시됩니다.</p>
+        </div>
+      </div>
       <ModalPredictiveReviewOpinion ref="modalPredictiveReviewOpinion" :fullscreen="isViewport('<', 'sm')" />
     </div>
   </div>
@@ -123,12 +111,8 @@
 import Vue from 'vue'
 import { Base } from '@/min/Base.min.js'
 import { apiRcaRequest } from '@/api/nia'
-import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import Comp2DTopology from './component/Map2D.vue'
-import ExcelBtn from '@/views-nia/components/CompBottomExcelBtn'
 import moment from 'moment'
-import 'splitpanes/dist/splitpanes.css'
-import { Splitpanes, Pane } from 'splitpanes'
 import { getMbaTimeStamp } from '@/views-nia/js/common-function'
 import ModalPredictiveReviewOpinion from '@/views-nia/pages/PredictiveMaintenance/modal/ModalPredictiveReviewOpinion'
 
@@ -136,7 +120,7 @@ const routeName = 'PredictiveMaintenanceTicket'
 
 export default {
   name: routeName,
-  components: { Comp2DTopology, CompAgGrid, ExcelBtn, Splitpanes, Pane, ModalPredictiveReviewOpinion },
+  components: { Comp2DTopology, ModalPredictiveReviewOpinion },
   extends: Base,
   data() {
     return {
@@ -147,38 +131,19 @@ export default {
       clickedLink: null,
       isShowClearTicket: false,
       isExceptOnlyRoadm: false,
-      otherOtions: Vue.observable({}),
+      otherOptions: Vue.observable({}),
       ticketCtrl: {},
       pmmTicketList: [],
       userReadList: {},
-      influencecircuitList: [],
       selectedTicket: {},
       mapClickedData: null,
-      topology_value: 'rx_tx'
+      topologyValue: 'rx_tx'
     }
   },
   computed: {
-    influenceGridTable() {
-      const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 25 }
-      const columns = [
-        { type: '', prop: 'transcircuitname', name: '전용회선명', width: 200 },
-        { type: '', prop: 'llnum', name: '전용회선번호', width: 180 },
-        { type: '', prop: 'custname', name: '고객명', width: 250 },
-        { type: '', prop: 'svcmain', name: '서비스 대분류', width: 120 },
-        { type: '', prop: 'svcsub', name: '서비스 소분류', width: 120 },
-        { type: '', prop: 'svcnet', name: '서비스망 종류', width: 120 },
-        { type: '', prop: 'mgmtofficea', name: 'A측 관리국소', width: 100 },
-        { type: '', prop: 'instlocationa', name: 'A측 설치국소', width: 250 },
-        { type: '', prop: 'instaddra', name: 'A측 설치위치', width: 250 },
-        { type: '', prop: 'mgmtofficez', name: 'Z측 관리국소', width: 100 },
-        { type: '', prop: 'instlocationz', name: 'Z측 설치국소', width: 250 },
-        { type: '', prop: 'instaddrz', name: 'Z측 설치위치', width: 250 }
-      ]
-      return { options, columns, data: this.influencecircuitList || [] }
-    },
     getTicketList() {
-      const searchText = this.untact.fullFilterText
-      let list = this._cloneDeep(this.untact.pmmTicketList?.rows || this.pmmTicketList || [])
+      const searchText = this.rcaTicket.fullFilterText
+      let list = this._cloneDeep(this.rcaTicket.pmmTicketList?.rows || this.pmmTicketList || [])
 
       if (this.isShowClearTicket) {
         list = list.filter(row => row.clear_date)
@@ -191,7 +156,6 @@ export default {
         let notOneHop = true
 
         if (this.isShowClearTicket) clear = row.clear_date
-
         if (this.isExceptOnlyRoadm) notOneHop = row.roadm_cnt > 2
 
         return clear && notOneHop && JSON.stringify(row).includes(searchText)
@@ -212,7 +176,7 @@ export default {
         this.openLoading(target, { background: '#dadddf' })
         const res = await apiRcaRequest('SELECT_TICKET_PMM_LIST')
         this.pmmTicketList = res?.result || []
-        this.$store.dispatch('untact/insertTicketPmmList', this.pmmTicketList)
+        this.$store.dispatch('rcaTicket/insertTicketPmmList', this.pmmTicketList)
         this.initTicketCtrl()
       } catch (error) {
         this.error(error)
@@ -243,7 +207,7 @@ export default {
         // const res = await apiRcaRequest('SELECT_PMM_PRECEDING_NODE_LIST', { TICKETNO: ticket.ticketno, DIRECTION: ticket.direction })
         const timeStamp = getMbaTimeStamp()
         await apiRcaRequest('SELECT_PMM_TOPOLOGY_LIST', { TRUNK_NAME: ticket.trunk_name || '', DIRECTION: ticket.direction || '', TIME_STAMP: timeStamp }).then(async(result) => {
-          nodeList = result?.data || []
+          nodeList = result?.result || []
         })
 
         if (ticket.direction === 'UP') {
@@ -276,40 +240,26 @@ export default {
     },
     onDoubleClickTicket(row) {
       this.selectedTicket = row
-      this.topology_value = 'rx_tx'
+      this.topologyValue = 'rx_tx'
     },
     onChangeSelectedTopologyItem(e) {
       this.mapClickedData = e
       if (e.target_type !== 'node') {
         return
       }
-      this.openNewTab({ sysname: e.d.device_name, direction: e.d.direction })
+      this.openNewTab({ sysname: e.d.sysname, direction: e.d.direction })
     },
     openNewTab(param) {
-      // open url 파라미터 전달
-      const { sysname, direction } = param
-      const url = `${window.location.origin}/#/pmm/chart`
-      var windowFeatures = 'width=600,height=400,toolbar=no,location=no,menubar=no,scrollbars=yes,resizable=yes'
-      window.sessionStorage.setItem('pmmchart', JSON.stringify({ viewingPeriod: '1day', sysname, direction, trunk_name: this.selectedTicket.trunk_name }))
-      const win = window.open(url, '_blank', windowFeatures)
-      win?.focus()
+      // // open url 파라미터 전달
+      // const { sysname, direction } = param
+      // const url = `${window.location.origin}/#/pmm/chart`
+      // var windowFeatures = 'width=600,height=400,toolbar=no,location=no,menubar=no,scrollbars=yes,resizable=yes'
+      // window.sessionStorage.setItem('pmmchart', JSON.stringify({ viewingPeriod: '1day', sysname, direction, trunk_name: this.selectedTicket.trunk_name }))
+      // const win = window.open(url, '_blank', windowFeatures)
+      // win?.focus()
     },
-    loadList(topologyData) {
-      this.loadInfluencecircuitList(topologyData)
-    },
-    async loadInfluencecircuitList(topologyData) {
-      const ticket = this.selectedTicket
-
-      if (!ticket.ticketno) {
-        this.influencecircuitList = []
-        return
-      }
-      try {
-        const res = await apiRcaRequest('SELECT_MBA_PMM_INFLUENCECIRCUIT_LIST', { TICKET_ID: ticket.ticketno, TICKET_TYPE: 'PM' })
-        this.influencecircuitList = res?.result ?? []
-      } catch (error) {
-        this.error(error)
-      }
+    loadList() {
+      // 토폴로지 데이터 로드 완료 콜백
     },
     async loadRepeaterSlot() {
       const ticket = this.selectedTicket
@@ -332,7 +282,7 @@ export default {
       }
       if (ticket?.new_list?.length > 0 && !this.readOpinionByUser[ticket.ticketno]) {
         return true
-      } else if (ticket?.new_list?.filter(x => !this.readOpinionByUser[ticket.ticketno].readList.includes(x)).length > 0 || this.moment(ticket.last_handling_time).isAfter(this.readOpinionByUser[ticket.ticketno]?.readTime)) {
+      } else if (ticket?.new_list?.filter(x => !this.readOpinionByUser[ticket.ticketno]?.readList?.includes(x))?.length > 0 || this.moment(ticket.last_handling_time).isAfter(this.readOpinionByUser[ticket.ticketno]?.readTime)) {
         return true
       } else {
         return false
@@ -361,7 +311,7 @@ export default {
     exportExcel(tableRef) {
       const ref = this.$refs
       const timeFormat = this.toStringTime(new Date(), 'YYMMDDHHmmss')
-      const title = tableRef === 'alarmGrid' ? '알람 리스트' : '영향회선 리스트'
+      const title = '알람 리스트'
       ref[tableRef].exportCsv(`${title}_${timeFormat}`)
     },
     getFormatStatus(status) {
@@ -404,7 +354,7 @@ export default {
 </script>
 
 <style lang="scss">
-.PmmTicket {
+.PredictiveMaintenanceTicket {
   font-family: 'NanumSquare';
   transform: rotate(-0.03deg);
   background-color: rgb(246, 246, 246);
@@ -509,6 +459,30 @@ export default {
   right: 33px;
   top: 70px;
   font-size: 18px;
+}
+.topology-empty-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(3, 44, 55, 0.85);
+  border-radius: 17px 17px 0 0;
+  z-index: 1;
+  color: #7b9aa5;
+  i {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  p {
+    font-size: 15px;
+    font-weight: 600;
+      letter-spacing: 0.5px;
+    }
 }
 .ticket-panel {
   padding: 20px;

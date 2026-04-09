@@ -64,9 +64,9 @@ public class TicketCaseOneService {
                 }
             }
         } catch (NullPointerException | IndexOutOfBoundsException | PersistenceException e) {
-            log.error("ticketCaseOneHdlProcessor : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketCaseOneHdlProcessor : " , e);
         } catch (Exception e) {
-            log.error("ticketCaseOneHdlProcessor : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketCaseOneHdlProcessor : " , e);
         }
     }
 
@@ -93,9 +93,9 @@ public class TicketCaseOneService {
                 }
             }
         } catch (NullPointerException | IndexOutOfBoundsException | PersistenceException e) {
-            log.error("ticketSaveCheck : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketSaveCheck : " , e);
         } catch (Exception e) {
-            log.error("ticketSaveCheck : " + ExceptionUtils.getStackTrace(e));
+            log.error("ticketSaveCheck : " , e);
         }
         return newTicket;
     }
@@ -115,9 +115,9 @@ public class TicketCaseOneService {
                 pmTicketRepository.save(pmTicketEntity);
             }
         } catch (NullPointerException | IndexOutOfBoundsException | PersistenceException e) {
-            log.error("clearCheck : " + ExceptionUtils.getStackTrace(e));
+            log.error("clearCheck : " , e);
         } catch (Exception e) {
-            log.error("clearCheck : " + ExceptionUtils.getStackTrace(e));
+            log.error("clearCheck : " , e);
         }
     }
 
@@ -136,9 +136,9 @@ public class TicketCaseOneService {
                     .targetSysname(performanceDailyDto.getSysname())
                     .build();
         } catch (NullPointerException | IndexOutOfBoundsException e) {
-            log.error("createTicket : " + ExceptionUtils.getStackTrace(e));
+            log.error("createTicket : " , e);
         } catch (Exception e) {
-            log.error("createTicket : " + ExceptionUtils.getStackTrace(e));
+            log.error("createTicket : " , e);
         }
         return pmTicketEntity;
     }

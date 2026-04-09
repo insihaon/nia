@@ -938,13 +938,12 @@ export function apiRcaRequest(sqlId, params = {}, url = '/selectList') {
   })
 }
 
-export function apiUserProcess(params = {}, type = 'mba') {
-  // untact code
+export function apiUserProcess(sqlId, params = {}) {
   return http({
     url: '/modify',
     method: 'post',
     filePath: filePath,
-    sqlId: `USER_PROCESS_${type.toUpperCase()}`,
+    sqlId: sqlId,
     data: params
   })
 }

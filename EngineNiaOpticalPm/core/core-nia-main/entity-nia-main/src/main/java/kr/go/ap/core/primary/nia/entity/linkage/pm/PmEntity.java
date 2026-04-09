@@ -41,11 +41,10 @@ public class PmEntity {
     private double txMax;
     @Column(name="txave")
     private double txAve;
-    @Column(name="ocrtime")
-    private Timestamp ocrtime;
+
 
     public void setOcrtime(Timestamp ocrtime) {
-        this.ocrtime = ocrtime;
+        this.pmKey.setOcrtime(ocrtime);
     }
 
 }

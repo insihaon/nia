@@ -7,7 +7,7 @@ te<template>
         </div>
         <div class="h-100 d-flex items-center function-panel">
           <div
-            v-for="optionItems in otherOtionsItem"
+            v-for="optionItems in otherOptionsItem"
             :key="optionItems.key"
             class="h-100 d-flex items-center"
             @click.stop="handleClickOtherOption(optionItems.key)"
@@ -35,12 +35,12 @@ te<template>
           @dblclick.native="onDoubleClickTicket(row)"
           @click.native="openDetail(row)"
         >
-          <div class="ticket d-flex" :style="{'height': !otherOtions.fold || ticketCtrl[row.ticket_id].isOpen ? '175px': '105px'}">
+          <div class="ticket d-flex" :style="{'height': !otherOptions.fold || ticketCtrl[row.ticket_id].isOpen ? '175px': '105px'}">
             <div class="section-l" :style="{'background-color': getBgColorByStatus(row)}">
               <div>전표 번호 #.{{ row.ticket_id }}</div>
               <div class="alarm-title">순단장애</div>
               <div>{{ getRootCauseDomain(row.root_cause_domain) }}</div>
-              <div :class="{'d-none': otherOtions.fold && !ticketCtrl[row.ticket_id].isOpen}">
+              <div :class="{'d-none': otherOptions.fold && !ticketCtrl[row.ticket_id].isOpen}">
                 <span>생성 :{{ getFormatterTime(row.generation_time) }}</span>
                 <span v-if="getFormatterTime(row.generation_time)!== getFormatterTime(row.update_time)" v-show="row.update_time">갱신 :{{ getFormatterTime(row.update_time) }}</span>
                 <span v-show="row.status !== 'INIT'">{{ getFormatStatus(row.status) }} :{{ getFormatterTime(row.handling_time) }}</span>
@@ -59,8 +59,8 @@ te<template>
                 </div>
               </div>
               <div class="middle d-flex items-center w-100 mt-2">
-                <div style="margin-left: 8px;color:red;"><v-icon name="alert-triangle" class="mr-1" />장애영향케이블</div>
-                <div>영향서비스<span style="padding-left: 5px;"> {{ row.influencecircuit_count || 0 }}</span></div>
+                <div style="margin-left: 8px;color:red;width:130px;white-space: nowrap;"><v-icon name="alert-triangle" class="mr-1" />장애영향케이블</div>
+                <div>영향장비</div>
                 <div style="border-right: solid 1px #d4d7d9;">영향장비 <span>{{ row.equip_cnt }}</span></div>
               </div>
               <div class="bottom d-flex">
@@ -105,56 +105,36 @@ te<template>
         </el-card>
       </div>
     </div>
-    <div style="width: calc(100% - 800px)" class="h-100 p-2">
+    <div style="width: calc(100% - 800px); height: calc(100% - 25px)" class="p-2">
       <div class="trunkName">{{ selectedTicket.trunk_name ? '캐리어명: ' + selectedTicket.trunk_name : '' }}</div>
       <splitpanes class="default-theme h-100" horizontal>
         <pane size="250" max-size="400">
           <Comp2DTopology ref="topology2d" class="h-100" :ticket="selectedTicket" @loadList="loadList" @selectedTopologyItem="onChangeSelectedTopologyItem" />
         </pane>
         <pane size="150" max-size="400">
-          <el-tabs class="border-card rca-alarm-tab h-100">
-            <el-tab-pane class="h-100">
-              <span slot="label"><i class="el-icon-document mr-1 ml-1" />알람 리스트</span>
-              <comp-ag-grid ref="alarmGrid" v-model="alarmGridTable" style="height: calc(100% - 30px);" />
-              <div class="footer">
-                <el-col class="alarmLevelInfo" style="width: 350px;">
-                  <el-col class="alarmLevelInfoItem" style="width: 70px;">
-                    <div style="background-color: #f56c6c;" /><span>Critical</span>
-                  </el-col>
-                  <el-col class="alarmLevelInfoItem">
-                    <div style="background-color: #fdb025;" /><span>Major</span>
-                  </el-col>
-                  <el-col class="alarmLevelInfoItem">
-                    <div style="background-color: #fde66b;" /><span>Minor</span>
-                  </el-col>
-                  <el-col class="alarmLevelInfoItem" style="width: 80px;">
-                    <div style="background-color: #8bd6e3;" /><span>Warning</span>
-                  </el-col>
-                  <el-col class="alarmLevelInfoItem">
-                    <div style="background-color: #8bd1375c;" /><span>Clear</span>
-                  </el-col>
-                </el-col>
-                <el-col class="total-count fr">
-                  TOTAL: <span style="color: #f37e7e;">{{ alarmGridTable.data.length }}</span> 개
-                </el-col>
-                <excel-btn class="fr mr-2" style="margin-top: 2px;" @click.native="exportExcel('alarmGrid')" />
+          <div class="h-100" style="display: flex; flex-direction: column;">
+            <div class="alarm-grid-header" style="padding: 5px 10px; font-weight: 700; font-size: 13px;">
+              <i class="el-icon-document mr-1" />알람 리스트
+            </div>
+            <comp-ag-grid ref="alarmGrid" v-model="alarmGridTable" style="flex: 1;" />
+            <div class="alarm-grid-footer">
+              <div class="alarm-level-info">
+                <span class="alarm-level-item"><span class="color-box" style="background-color: #f56c6c;" />Critical</span>
+                <span class="alarm-level-item"><span class="color-box" style="background-color: #fdb025;" />Major</span>
+                <span class="alarm-level-item"><span class="color-box" style="background-color: #fde66b;" />Minor</span>
+                <span class="alarm-level-item"><span class="color-box" style="background-color: #8bd6e3;" />Warning</span>
+                <span class="alarm-level-item"><span class="color-box" style="background-color: #8bd1375c;" />Clear</span>
               </div>
-            </el-tab-pane>
-            <el-tab-pane class="h-100">
-              <span slot="label"><i class="el-icon-document mr-1 ml-1" />영향회선 리스트</span>
-              <comp-ag-grid ref="influenceGrid" v-model="influenceGridTable" style="height: calc(100% - 30px);" />
-              <div class="footer">
-                <el-col class="total-count fr">
-                  TOTAL: <span style="color: #f37e7e;">{{ influencecircuitList.length }}</span> 개
-                </el-col>
-                <excel-btn class="fr mr-2" style="margin-top: 2px;" @click.native="exportExcel('influenceGrid')" />
+              <div class="alarm-footer-right">
+                <span>TOTAL: <b style="color: #f37e7e;">{{ alarmGridTable.data.length }}</b> 개</span>
+                <excel-btn style="margin-left: 8px;" @click.native="exportExcel('alarmGrid')" />
               </div>
-            </el-tab-pane>
-          </el-tabs>
+            </div>
+          </div>
         </pane>
       </splitpanes>
 
-      <ModalRcaProcess ref="modalProcess" />
+      <ModalRcaProcessHandling ref="ModalRcaProcessHandling" />
       <ModalRcaBatchProcessing ref="modalRcaBatchProcessing" />
       <audio id="mbaAlarm">
         <source src="assets/audio/순단장애.mp3" type="audio/mpeg">
@@ -170,18 +150,18 @@ import { apiRcaRequest } from '@/api/nia'
 import { AppOptions } from '@/class/appOptions'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import Comp2DTopology from './topology2d'
-import ModalRcaProcess from './modal/ModalRcaProcessHandling'
+import ModalRcaProcessHandling from './modal/ModalRcaProcessHandling'
 import ModalRcaBatchProcessing from './modal/ModalRcaBatchProcessing'
 import ExcelBtn from '@/views-nia/components/CompBottomExcelBtn'
 import moment from 'moment'
 import 'splitpanes/dist/splitpanes.css'
 import { Splitpanes, Pane } from 'splitpanes'
 
-const routeName = 'MbaTicket'
+const routeName = 'TransientOutageList'
 
 export default {
   name: routeName,
-  components: { ModalRcaProcess, ModalRcaBatchProcessing, Comp2DTopology, CompAgGrid, ExcelBtn, Splitpanes, Pane },
+  components: { ModalRcaProcessHandling, ModalRcaBatchProcessing, Comp2DTopology, CompAgGrid, ExcelBtn, Splitpanes, Pane },
   extends: Base,
   data() {
     return {
@@ -192,11 +172,10 @@ export default {
       clickedLink: null,
       activeNames: ['1'],
       // ticketContainerHeight: '',
-      otherOtions: Vue.observable({}),
+      otherOptions: Vue.observable({}),
       ticketCtrl: {},
       mbaTicketList: [],
       alarmList: [],
-      influencecircuitList: [],
       selectedTicket: {},
       mapClickedData: null,
       singleFilter: Vue.observable({}) /* {
@@ -206,12 +185,12 @@ export default {
     }
   },
   computed: {
-    otherOtionsItem() {
+    otherOptionsItem() {
       return [
         // { key: 'search', content: '검색옵션', class: 'settings' },
-        { key: 'bell', content: '알람 ON/OFF', class: this.otherOtions.bell ? 'bell' : 'bell-off' },
-        { key: 'pause', content: `실시간 모니터링 ${this.otherOtions.pause ? '일시정지' : '시작'}`, class: this.otherOtions.pause ? 'pause' : 'play' },
-        { key: 'fold', content: `티켓 ${this.otherOtions.fold ? '펼치기' : '접기'}`, class: this.otherOtions.fold ? 'maximize-2' : 'minimize-2' }
+        { key: 'bell', content: '알람 ON/OFF', class: this.otherOptions.bell ? 'bell' : 'bell-off' },
+        { key: 'pause', content: `실시간 모니터링 ${this.otherOptions.pause ? '일시정지' : '시작'}`, class: this.otherOptions.pause ? 'pause' : 'play' },
+        { key: 'fold', content: `티켓 ${this.otherOptions.fold ? '펼치기' : '접기'}`, class: this.otherOptions.fold ? 'maximize-2' : 'minimize-2' }
       ]
     },
     alarmGridTable() {
@@ -237,102 +216,60 @@ export default {
       ]
       return { options, columns, data: this._orderBy(this.getMbaAlarmFilter, ['end_time'], ['asc']) || [] }
     },
-    influenceGridTable() {
-      const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 25 }
-      const columns = [
-        // { type: '', prop: 'asncircuitid1', name: '영향 회선 번호', width: 150 },
-        // { type: '', prop: 'transcircuitname', name: '영향 회선명', width: 230 },
-        // { type: '', prop: 'ocaseq', name: '영향 케이블 번호', width: 150, alignItems: 'center' },
-        // { type: '', prop: 'ocaname', name: '영향 케이블명', width: 250, alignItems: 'center' },
-        // { type: '', prop: 'optcorenum', name: '영향 케이블 코어 번호', width: 150, alignItems: 'center' }
-        { type: '', prop: 'transcircuitname', name: '전용회선명', width: 150 },
-        { type: '', prop: 'llnum', name: '전용회선번호', width: 150 },
-        { type: '', prop: 'custname', name: '고객명', width: 250 },
-        { type: '', prop: 'svcmain', name: '서비스 대분류', width: 120 },
-        { type: '', prop: 'svcsub', name: '서비스 소분류', width: 120 },
-        { type: '', prop: 'svcnet', name: '서비스망 종류', width: 120 },
-        { type: '', prop: 'mgmtofficea', name: 'A측 관리국소', width: 150 },
-        { type: '', prop: 'instlocationa', name: 'A측 설치국소', width: 150 },
-        { type: '', prop: 'instaddra', name: 'A측 설치위치', width: 150 },
-        { type: '', prop: 'mgmtofficez', name: 'Z측 관리국소', width: 150 },
-        { type: '', prop: 'instlocationz', name: 'Z측 설치국소', width: 150 },
-        { type: '', prop: 'instaddrz', name: 'Z측 설치위치', width: 150 }
-      ]
-      return { options, columns, data: this.influencecircuitList || [] }
-    },
     getMbaAlarmFilter() {
       const filteredList = this._cloneDeep(this.alarmList)
       const tItem = this.mapClickedData
       if (tItem === null || tItem.target_type === 'svg') {
         return filteredList || []
       }
-      return filteredList.filter(row => {
-        let result = true
-        const EVENT_TYPE = { svg: 'svg', node: 'node', link: 'link' }
-        const PORT_INFO = { IN: 1, OUT: 4 }
-        const roadmRoute = [0, 20]
+      const EVENT_TYPE = { svg: 'svg', node: 'node', link: 'link' }
+      const roadmRoute = [0, 20]
+      const repeaterMap = this.selectedTicket.repeaterMap || {}
 
-        const monitoredInfo = row.monitored_object
-        const slot = monitoredInfo.substr(monitoredInfo.indexOf('slot=') + 5).split('/')[0]
-        let port
-        if (new RegExp('.+-1+\\(IN\\)', 'g').test(monitoredInfo)) {
-          port = PORT_INFO.IN
-        } else if (new RegExp('.+-4+\\(OUT\\)', 'g').test(monitoredInfo)) {
-          port = PORT_INFO.OUT
-        } else {
-          this.debug && console.error(`PORT 정보를 찾을 수 없음`)
+      return filteredList.filter(row => {
+        if (!row.ptpname || !row.in_out) return false
+
+        if (tItem.target_type === EVENT_TYPE.node) {
+          // 노드 클릭: 해당 장비의 알람만 표시
+          return row.sysname === tItem.d.device_name
+        } else if (tItem.target_type === EVENT_TYPE.link) {
+          // 링크 클릭: 양쪽 장비의 관련 방향 알람만 표시
+          const { source, target } = tItem.d
+          const isSourceMatch = row.sysname === source.device_name
+          const isTargetMatch = row.sysname === target.device_name
+
+          if (isSourceMatch) {
+            if (roadmRoute.includes(source.routenum)) {
+              // ROADM 시작점: 송신(OUT) 알람
+              return row.in_out === 'OUT'
+            } else {
+              // 중계기: ptpname으로 방향 판별
+              const rMap = repeaterMap[source.sysname || source.device_name]
+              if (!rMap) return true
+              // source→target 방향이면 down 포트의 알람
+              return row.ptpname === rMap.down
+            }
+          } else if (isTargetMatch) {
+            if (roadmRoute.includes(target.routenum)) {
+              // ROADM 종점: 수신(IN) 알람
+              return row.in_out === 'IN'
+            } else {
+              // 중계기: ptpname으로 방향 판별
+              const rMap = repeaterMap[target.sysname || target.device_name]
+              if (!rMap) return true
+              // target←source 방향이면 up 포트의 알람
+              return row.ptpname === rMap.up
+            }
+          }
           return false
         }
-
-        // 중계기 REPEATOR
-        // rsspuSlot 02이면 slot=3 하향, slot=16 상향
-        // rsspuSlot 17이면 slot=16 하향, slot=3 상향
-
-        // 단국장치 ROADM
-        // slot=12 시작점 , slot=14종점
-        // port=1 수신(IN) , port=4 송신(OUT)
-
-        const repeater_slot = this.selectedTicket.rsspuSlot
-        let device_name
-
-        if (!tItem || tItem.target_type === EVENT_TYPE.svg) { // svg or none click
-          return true
-        } else if (tItem.target_type === EVENT_TYPE.node) { // node click
-          const routenum = tItem.d.routenum
-          device_name = tItem.d.device_name
-
-          if (roadmRoute.includes(routenum)) { // ROADM
-            result = this.isRoadmSlot(slot, { isComparePort: false })
-          } else { // REPEATER
-            result = this.isRepeaterSlot(slot, { source: tItem.source, target: tItem.target, isCompareRoutnum: false })
-          }
-          result = result && device_name === row.sysname
-        } else if (tItem.target_type === EVENT_TYPE.link) { // link click
-          let resultSource, resultTarget
-          const { source, target } = tItem.d
-          const repeaterOptions = { source: source, target: target, isCompareRoutnum: true, repeater_slot }
-          if (roadmRoute.includes(source.routenum)) {
-            resultSource = this.isRoadmSlot(slot, { isComparePort: true, port, link_type: 'source' })
-          } else {
-            resultSource = this.isRepeaterSlot(slot, repeaterOptions) && port === PORT_INFO.OUT
-          }
-          resultSource && source.device_name === row.sysname
-          if (roadmRoute.includes(target.routenum)) {
-            resultTarget = this.isRoadmSlot(slot, { isComparePort: true, port, link_type: 'target' })
-          } else {
-            resultTarget = this.isRepeaterSlot(slot, repeaterOptions) && port === PORT_INFO.IN
-          }
-          resultSource = resultSource && source.device_name === row.sysname
-          resultTarget = resultTarget && target.device_name === row.sysname
-          result = resultSource || resultTarget
-        }
-        return result
+        return true
       })
     }
   },
   created() {
     ['bell', 'pause', 'fold'].forEach(key => {
-      this.$set(this.otherOtions, key, key !== 'fold')
+      this.$set(this.otherOptions, key, key !== 'fold')
     })
   },
   mounted() {
@@ -348,45 +285,6 @@ export default {
       }
       return result
     },
-    isRoadmSlot(slot, options) {
-      let result
-      const { isComparePort } = options
-      const PORT = { IN: 1, OUT: 4 }
-      if (!isComparePort) {
-        result = ['12', '14'].includes(slot)
-      } else {
-        const { port, link_type } = options
-        if (link_type === 'source') {
-          result = port === PORT.OUT && slot === '12'
-        } else if (link_type === 'target') {
-          result = port === PORT.IN && slot === '14'
-        }
-      }
-      return result
-    },
-    isRepeaterSlot(slot, options) {
-      let result
-      const { isCompareRoutnum } = options
-      if (!isCompareRoutnum) {
-        result = ['3', '16'].includes(slot)
-      } else {
-        let condition
-        const { source, target, repeater_slot } = options
-
-        if (source.routenum < target.routenum) { // 토폴로지 방향  상향 <-
-          condition = { '17': '16', '02': '3' }
-        } else if (source.routenum > target.routenum) { // 토폴로지 방향 하향 ->
-          condition = { '17': '3', '02': '16' }
-        }
-
-        if (['17', '02'].includes(repeater_slot)) {
-          result = slot === condition[repeater_slot.toString()]
-        } else {
-          result = false
-        }
-      }
-      return result
-    },
     subscribeEvent() {
       this.addWsEventListener(this.CONSTANTS.channels.RCA_TICKET.name, this.onReceivedMbaTicketEvent)
     },
@@ -397,27 +295,27 @@ export default {
       const { EventType } = this.CONSTANTS.channels.RCA_TICKET
       const message = JSON.parse(socketMessage.message)
 
-      if (channelName !== 'RCA_TICKET' || message.eventType !== EventType.MBA_NEW.name || !this.otherOtions.pause) return
+      if (channelName !== 'RCA_TICKET' || message.eventType !== EventType.MBA_NEW.name || !this.otherOptions.pause) return
 
-      const item = message.data[0] ?? []
+      const item = message ?? {}
       AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE MBA TICKET EVENT: ', item)
 
       const audio = document?.getElementById('mbaAlarm')
-      this.otherOtions.bell && audio?.play()
+      this.otherOptions.bell && audio?.play()
 
       this.initTicketCtrl(item)
 
       switch (message.eventType) {
         case EventType.MBA_NEW.name:
-          this.$store.dispatch('untact/insertTicketMbaList', item)
+          this.$store.dispatch('rcaTicket/insertTicketMbaList', item)
           break
         default:
           break
       }
     },
     getTicketList() {
-      const searchText = this.untact.fullFilterText
-      let list = this._cloneDeep(this.untact.mbaTicketList?.rows || this.mbaTicketList || [])
+      const searchText = this.rcaTicket.fullFilterText
+      let list = this._cloneDeep(this.rcaTicket.mbaTicketList?.rows || this.mbaTicketList || [])
       list = this._orderBy(list, ['update_time'], ['desc'])
       return list.filter(row => {
         return JSON.stringify(row).includes(searchText)
@@ -432,18 +330,18 @@ export default {
     onChangeCollapse(value) {
     },
     handleClickOtherOption(key) {
-      if (this.otherOtions[key] !== undefined) {
-        this.$set(this.otherOtions, key, !this.otherOtions[key])
-        // this.otherOtions[key] = !this.otherOtions[key]
+      if (this.otherOptions[key] !== undefined) {
+        this.$set(this.otherOptions, key, !this.otherOptions[key])
+        // this.otherOptions[key] = !this.otherOptions[key]
       }
     },
     async loadTicketList() {
       const target = ({ vue: this.$refs.ticketPanel })
       try {
         this.openLoading(target, { background: '#dadddf' })
-        const res = await apiRcaRequest('SELECT_TICKET_CUR_LIST', { IS_MBA: true, MAX_DAYS: 14 })
+        const res = await apiRcaRequest('SELECT_MBA_TICKET_CUR_LIST', { MAX_DAYS: 14 })
         this.mbaTicketList = res?.result || []
-        this.$store.dispatch('untact/insertTicketMbaList', this.mbaTicketList)
+        this.$store.dispatch('rcaTicket/insertTicketMbaList', this.mbaTicketList)
         this.initTicketCtrl()
       } catch (error) {
         this.error(error)
@@ -466,12 +364,11 @@ export default {
     loadList(topologyData) {
       this.loadRepeaterSlot()
       this.loadAlarmList()
-      this.loadInfluencecircuitList(topologyData)
     },
     async loadAzList(ticket) {
       const ticketCtrl = this._cloneDeep(this.ticketCtrl)
       try {
-        const res = await apiRcaRequest('SELECT_TICKET_ROOT_ALARM_LIST', { TICKET_TYPE: ticket.ticket_type, TICKET_ID: ticket.ticket_id, MAX_DAYS: 31 })
+        const res = await apiRcaRequest('SELECT_MBA_TICKET_ROOT_ALARM_LIST', { TICKET_ID: ticket.ticket_id })
         ticketCtrl[ticket.ticket_id].isOpen = true/* !ticketCtrl[ticket.ticket_id].isOpen */
         ticketCtrl[ticket.ticket_id].azList = res?.result ?? []
       } catch (error) {
@@ -490,24 +387,16 @@ export default {
         this.error(error)
       }
     },
-    async loadInfluencecircuitList(topologyData) {
-      const ticket = this.selectedTicket
-      if (!ticket.trunk_name) {
-        this.influencecircuitList = []
-        return
-      }
-      try {
-        const res = await apiRcaRequest('SELECT_MBA_PMM_INFLUENCECIRCUIT_LIST', { TICKET_ID: ticket.ticket_id, TICKET_TYPE: 'MBA' })
-        this.influencecircuitList = res?.result ?? []
-      } catch (error) {
-        this.error(error)
-      }
-    },
     async loadRepeaterSlot() {
       const ticket = this.selectedTicket
       try {
-        const res = await apiRcaRequest('SELECT_MBA_REPEATER_SLOT_DATA', { TRUNK_NAME: ticket.trunk_name }, '/selectOne')
-        Object.assign(this.selectedTicket, { rsspuSlot: res?.result?.rsspuslot })
+        const res = await apiRcaRequest('SELECT_MBA_REPEATER_SLOT_DATA', { TRUNK_NAME: ticket.trunk_name })
+        // 중계기 ptpname 매핑: { sysname: { up: 'SH1-S.1', down: 'SH1-S.2' } }
+        const repeaterMap = {}
+        ;(res?.result || []).forEach(r => {
+          repeaterMap[r.sysname] = { up: r.up_ptpname_bau, down: r.down_ptpname_bau }
+        })
+        Object.assign(this.selectedTicket, { repeaterMap })
       } catch (error) {
         this.error(error)
       }
@@ -546,13 +435,13 @@ export default {
         this.$refs.modalRcaBatchProcessing.open({ ticket })
       } else {
         await this.loadAzList(ticket)
-        this.$refs.modalProcess.open({ processType, ticket, systemCoreList: this.ticketCtrl[ticket.ticket_id].azList })
+        this.$refs.ModalRcaProcessHandling.open({ processType, ticket, systemCoreList: this.ticketCtrl[ticket.ticket_id].azList })
       }
     },
     exportExcel(tableRef) {
       const ref = this.$refs
       const timeFormat = this.toStringTime(new Date(), 'YYMMDDHHmmss')
-      const title = tableRef === 'alarmGrid' ? '알람 리스트' : '영향회선 리스트'
+      const title = '알람 리스트'
       ref[tableRef].exportCsv(`${title}_${timeFormat}`)
     },
     getBgColorByStatus(ticket) {
@@ -623,7 +512,7 @@ export default {
 </script>
 
 <style lang="scss">
-.MbaTicket {
+.TransientOutageList {
   font-family: 'NanumSquare';
   transform: rotate(-0.03deg);
   background-color: rgb(246, 246, 246);
@@ -655,15 +544,41 @@ export default {
     border-radius: 20px;
     margin-bottom: 10px;
   }
-  .rca-alarm-tab {
+  .alarm-grid-header {
     background: #fff;
-    border-radius: 0 0 17px 17px;
-    margin: 0px 2px;
-    .el-tabs__header {
-      margin: 0px;
+    border-bottom: 1px solid #e4e7ed;
+    flex-shrink: 0;
+  }
+  .alarm-grid-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-top: solid 1px #e4e7ed;
+    background: #fff;
+    flex-shrink: 0;
+    .alarm-level-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .alarm-level-item {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        .color-box {
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          border-radius: 2px;
+          flex-shrink: 0;
+        }
+      }
     }
-    .el-tabs__content {
-      height: calc(100% - 40px);
+    .alarm-footer-right {
+      display: flex;
+      align-items: center;
     }
   }
 }

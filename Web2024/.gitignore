@@ -19,7 +19,6 @@ FE/dist/
 FE/npm-debug.log*
 FE/yarn-debug.log*
 FE/yarn-error.log*
-FE/package-lock.json
 **/json.zip
 # FE/src/min/base.js
 # FE/src/min/global.js
@@ -58,5 +57,4 @@ build/
 .history/
 *.class
 node_modules
-package-lock.json
 logs/*
