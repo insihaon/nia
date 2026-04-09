@@ -1,0 +1,131 @@
+server:
+  port: 8096
+
+logging:
+  level:
+    root: INFO
+---
+spring:
+  profiles: dev
+  logging:
+    config: classpath:context/logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 192.168.0.87  #개발
+    port: 6786
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaPerformanceExchange: nia.exchangeNiaPerformanceDirectly
+    niaPerformanceQueue: nia.NiaPerformanceIndexDirectly
+    niaPerformanceRoutingKey: NiaPerformanceIndexDirectly
+
+    niaPerformanceEngineExchange: nia.exchangeNiaPerformanceEngineDirectly
+    niaPerformanceEngineQueue: nia.NiaPerformanceEngineIndexDirectly
+    niaPerformanceEngineRoutingKey: NiaPerformanceEngineIndexDirectly
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://192.168.0.87:5433/niadb  #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: real
+  logging:
+    config: classpath:context/logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.191.47
+    port: 6786
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaPerformanceExchange: nia.exchangeNiaPerformanceDirectly
+    niaPerformanceQueue: nia.NiaPerformanceIndexDirectly
+    niaPerformanceRoutingKey: NiaPerformanceIndexDirectly
+
+    niaPerformanceEngineExchange: nia.exchangeNiaPerformanceEngineDirectly
+    niaPerformanceEngineQueue: nia.NiaPerformanceEngineIndexDirectly
+    niaPerformanceEngineRoutingKey: NiaPerformanceEngineIndexDirectly
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://116.89.191.47:6544/niadb
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: codej
+  logging:
+    config: classpath:context/logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 10.81.192.18
+    port: 5672
+    username: rcaadmin
+    password: rcaadmin12#$
+
+    niaPerformanceExchange: nia.exchangeNiaPerformanceDirectly
+    niaPerformanceQueue: nia.NiaPerformanceIndexDirectly
+    niaPerformanceRoutingKey: NiaPerformanceIndexDirectly
+
+    niaPerformanceEngineExchange: nia.exchangeNiaPerformanceEngineDirectly
+    niaPerformanceEngineQueue: nia.NiaPerformanceEngineIndexDirectly
+    niaPerformanceEngineRoutingKey: NiaPerformanceEngineIndexDirectly
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://10.81.192.18:5433/niadb #운영
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true

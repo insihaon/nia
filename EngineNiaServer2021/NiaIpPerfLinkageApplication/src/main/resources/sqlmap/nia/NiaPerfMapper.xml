@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ip.perf.mapper.nia.NiaPerfMapper">
+    <select id="selectPerfYdKey" resultType="string">
+        SELECT VALUE_NAME FROM NIA.TB_LINKAGE_SEQ WHERE KEY_NAME = #{keyName}
+    </select>
+
+    <insert id="insertPerf" parameterType="java.util.HashMap">
+        <if test="perfVoList.size != 0">
+            <foreach collection="perfVoList" item="item" separator=";">
+                INSERT INTO IP_YD.XE_CVNMS_PERF_IF (
+                STRIFID, STRRESID, STRTYPEMIN, INTTIMESTAMP, INTYEAR,
+                INTMONTH, INTDAY, INTHOUR, INTMIN, INTWEEK,
+                INTBANDWIDTH, FLTBPSIN, FLTBPSOUT, FLTPPSIN, FLTPPSOUT,
+                FLTERRORIN, FLTERROROUT, FLTDISCARDIN, FLTDISCARDOUT, FLTUNKNOWN,
+                FLTUSAGE, FLHCINOCTETS, FLHCOUTOCTETS, FLHCINUCASTPKTS, FLHCOUTUCASTPKTS,
+                FLHCINMULTICASTPKTS, FLHCOUTMULTICASTPKTS, FLHCINBROADCASTPKTS, FLHCOUTBROADCASTPKTS, FLTBPSINMAX,
+                FLTBPSOUTMAX, FLTPPSINMAX, FLTPPSOUTMAX, FLTERRORINMAX, FLTERROROUTMAX,
+                FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX, INSERT_TIME
+                )
+                SELECT
+                #{item.strIfID}, #{item.strResID}, #{item.strTypeMin}, #{item.intTimestamp}, #{item.intYear},
+                #{item.intMonth}, #{item.intDay}, #{item.intHour}, #{item.intMin}, #{item.intWeek},
+                #{item.intBandwidth}, #{item.flHCInOctets}, #{item.flHCOutOctets}, #{item.fltPPSIn}, #{item.fltPPSOut},
+                #{item.fltErrorIn}, #{item.fltErrorOut}, #{item.fltDiscardIn}, #{item.fltDiscardOut}, #{item.fltUnknown},
+                #{item.fltUsage}, #{item.flHCInOctets}, #{item.flHCOutOctets}, #{item.flHCInUcastPkts}, #{item.flHCOutUcastPkts},
+                #{item.flHCInMulticastPkts}, #{item.flHCOutMulticastPkts}, #{item.flHCInBroadcastPkts}, #{item.flHCOutBroadcastPkts}, #{item.fltBPSInMax},
+                #{item.fltBPSOutMax}, #{item.fltPPSInMax}, #{item.fltPPSOutMax}, #{item.fltErrorInMax}, #{item.fltErrorOutMax},
+                #{item.fltDiscardInMax}, #{item.fltDiscardOutMax}, #{item.fltUnknownMax}, #{item.fltUsageMax}, now()
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM IP_YD.XE_CVNMS_PERF_IF
+                    WHERE STRIFID = #{item.strIfID}
+                    AND STRRESID = #{item.strResID}
+                    AND INTTIMESTAMP = #{item.intTimestamp}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <update id="updatePerfYdKey" parameterType="java.util.HashMap">
+        UPDATE NIA.TB_LINKAGE_SEQ SET VALUE_NAME = #{value}, YD_DATE = now() WHERE KEY_NAME = #{key}
+    </update>
+</mapper>
+
+

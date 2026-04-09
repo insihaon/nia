@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ip.perf.mapper.nia.NiaEquipMapper">
+    <select id="selectNodeList" resultType="com.nia.data.linkage.ip.perf.vo.equip.NodeMstVo">
+        SELECT NODE_NUM, NODE_ID, NODE_NM, MODEL_NUM, MODEL_ID, IP_ADDR
+          FROM RESOURCE.TB_NODE_MST
+         WHERE USE_YN = true
+    </select>
+</mapper>
+
+

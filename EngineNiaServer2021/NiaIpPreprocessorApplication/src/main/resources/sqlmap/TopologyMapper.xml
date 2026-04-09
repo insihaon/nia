@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.ip.preprocessor.mapper.TopologyMapper">
+
+    <select id="selectTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.TopologyDataVo" parameterType="hashmap">
+        SELECT SRC_NODE_NUM||'/'||SRC_IF_NUM||'--'||DEST_NODE_NUM||'/'||DEST_IF_NUM AS LINK_ID
+             , SRC_NODE_NUM, SRC_NODE_ID, SRC_IF_NUM, SRC_IF_ID, DEST_NODE_NUM
+             , DEST_NODE_ID, DEST_IF_NUM, DEST_IF_ID, LINK_DESC, VLAN
+             , TAG, SRC_IP_ADDR, SRC_MAC_ADDR, DEST_IP_ADDR, DEST_MAC_ADDR
+             , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
+          FROM RESOURCE.TB_BACKBONE_LINK
+         WHERE (SRC_NODE_NUM = #{nodeNum} AND SRC_IF_NUM = #{ifNum}) OR (DEST_NODE_NUM = #{nodeNum} AND DEST_IF_NUM = #{ifNum})
+    </select>
+
+    <select id="selectUniTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.UniTopologyVo" parameterType="hashmap">
+        SELECT U.NREN_ID AS LINK_ID, N.NODE_NUM, U.NODE_ID, U.NREN_NAME, U.IF_ID, P.IF_NUM
+          FROM RESOURCE.TB_USER_ORGAN U
+          LEFT OUTER JOIN RESOURCE.TB_NODE_MST N
+            ON U.NODE_ID = N.NODE_ID
+          LEFT OUTER JOIN RESOURCE.TB_PORT_MST P
+            ON U.NODE_ID = P.NODE_ID
+           AND U.IF_ID = P.IF_ID
+        WHERE N.NODE_NUM = #{nodeNum} AND P.IF_NUM = #{ifNum}
+    </select>
+
+    <select id="selectE2eTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.E2eTopologyVo" parameterType="hashmap">
+        SELECT LINK_ID, NODE_IDA, PORTA, NODE_IDZ, PORTZ
+         FROM NIA.TB_E2E_TOPOLOGY
+        WHERE ((NODE_IDA = #{nodeId} AND PORTA = #{port})
+           OR (NODE_IDZ = #{nodeId} AND PORTZ = #{port}))
+    </select>
+</mapper>

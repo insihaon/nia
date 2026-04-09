@@ -1,0 +1,5 @@
+#암호화 패스워드
+jasypt.encryptor.password : niaAdmin12#$
+
+#Active profiles
+spring.profiles.active : real

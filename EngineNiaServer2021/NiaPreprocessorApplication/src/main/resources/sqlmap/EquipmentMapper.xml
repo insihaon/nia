@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.preprocessor.mapper.EquipmentMapper">
+
+    <select id="selectEquipPort" resultType="com.nia.alarm.preprocessor.vo.euqipment.EquipPortVo" parameterType="hashmap">
+        SELECT SYSNAME AS sysname, PTPNAME AS ptpname, PORT_TYPE AS portType
+          FROM NIA.TB_EQUIP_PORT
+         WHERE SYSNAME = #{sysname} AND PTPNAME = #{ptpname}
+    </select>
+
+    <select id="selectEquipInfo" resultType="com.nia.alarm.preprocessor.vo.euqipment.EquipInfoVo" parameterType="hashmap">
+        SELECT TID AS tid, SYSNAME AS sysname, MODEL AS model
+          FROM NIA.TB_EQUIP_MST
+         WHERE TID = #{sysname}
+    </select>
+
+</mapper>

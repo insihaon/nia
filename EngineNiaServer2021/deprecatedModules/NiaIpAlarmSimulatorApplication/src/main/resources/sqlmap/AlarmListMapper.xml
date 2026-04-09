@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.ip.simulator.mapper.AlarmMapper">
+
+	<select id="selectAlarmList" resultType="com.nia.alarm.ip.simulator.vo.AlarmVo">
+		SELECT A.INTERRIDX, A.MODULE_SRL, A.STRRESID, A.STRIFID, A.STRTYPE
+		     , A.STRLEVEL, A.STRTITLE, A.STRCONTENT, A.STRGROUPID, A.STRGROUPID1
+		     , A.STRGROUPID2, A.STRGROUPID3, A.STRGROUPID4, A.STRGROUPID5, A.STRGROUPID6
+		     , A.STRGROUPID7, A.STRGROUPID8, A.STRGROUPID9, A.STRGROUPID10, A.DATERAISEDATE
+		     , A.DATECLEARDATE, A.DATEREGDATE, A.STRCLEARCHECK, A.STRMEMO, A.STRACKNOWNCHECK
+		     , A.STRACKNOWNCHECK_MEMBER_SRL, B.STRRESNAME
+		 FROM IP_YD.XE_CVNMS_ERROR A
+		 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE B
+		   ON A.STRRESID = B.STRRESID
+	    WHERE A.INTERRIDX >= '20570'
+        ORDER BY A.DATERAISEDATE
+        LIMIT 100
+	</select>
+
+	<select id="selectTestAlarmList" resultType="com.nia.alarm.ip.simulator.vo.AlarmVo">
+		SELECT A.INTERRIDX, A.MODULE_SRL, A.STRRESID, A.STRIFID, A.STRTYPE
+			 , A.STRLEVEL, A.STRTITLE, A.STRCONTENT, A.STRGROUPID, A.STRGROUPID1
+			 , A.STRGROUPID2, A.STRGROUPID3, A.STRGROUPID4, A.STRGROUPID5, A.STRGROUPID6
+			 , A.STRGROUPID7, A.STRGROUPID8, A.STRGROUPID9, A.STRGROUPID10, A.DATERAISEDATE
+			 , A.DATECLEARDATE, A.DATEREGDATE, A.STRCLEARCHECK, A.STRMEMO, A.STRACKNOWNCHECK
+			 , A.STRACKNOWNCHECK_MEMBER_SRL, B.STRRESNAME
+		FROM IP_YD.XE_CVNMS_ERROR A
+		LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE B
+		  ON A.STRRESID = B.STRRESID
+		WHERE A.INTERRIDX IN ('20650','20640','20639','20638','20637')
+		ORDER BY A.DATERAISEDATE
+	</select>
+
+	<select id="selectEtriTestAlarmList" resultType="com.nia.alarm.ip.simulator.vo.AlarmVo">
+		SELECT A.INTERRIDX, A.MODULE_SRL, A.STRRESID, A.STRIFID, A.STRTYPE
+			 , A.STRLEVEL, A.STRTITLE, A.STRCONTENT, A.STRGROUPID, A.STRGROUPID1
+			 , A.STRGROUPID2, A.STRGROUPID3, A.STRGROUPID4, A.STRGROUPID5, A.STRGROUPID6
+			 , A.STRGROUPID7, A.STRGROUPID8, A.STRGROUPID9, A.STRGROUPID10, A.DATERAISEDATE
+			 , A.DATECLEARDATE, A.DATEREGDATE, A.STRCLEARCHECK, A.STRMEMO, A.STRACKNOWNCHECK
+			 , A.STRACKNOWNCHECK_MEMBER_SRL, B.STRRESNAME
+		FROM IP_YD.XE_CVNMS_ERROR A
+	    LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE B
+		  ON A.STRRESID = B.STRRESID
+		WHERE A.INTERRIDX IN ('20744',
+							  '19487',
+							  '20362',
+							  '22225',
+							  '19484',
+							  '21474',
+							  '21083',
+							  '20914',
+							  '19696',
+							  '20926',
+							  '26348',
+							  '20839',
+							  '19506',
+							  '19553',
+							  '26551',
+							  '19801',
+							  '21239',
+							  '20722',
+							  '26361',
+							  '21837',
+							  '22145',
+							  '26453',
+							  '20918',
+							  '21416',
+							  '26562',
+							  '19867',
+							  '19641',
+							  '21981',
+							  '21257',
+							  '20890',
+							  '21696',
+							  '26274',
+							  '21214',
+							  '19642',
+							  '26265',
+							  '21093',
+							  '20643',
+							  '21099',
+							  '22062',
+							  '21890',
+							  '21441',
+							  '19445',
+							  '19669',
+							  '21292',
+							  '21588',
+							  '21230',
+							  '21931',
+							  '19563',
+							  '21295',
+							  '21983',
+							  '22217',
+							  '26618',
+							  '19787',
+							  '20429',
+							  '22239',
+							  '26305',
+							  '26569',
+							  '21066',
+							  '22130',
+							  '20798',
+							  '22036',
+							  '20829',
+							  '21217',
+							  '21070',
+							  '26430',
+							  '19494',
+							  '22091',
+							  '26417',
+							  '21797',
+							  '20943',
+							  '26281',
+							  '21249',
+							  '20562',
+							  '21958',
+							  '20589',
+							  '20923',
+							  '19435',
+							  '20674',
+							  '19451',
+							  '26427',
+							  '21470',
+							  '19618',
+							  '20756',
+							  '21117',
+							  '26342',
+							  '19482',
+							  '19531',
+							  '21725',
+							  '20921',
+							  '26416',
+							  '21310',
+							  '21511',
+							  '21575',
+							  '19509',
+							  '21443',
+							  '19615',
+							  '21036',
+							  '21822',
+							  '21776',
+							  '21509')
+		ORDER BY A.DATERAISEDATE
+	</select>
+
+	<select id="fcSetClearSimulator" resultType="boolean">
+		select rca.fc_set_clear_simulator()
+	</select>
+
+	<select id="fcSetClearSimulatorEtri" resultType="boolean">
+		select rca.fc_set_clear_simulator_etri()
+	</select>
+
+	<delete id="deleteAlarm" parameterType="int">
+		DELETE FROM CATCHVIEW.XE_CVNMS_ERROR WHERE INTERRIDX = #{alarmno}
+	</delete>
+</mapper>
+
+

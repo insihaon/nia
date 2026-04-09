@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ai.mapper.server.EventDataMapper">
+
+
+<!--        <insert id="insertEventData" parameterType="com.nia.data.linkage.ai.vo.client.EventDataVo">-->
+<!--        INSERT INTO RCA.TB_FAULT_EVENT-->
+<!--            (-->
+<!--             TICKET_ID, TICKET_TITLE, TICKET_TYPE, CREATE_TIME-->
+<!--            )-->
+<!--        VALUES-->
+<!--            (-->
+<!--             #{},#{title},#{eventGb},#{insert_time}-->
+<!--            )-->
+<!--        </insert>-->
+
+<!--디비 시퀀스 조회-->
+<!--    <select id="selectEventDataSeq" resultType="int">-->
+<!--        SELECT nextval('rca.seq_fault_event') AS COLLECT_SEQ-->
+<!--    </select>-->
+
+<!--    <insert id="insertAttTraffic" parameterType="com.nia.data.linkage.ai.vo.server.AttEventDataVo">-->
+<!--        INSERT INTO IP.YD_XE_CVNMS_PERF_IF-->
+<!--            (-->
+<!--            STRIFID, STRRESID, STRTYPEMIN, INTTIMESTAMP, INTYEAR, INTMONTH, INTDAY, INTHOUR, INTMIN,-->
+<!--            INTWEEK, INTBANDWIDTH, FLTBPSIN, FLTBPSOUT, FLTPPSIN, FLTPPSOUT, FLTERRORIN, FLTERROROUT,-->
+<!--            FLTDISCARDIN, FLTDISCARDOUT, FLTUNKNOWN, FLTUSAGE, FLHCINOCTETS, FLHCOUTOCTETS, FLHCINUCASTPKTS,-->
+<!--            FLHCOUTUCASTPKTS, FLHCINMULTICASTPKTS, FLHCOUTMULTICASTPKTS, FLHCINBROADCASTPKTS, FLHCOUTBROADCASTPKTS,-->
+<!--            FLTBPSINMAX, FLTBPSOUTMAX, FLTPPSINMAX, FLTPPSOUTMAX, FLTERRORINMAX, FLTERROROUTMAX, FLTDISCARDINMAX,-->
+<!--            FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX, INSERTTIME-->
+<!--            )-->
+<!--        VALUES-->
+<!--            (-->
+<!--            #{strifid},#{strresid},#{strtypemin},#{inttimestamp},#{intyear},#{intmonth},#{intday},#{inthour},#{intmin},-->
+<!--             #{intweek},#{intbandwidth},#{fltbpsin},#{fltbpsout},#{fltppsin},#{fltppsout},#{flterrorin},#{flterrorout},-->
+<!--             #{fltdiscardin},#{fltdiscardout},#{fltunknown},#{fltusage},#{flhcinoctets},#{flhcoutoctets},#{flhcinucastpkts},-->
+<!--             #{flhcoutucastpkts},#{flhcinmulticastpkts},#{flhcoutmulticastpkts},#{flhcinbroadcastpkts},#{flhcoutbradcastpkts},-->
+<!--             #{fltbpsinmax},#{fltbpsoutmax},#{fltppsinmax},#{fltppsoutmax},#{flterrorinmax},#{flterroroutmax},#{fltdiscardinmax},-->
+<!--             #{fltdiscardoutmax},#{fltunknownmax},#{fltusagemax},#{insert_time}-->
+<!--            )-->
+
+<!--    </insert>-->
+
+
+<!--    <insert id="insertNttTraffic" parameterType="com.nia.data.linkage.ai.vo.server.NttEventDataVo">-->
+<!--        INSERT INTO IP.YD_XE_SFLOW_LOG-->
+<!--            (-->
+<!--            STRRESIP, STRRESNAME, STRSIP, STRSPORT, STRDIP, STRDPORT, STRSMAC, STRDMAC, STRPROTOCOL, STRIPV4TOS,-->
+<!--             STRCHANNEL, STRSENDERIP, STRININTERFACE,STROUTINTERFACE, STRBYTESCOL, STRCOUNTS, DATEREGDATE-->
+<!--            )-->
+<!--        VALUES-->
+<!--            (-->
+<!--             #{strresip},#{strresname},#{strsip},#{strsport},#{strdip},#{strdport},#{strsmac},#{strdmac},#{strprotocol},-->
+<!--             #{stripv4tos},#{strchannel},#{strsenderip},#{strininterface},#{stroutinterface},#{strbytescol},#{strcounts},#{dateregdate}-->
+<!--            )-->
+<!--    </insert>-->
+
+
+
+</mapper>

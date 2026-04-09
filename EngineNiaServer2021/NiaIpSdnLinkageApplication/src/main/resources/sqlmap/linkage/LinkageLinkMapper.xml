@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.sdn.linkage.mapper.linkage.LinkageLinkMapper">
+
+    <select id="selectLinkList" resultType="com.nia.ip.sdn.linkage.vo.LinkVo">
+        SELECT Id, Sif_Id, Rif_Id, Vsif_Id , Speed ,OspfMetric, LatencyStd , ActiveStandby , Usaged FROM optroute.link
+    </select>
+</mapper>
+
+

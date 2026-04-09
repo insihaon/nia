@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.mapper.PerformaceMapper">
+
+    <select id="selectPerformaceCollectTime" resultType="com.nia.data.linkage.vo.performance.PerformaceCollectTimeVo">
+        SELECT TO_CHAR(COLLECT_TIME + INTERVAL '15 minute', 'hh24:mi:ss') AS collectTime FROM NIA.TB_PERFORMANCE_LINKAGE_DATE
+    </select>
+
+    <update id="updatePerformaceCollectTime" parameterType="com.nia.data.linkage.vo.performance.PerformaceCollectTimeVo">
+        UPDATE NIA.TB_PERFORMANCE_LINKAGE_DATE
+            SET COLLECT_TIME = #{collectDateTime}
+    </update>
+
+    <insert id="insertPerformace" parameterType="java.util.HashMap">
+      <if test="performaceVoList.size != 0">
+        INSERT INTO NIA.TB_PERFORMACE_MST(PERFORMACEID, SYSNAME, PORT, UNIT, TMPER, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME)
+        VALUES
+        <foreach collection="performaceVoList" item="item" separator=",">
+           (#{item.performaceid}, #{item.sysname}, #{item.port}, #{item.unit}, #{item.tmper}, #{item.rxCur}, #{item.rxMin}, #{item.rxMax},
+        #{item.rxAve}, #{item.txCur}, #{item.txMin}, #{item.txMax}, #{item.txAve}, #{item.ocrtime})
+        </foreach>
+      </if>
+    </insert>
+</mapper>
+
+
