@@ -1,0 +1,33 @@
+# dependencies
+**/node_modules/
+**/.venv/
+**/venv/
+
+# build outputs
+**/build/
+**/dist/
+**/target/
+**/out/
+
+# logs
+**/*.log
+
+# git
+.git/
+
+# IDE
+.idea/
+.vscode/
+
+# binary
+**/*.jar
+**/*.war
+**/*.zip
+
+# generated
+**/generated/
+**/coverage/
+
+#root 파일 제외
+/legacy/
+/library/

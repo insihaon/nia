@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.menumgmt.dao.TbScrnAuthDao">
+	<resultMap id="tbScrnAuthVoResult" type="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		<result column="SUSER_GRADE_CD" property="suserGradeCd" jdbcType="CHAR" />
+		<result column="SSCRN_ID" property="sscrnId" jdbcType="VARCHAR" />
+		<result column="SSCRN_AUT_USE_YN" property="sscrnAutUseYn" jdbcType="CHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		SUSER_GRADE_CD, SSCRN_ID, SSCRN_AUT_USE_YN, DCREATE_DT
+		, SCREATE_ID, DMODIFY_DT, SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		
+	</sql>
+
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			SUSER_GRADE_CD = #{suserGradeCd, jdbcType=CHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscrnId)">
+				AND SSCRN_ID = #{sscrnId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+				AND SUSER_GRADE_CD = #{suserGradeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscrnId)">
+				AND SSCRN_ID = #{sscrnId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscrnAutUseYn)">
+				AND SSCRN_AUT_USE_YN = #{sscrnAutUseYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbScrnAuthVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		INSERT
+			
+		INTO MST.TB_SCRN_AUTH (
+			SUSER_GRADE_CD
+			,	SSCRN_ID
+			,	SSCRN_AUT_USE_YN
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{suserGradeCd, jdbcType=CHAR}
+			,	#{sscrnId, jdbcType=VARCHAR}
+			,	#{sscrnAutUseYn, jdbcType=CHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{dmodifyDt, jdbcType=TIMESTAMP}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbScrnAuthVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		UPDATE
+			
+		MST.TB_SCRN_AUTH
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscrnAutUseYn)">
+			SSCRN_AUT_USE_YN = #{sscrnAutUseYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+			,	DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+			,	SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+			,	DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+			,	SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbScrnAuthVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		DELETE
+			
+		FROM MST.TB_SCRN_AUTH
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbScrnAuthVo" resultMap="tbScrnAuthVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_SCRN_AUTH
+		<include refid="Vo_Where_Clause" />
+	</select>
+	
+	<select id="selectListTbScrnAuthVo" resultMap="tbScrnAuthVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_SCRN_AUTH
+		<include refid="List_Where_Clause" />
+	</select>
+	
+	<select id="selectListPageTbScrnAuthVo" resultMap="tbScrnAuthVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				FROM MST.TB_SCRN_AUTH
+				<include refid="List_Where_Clause" />
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbScrnAuthVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnAuthVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_SCRN_AUTH
+		<include refid="List_Where_Clause" />
+	</select>
+	
+</mapper>

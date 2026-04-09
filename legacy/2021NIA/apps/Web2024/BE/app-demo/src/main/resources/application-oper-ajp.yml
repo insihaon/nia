@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    context-path: 
+    
+spring:
+  profiles:
+    active: oper
+    dev: false
+
+  h2:
+    console:
+      enabled: true
+      settings.web-allow-others: true
+
+  datasource2nd:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: ENC(Z/0jxFEW33jQOjb7SJSDlY6IbaIG48G0VWQXw8WHNXRuL5iPonp+Uoy+8KdVgIibG1tAqGzFYMzKnlmGHroFXQ==)
+    username: ENC(6H5QdS8FFUnUVecEEf9DlA==)
+    password: ENC(5wuR7RSaFfNs5/sf/L74ufnWgg8Q3SRV)
+    dataSource-name: datahub
+    enabled: true
+
+
+  sql:
+    init:
+      platform: postgres
+      encoding: UTF-8
+
+myconf:
+  ajp.use: true
+file:
+  upload-dir: ./external
+

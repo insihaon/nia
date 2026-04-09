@@ -1,0 +1,62 @@
+{
+    "data": {
+        "result": {
+            "data": {
+                "searchBgnDe": "",
+                "searchCnd": "",
+                "searchEndDe": "",
+                "searchWrd": "",
+                "sortType": "",
+                "sortOrdr": "",
+                "searchUseYn": "",
+                "searchBgnCd": "",
+                "searchEndCd": "",
+                "pageIndex": 1,
+                "pageUnit": 0,
+                "pageSize": 0,
+                "firstIndex": 1,
+                "lastIndex": 10,
+                "recordCountPerPage": 10,
+                "rowNo": 0,
+                "typeFlag": "",
+                "dcreateDt": null,
+                "screateId": null,
+                "screateNm": null,
+                "dmodifyDt": null,
+                "smodifyId": null,
+                "smodifyNm": null,
+                "commonMsg": null,
+                "screateEmail": null,
+                "smodifyEmail": null,
+                "moveType": "",
+                "moveSearchWrd": "",
+                "moveSipVersionTypeCd": null,
+                "url": null,
+                "menuType": null,
+                "paramMap": null,
+                "transWait": 387,
+                "trans": 13,
+                "fail": 9,
+                "registered": 287075,
+                "transOk": 0,
+                "custWait": null,
+                "excepted": null
+            }
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/opermgmt/whoismgmt/countWhoisByStatus.json",
+        "urlOrigin": "/opermgmt/whoismgmt/countWhoisByStatus.json",
+        "params": null,
+        "data": "{\"encrypt\":\"k05rT3ikZ291veHvlX4=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/whoismgmt/countWhoisByStatus.json\", \"sqlId\": \"\", \"param\": {\"encrypt\":\"k05rT3ikZ291veHvlX4=\"} }",
+        "requestTime": "2024-12-20 15:34:53.681",
+        "responseTime": "2024-12-20 15:34:54.052",
+        "duration": 371,
+        "jsonFileName": "opermgmtwhoismgmtcountWhoisByStatusjson_.json"
+    }
+}

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.ticketmgmt.optmgmt.dao.TbOptimizationIpMstDao">
+	<resultMap id="tbOptimizationIpMstVoResult" type="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		<result column="NOPT_IP_MST_SEQ" property="noptIpMstSeq" jdbcType="BIGINT" />
+		<result column="NLVL_MST_SEQ" property="nlvlMstSeq" jdbcType="BIGINT" />
+		<result column="NIP_ASSIGN_MST_SEQ" property="nipAssignMstSeq" jdbcType="BIGINT" />
+		<result column="SASSIGN_TYPE_CD" property="sassignTypeCd" jdbcType="CHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="SIP_BLOCK" property="sipBlock" jdbcType="VARCHAR" />
+		<result column="NBITMASK" property="nbitmask" jdbcType="INTEGER" />
+		<result column="NCNT" property="ncnt" jdbcType="NUMERIC" />
+		<result column="NIP_ASSIGN_MST_SEQ_TAR" property="nipAssignMstSeqTar" jdbcType="BIGINT" />
+		<result column="PIP_PREFIX_TAR" property="pipPrefixTar" jdbcType="VARCHAR" />
+		<result column="SIP_BLOCK_TAR" property="sipBlockTar" jdbcType="VARCHAR" />
+		<result column="NBITMASK_TAR" property="nbitmaskTar" jdbcType="INTEGER" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<result column="VIRTUAL_PIP_PREFIX" property="virtualPipPrefix" jdbcType="VARCHAR" />
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NOPT_IP_MST_SEQ, A.NLVL_MST_SEQ, A.NIP_ASSIGN_MST_SEQ, A.SASSIGN_TYPE_CD
+		, A.PIP_PREFIX, A.SIP_BLOCK, A.NBITMASK, A.NCNT
+		, A.NIP_ASSIGN_MST_SEQ_TAR, A.PIP_PREFIX_TAR, A.SIP_BLOCK_TAR, A.NBITMASK_TAR
+		, A.SCOMMENT, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT
+		, A.SMODIFY_ID, NETWORK(INET(A.SIP_BLOCK || '/24')) VIRTUAL_PIP_PREFIX
+		
+	</sql>
+	
+	<sql id="Append_Column_List">
+		, C.SSVC_LINE_TYPE_NM AS SSVC_LINE_TYPE_NM
+		, D.SLVL_CD AS SSVC_GROUP_CD
+		, D.SLVL_NM AS SSVC_GROUP_NM
+		, E.SLVL_CD AS SSVC_OBJ_CD
+		, E.SLVL_NM AS SSVC_OBJ_NM
+		, F.SASSIGN_TYPE_NM AS SASSIGN_TYPE_NM
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SSVC_LINE_TYPE_NM
+		, A.SSVC_GROUP_CD
+		, A.SSVC_GROUP_NM
+		, A.SSVC_OBJ_CD
+		, A.SSVC_OBJ_NM
+		, A.SASSIGN_TYPE_NM
+	</sql>
+	
+	<sql id="Append_From_Clause">
+		, MST.TB_LVL_MST B
+		, MST.TB_SVC_LINE_TYPE_CD C
+		, MST.TB_LVL_CD D
+		, MST.TB_LVL_CD E
+		, MST.TB_ASSIGN_TYPE_CD F
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND A.NLVL_MST_SEQ = B.NLVL_MST_SEQ
+		AND B.SSVC_LINE_TYPE_CD = C.SSVC_LINE_TYPE_CD(+)
+		AND B.SSVC_GROUP_CD = D.SLVL_CD(+)
+		AND B.SSVC_OBJ_CD = E.SLVL_CD(+)
+		AND A.SASSIGN_TYPE_CD = F.SASSIGN_TYPE_CD(+)
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NOPT_IP_MST_SEQ = #{noptIpMstSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(noptIpMstSeq)">
+				AND A.NOPT_IP_MST_SEQ = #{noptIpMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlvlMstSeq)">
+				AND A.NLVL_MST_SEQ = #{nlvlMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAssignMstSeq)">
+				AND A.NIP_ASSIGN_MST_SEQ = #{nipAssignMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+				AND A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefix)">
+				AND A.PIP_PREFIX = #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlock)">
+				AND A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nbitmask)">
+				AND A.NBITMASK = #{nbitmask, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ncnt)">
+				AND A.NCNT = #{ncnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAssignMstSeqTar)">
+				AND A.NIP_ASSIGN_MST_SEQ_TAR = #{nipAssignMstSeqTar, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefixTar)">
+				AND A.PIP_PREFIX_TAR = #{pipPrefixTar, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlockTar)">
+				AND A.SIP_BLOCK_TAR = #{sipBlockTar, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nbitmaskTar)">
+				AND A.NBITMASK_TAR = #{nbitmaskTar, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			
+		</trim>
+	</sql>
+	
+	<insert id="insertTbOptimizationIpMstVo" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		INSERT
+		INTO FCT.TB_OPTIMIZATION_IP_MST (
+			NLVL_MST_SEQ
+			,	NIP_ASSIGN_MST_SEQ
+			,	SASSIGN_TYPE_CD
+			,	PIP_PREFIX
+			,	SIP_BLOCK
+			,	NBITMASK
+			,	NCNT
+			,	NIP_ASSIGN_MST_SEQ_TAR
+			,	PIP_PREFIX_TAR
+			,	SIP_BLOCK_TAR
+			,	NBITMASK_TAR
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{nlvlMstSeq, jdbcType=BIGINT}
+			,	#{nipAssignMstSeq, jdbcType=BIGINT}
+			,	#{sassignTypeCd, jdbcType=CHAR}
+			,	#{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			,	#{sipBlock, jdbcType=VARCHAR}
+			,	#{nbitmask, jdbcType=INTEGER}
+			,	#{ncnt, jdbcType=NUMERIC}
+			,	#{nipAssignMstSeqTar, jdbcType=BIGINT}
+			,	#{pipPrefixTar, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			,	#{sipBlockTar, jdbcType=VARCHAR}
+			,	#{nbitmaskTar, jdbcType=INTEGER}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbOptimizationIpMstVo" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		UPDATE
+		FCT.TB_OPTIMIZATION_IP_MST A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlvlMstSeq)">
+			A.NLVL_MST_SEQ = #{nlvlMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAssignMstSeq)">
+				, A.NIP_ASSIGN_MST_SEQ = #{nipAssignMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+				, A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefix)">
+				, A.PIP_PREFIX = #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlock)">
+				, A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nbitmask)">
+				, A.NBITMASK = #{nbitmask, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ncnt)">
+				, A.NCNT = #{ncnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAssignMstSeqTar)">
+				, A.NIP_ASSIGN_MST_SEQ_TAR = #{nipAssignMstSeqTar, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefixTar)">
+				, A.PIP_PREFIX_TAR = #{pipPrefixTar, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlockTar)">
+				, A.SIP_BLOCK_TAR = #{sipBlockTar, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nbitmaskTar)">
+				, A.NBITMASK_TAR = #{nbitmaskTar, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbOptimizationIpMstVo" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		DELETE
+		FROM FCT.TB_OPTIMIZATION_IP_MST A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbOptimizationIpMstVo" resultMap="tbOptimizationIpMstVoResult" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM FCT.TB_OPTIMIZATION_IP_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbOptimizationIpMstVo" resultMap="tbOptimizationIpMstVoResult" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM FCT.TB_OPTIMIZATION_IP_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+			AND A.PIP_PREFIX <![CDATA[<<=]]> #{searchWrd, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+		</if>
+		ORDER BY A.DMODIFY_DT DESC
+	</select>
+	
+	<select id="countListTbOptimizationIpMstVo" resultType="int" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		SELECT
+			count(1) totalCount
+		FROM FCT.TB_OPTIMIZATION_IP_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+			AND A.PIP_PREFIX <![CDATA[<<=]]> #{searchWrd, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+		</if>
+	</select>
+	
+	<select id="selectListPageTbOptimizationIpMstVo" resultMap="tbOptimizationIpMstVoResult" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM FCT.TB_OPTIMIZATION_IP_MST A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+					AND A.NLVL_MST_SEQ IN 
+					<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+						#{item.nlvlSeq}
+					</foreach>
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+					AND TEXT(A.PIP_PREFIX) LIKE #{searchWrd} || '%'
+				</if>
+				ORDER BY A.DMODIFY_DT DESC
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbOptimizationIpMstVo" resultType="int" parameterType="com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo">
+		SELECT
+			count(1) totalCount
+		FROM FCT.TB_OPTIMIZATION_IP_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+			AND A.NLVL_MST_SEQ IN 
+			<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+				#{item.nlvlSeq}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+			AND TEXT(A.PIP_PREFIX) LIKE #{searchWrd} || '%'
+		</if>
+	</select>
+	
+</mapper>

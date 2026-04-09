@@ -1,0 +1,124 @@
+server:
+  port: 8093
+
+logging:
+  level:
+    root: INFO
+
+---
+spring:
+  profiles: real
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: incodej-lab.iptime.org
+    port: 6786
+    username: niaadmin
+    password: niaadmin12#$
+#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    engineExchange: nia.exchangeEngineDirectly
+    engineQueue: nia.EngineIndexDirectly
+    engineRoutingKey: nia.EngineIndexDirectly
+
+    engineResultExchange: nia.exchangeEngineResultDirectly
+    engineResultQueue: nia.EngineResultIndexDirectly
+    engineResultRoutingKey: EngineResultIndexDirectly
+
+    clusterStopExchange: nia.exchangeClusterStopDirectly
+    clusterStopQueue: nia.ClusterStopIndexDirectly
+    clusterStopRoutingKey: ClusterStopIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: EngineClearIndexDirectly
+
+    uiToEngineExchange: nia.exchangeUiToEngineDirectly
+    uiToEngineQueue: nia.UiToEngineIndexDirectly
+    uiToEngineRoutingKey: UiToEngineIndexDirectly
+
+    engineToUiExchange: nia.exchangeEngineToUiDirectly
+    engineToUiQueue: nia.EngineToUiIndexDirectly
+    engineToUiRoutingKey: EngineToUiIndexDirectly
+
+    niaPerformanceEngineExchange: nia.exchangeNiaPerformanceEngineDirectly
+    niaPerformanceEngineQueue: nia.NiaPerformanceEngineIndexDirectly
+    niaPerformanceEngineRoutingKey: NiaPerformanceEngineIndexDirectly
+
+    aiIpTrafficResultExchange: nia.exchangeAiIpTrafficResultDirectly
+    aiIpTrafficResultQueue: nia.AiIpTrafficResultIndexDirectly
+    aiIpTrafficResultRoutingKey: AiIpTrafficResultIndexDirectly
+
+    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
+    engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineTrafficRoutingKey: EngineTrafficIndexDirectly
+
+    #이상 유해 4차 큐 쏘는 곳 (codej -> zero1)
+
+    engineToAiAnoExchange: nia.exchangeEngineToAiAnoDirectly
+    engineToAiAnoQueue: nia.EngineToAiAnoIndexDirectly
+    engineToAiAnoRoutingKey: EngineToAiAnoIndexDirectly
+
+    engineToAiNoxExchange: nia.ExchangeEngineToAiNoxDirectly
+    engineToAiNoxQueue: nia.EngineToAiNoxIndexDirectly
+    engineToAiNoxRoutingKey: EngineToAiNoxIndexDirectly
+
+      #    이상 유해 4차 큐 받을 곳 (zero1->codej)
+
+    aiAnoToEngineExchange: nia.exchangeAiToEngineAnoDirectly
+    aiAnoToEngineQueue: nia.AiAnoToEngineIndexDirectly
+    aiAnoToEngineRoutingKey: AiAnoToEngineIndexDirectly
+
+    aiNoxToEngineExchange: nia.ExchangeEngineToAiNoxDirectly
+    aiNoxToEngineQueue: nia.aiNoxToEngineIndexDirectly
+    aiNoxToEngineRoutingKey: aiNoxToEngineIndexDirectly
+
+#    # Syslog 데이터
+#
+#    uiToEngineSyslogExchange: nia.exchangeUiToEngineSyslogDirectly
+#    uiToEngineSyslogQueue: nia.UiToEngineSyslogIndexDirectly
+#    uiToEngineSyslogRoutingKey: UiToEngineSyslogIndexDirectly
+
+
+  cluster:
+    timeCondition: 5000
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://incodej-lab.iptime.org:6544/niadb
+    username: niaadmin
+    password: niaadmin12#$
+#    url: jdbc:postgresql://116.89.191.47:6544/niadb
+#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health
+

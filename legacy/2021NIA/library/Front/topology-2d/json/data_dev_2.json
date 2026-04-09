@@ -1,0 +1,76 @@
+{
+    "nodes": [
+        { "id": "1", "device_name": "서비스A", "device_type": "SERVICE", "instlocation": "DJSGB1701", "debugDesc": "서비스 노드 생성", "index": 0, "alarm_count": 5886 }, 
+        { "id": "2", "device_name": "서비스Z", "device_type": "SERVICE", "instlocation": "CBYDB0001", "debugDesc": "서비스 노드 생성", "index": 1, "alarm_count": 5651 }, 
+        { "id": "3", "device_name": "남청주-PTS-1103-01-01", "device_type": "PTN", "sysname": "남청주-PTS-1103-01-01", "nealias": "PTS-1103-01", "nescode": "CBCJ21966", "pportid": "010301003", "instlocation": "CBCJB0002", "debugDesc": "nescodea 노드 생성", "index": 2, "alarm_count": 771 }, 
+        { "id": "4", "device_name": "충영동-PTS-0108-01-01", "device_type": "PTN", "sysname": "충영동-PTS-0108-01-01", "nealias": "PTS-0108-01", "nescode": "CBYDS0344", "pportid": "010101001", "instlocation": "CBYDB0001", "debugDesc": "nescodez 노드 생성", "index": 3, "related_alarm": 342 }, 
+        { "id": "5", "device_name": "남청중-ROADM-8005", "device_type": "ROADM", "debugDesc": "wdmnamea 노드 생성", "index": 4, "related_alarm": 6114 }, 
+        { "id": "6", "device_name": "영동중-ROADM-8103", "device_type": "ROADM", "debugDesc": "wdmnamez 노드 생성", "index": 5, "related_alarm": 2542 }, 
+        { "id": "7", "device_name": "ROADM-8005", "device_type": "ROADM", "sysname": null, "nealias": "ROADM-8005", "nescode": "CBCJ16583", "pportid": "01010801001", "instlocation": "CBCJB0701", "debugDesc": "nescodea 노드 생성", "index": 6 }, 
+        { "id": "8", "device_name": "ROADM-8102", "device_type": "ROADM", "sysname": null, "nealias": "ROADM-8102", "nescode": "CBBU01282", "pportid": "01010301001", "instlocation": "CBBUB0001", "debugDesc": "nescodez 노드 생성", "index": 7 }, 
+        { "id": "9", "device_name": "ROADM-8210", "device_type": "ROADM", "sysname": null, "nealias": "ROADM-8210", "nescode": "CBOC01778", "pportid": "01010801001", "instlocation": "CBOCB0134", "debugDesc": "nescodea 노드 생성", "index": 8 }, 
+        { "id": "8", "device_name": "ROADM-8103", "device_type": "ROADM", "sysname": null, "nealias": "ROADM-8103", "nescode": "CBYD02093", "pportid": "01010801001", "instlocation": "CBYDB0187", "debugDesc": "nescodea 노드 생성", "index": 9 }, 
+        { "id": "9", "device_name": "CB양강우체국-PTS-0101-01-01", "device_type": "PTN", "sysname": "CB양강우체국-PTS-0101-01-01", "nealias": "PTS-0101-01", "nescode": "CBYDS0514", "pportid": "010101001", "instlocation": "CBYDP0219", "debugDesc": "nescodez 노드 생성", "index": 10 }, 
+        { "id": "10", "device_name": "대전중-PTS-1321-01-01", "device_type": "PTN", "sysname": "대전중-PTS-1321-01-01", "nealias": "PTS-1321-01", "nescode": "DJJG08790", "pportid": "010301002", "instlocation": "DJJGB0378", "debugDesc": "nescodez 노드 생성", "index": 11 }, 
+        { "id": "11", "device_name": "대전중-ROADM-8807", "device_type": "ROADM", "debugDesc": "wdmnamez 노드 생성", "index": 12 }, 
+        { "id": "12", "device_name": "대전중-PTS-0106-04-04", "device_type": "PTN", "sysname": "대전중-PTS-0106-04-04", "nealias": "PTS-0106-04", "nescode": "DJJGS2775", "pportid": "010101003", "instlocation": "DJJGB0378", "debugDesc": "nescodea 노드 생성", "index": 13 }, 
+        { "id": "13", "device_name": "대전중-PTS-0106-03-03", "device_type": "PTN", "sysname": "대전중-PTS-0106-03-03", "nealias": "PTS-0106-03", "nescode": "DJJGS2774", "pportid": "010201001", "instlocation": "DJJGB0378", "debugDesc": "nescodea 노드 생성", "index": 14 }, 
+        { "id": "14", "device_name": "CN충청우정청-PTS-0101-01-01", "device_type": "PTN", "sysname": "CN충청우정청-PTS-0101-01-01", "nealias": "PTS-0101-01", "nescode": "DJSGX0977", "pportid": "010101001", "instlocation": "DJSGB1701", "debugDesc": "nescodez 노드 생성", "index": 15 }, 
+        { "id": "15", "device_name": "CN충청우정청-PTS-0101-02-01", "device_type": "PTN", "sysname": "CN충청우정청-PTS-0101-02-01", "nealias": "PTS-0101-02", "nescode": "DJSGX0978", "pportid": "010101001", "instlocation": "DJSGB1701", "debugDesc": "nescodez 노드 생성", "index": 16 }
+    ],
+    "links": [
+        { "id": "6-2", "source_id": "6", "target_id": "2", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "14-5", "source_id": "14", "target_id": "5", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "8-8", "source_id": "8", "target_id": "8", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "11-11", "source_id": "11", "target_id": "11", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "14-15", "source_id": "14", "target_id": "15", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "7-2", "source_id": "7", "target_id": "2", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "14-14", "source_id": "14", "target_id": "14", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "13-6", "source_id": "13", "target_id": "6", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "5-2", "source_id": "5", "target_id": "2", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "4-15", "source_id": "4", "target_id": "15", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "14-12", "source_id": "14", "target_id": "12", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }, 
+        { "id": "3-12", "source_id": "3", "target_id": "12", "status": 1, "source_port_disp": "정보없음", "target_port_disp": "정보없음" }
+    ],
+    "config": {
+        "converter": "arrange_debug",
+        "options": {
+            "svg_viewbox": false,
+            "node_fix_size": true,
+            "node_r_width": 30,
+            "node_width": 40,
+            "node_height": 35,
+            "node_badge_size": 25,
+            "node_text_size": 12,
+            "link_text_field": "name",
+            "link_traffic_show": false,
+            "link_traffic_arrow_show": false,
+            "link_traffic_r": 5,
+            "link_traffic_r_color": "#fff",
+            "grid_mode": false,
+            "action_mode": "selectBlur",
+            "nodeImage": {
+                "SERVICE": {
+                    "path": "images/node/cloud-city.png"
+                },
+                "PTN": {
+                    "path": "images/node/ptn.png"
+                },
+                "ROADM": {
+                    "path": "images/node/roadm.png"
+                }
+            },
+            "bg_grid": true
+        },
+        "zoom": {
+            "disable": false,
+            "initScale": 1,
+            "node": {
+                "min_scale": 1
+            }
+        }, 
+        "map": {
+            "bg_element": false
+        }
+    }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ai.per.ap.mapper.TopologyMapper">
+
+    <select id="selectTopology" resultType="com.nia.ai.per.ap.vo.TopologyDataVo" parameterType="hashmap">
+        SELECT LINK_ID AS linkId, SYSNAMEA AS sysnamea, PTPNAMEA_BAU AS ptpnameaBau, PTPNAMEA_PAU AS ptpnameaPau
+          FROM NIA.TB_TOPOLOGY
+         WHERE
+        <if test="ptpNameBau != null">
+          (SYSNAMEZ = #{sysname} AND PTPNAMEZ_BAU != #{ptpNameBau})
+        </if>
+
+        <if test="ptpNamePau != null">
+          (SYSNAMEA = #{sysname} AND PTPNAMEA_PAU != #{ptpNamePau})
+        </if>
+    </select>
+</mapper>

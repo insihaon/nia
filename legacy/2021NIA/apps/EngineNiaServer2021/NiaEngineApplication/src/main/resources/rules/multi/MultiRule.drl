@@ -1,0 +1,43 @@
+//created on: 2021. 10. 03
+package multi
+
+//list any import classes here.
+import com.nia.engine.common.RcaAlarmType;
+import com.nia.engine.common.RcaCodeInfo;
+import com.nia.engine.common.RcaResultType;
+import com.nia.engine.vo.RcaResult;
+import com.nia.engine.vo.ClusterObject;
+import com.nia.engine.vo.Flag;
+import com.nia.engine.vo.MultiResult;
+
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.sql.Timestamp
+import com.nia.engine.vo.BasicAlarmVo
+
+//declare any global variables here
+global MultiResult multiResult;
+
+
+rule "MULTI_ETH_UNI_SF_SI"
+salience 1000
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $r1 : RcaResult(rcaResultCode == "POTN_ETH_UNI_SF_SI")
+        $r2 : RcaResult(rcaResultCode == "SWITCH_PORT_DOWN")
+    then
+        //actions
+        multiResult.addMultiRcaResultCodeList($r1.getRcaResultCode());
+        multiResult.addMultiRcaResultCodeList($r2.getRcaResultCode());
+        $r1.setRcaResultCode("MULTI_ETH_UNI_SF_SI");
+        multiResult.setRcaResult($r1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+

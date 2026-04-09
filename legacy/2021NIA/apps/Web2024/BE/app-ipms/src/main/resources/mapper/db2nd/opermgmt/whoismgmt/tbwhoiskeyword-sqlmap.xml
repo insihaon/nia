@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.whoismgmt.dao.TbWhoisKeywordDao">
+	<resultMap id="tbWhoisKeywordVoResult" type="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		<result column="NWHOIS_KEYWORD_SEQ" property="nwhoisKeywordSeq" jdbcType="BIGINT" />
+		<result column="SUSERORGGB" property="suserorggb" jdbcType="VARCHAR" />
+		<result column="SORGNAME" property="sorgname" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	<resultMap id="tbWhoisKeywordVoResultNew" type="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		<result column="NWHOIS_KEYWORD_NEW_SEQ" property="nwhoisKeywordSeq" jdbcType="BIGINT" />
+		<result column="SORGNAME" property="sorgname" jdbcType="VARCHAR" />
+		<result column="SKEYWORD_NM" property="skeyword_nm" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NWHOIS_KEYWORD_SEQ, A.SUSERORGGB, A.SORGNAME, A.DCREATE_DT
+		, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NWHOIS_KEYWORD_SEQ = #{nwhoisKeywordSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nwhoisKeywordSeq)">
+				AND A.NWHOIS_KEYWORD_SEQ = #{nwhoisKeywordSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserorggb)">
+				AND A.SUSERORGGB = #{suserorggb, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				AND A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbWhoisKeywordVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		INSERT
+		INTO BIF.TB_WHOIS_KEYWORD (
+			SUSERORGGB
+			,	SORGNAME
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{suserorggb, jdbcType=VARCHAR}
+			,	#{sorgname, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbWhoisKeywordVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		UPDATE
+		BIF.TB_WHOIS_KEYWORD A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserorggb)">
+			A.SUSERORGGB = #{suserorggb, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				, A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbWhoisKeywordVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		DELETE
+		FROM BIF.TB_WHOIS_KEYWORD A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbWhoisKeywordVo" resultMap="tbWhoisKeywordVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_WHOIS_KEYWORD A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbWhoisKeywordVo" resultMap="tbWhoisKeywordVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_WHOIS_KEYWORD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbWhoisKeywordVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_WHOIS_KEYWORD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbWhoisKeywordVo" resultMap="tbWhoisKeywordVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM BIF.TB_WHOIS_KEYWORD A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbWhoisKeywordVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_WHOIS_KEYWORD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<!-- WHOIS 대체 키워드 목록 조회 -->
+	<select id="selectListPageTbWhoisKeywordNewVo" resultMap="tbWhoisKeywordVoResultNew" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT 
+			A.NWHOIS_KEYWORD_NEW_SEQ 	-- WHOIS KEWYWORD SEQ 	
+			, A.SORGNAME								-- 조직명		
+			, A.SREPLACE_CD							-- 대체기준_코드		
+			, A.SREPLACE_NM							-- 대체기준_명		
+			, A.DCREATE_DT							-- 등록일자
+			, A.SCREATE_ID							-- 등록자		
+			, A.DMODIFY_DT							-- 수정일자		
+			, A.SMODIFY_ID							-- 수정자		
+			, A.RNUM 
+		FROM (
+			SELECT 
+				A.NWHOIS_KEYWORD_NEW_SEQ
+				, A.SORGNAME
+				, A.SREPLACE_CD							
+				, A.SREPLACE_NM								
+				, A.DCREATE_DT
+				, A.SCREATE_ID
+				, A.DMODIFY_DT
+				, A.SMODIFY_ID
+			    , ROWNUM RNUM 
+		  FROM (
+				SELECT
+					A.NWHOIS_KEYWORD_NEW_SEQ
+					, A.SORGNAME
+					, A.SREPLACE_CD									
+					, A.SREPLACE_NM								
+					, A.DCREATE_DT
+					, A.SCREATE_ID
+					, A.DMODIFY_DT
+					, A.SMODIFY_ID
+				FROM BIF.TB_WHOIS_KEYWORD_NEW A
+				WHERE 
+					1 = 1
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nwhoisKeywordSeq)">
+						AND A.NWHOIS_KEYWORD_NEW_SEQ = #{nwhoisKeywordSeq, jdbcType=BIGINT}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+						AND A.SORGNAME = #{sorgname, jdbcType=VARCHAR}  
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sreplace_cd)">
+						AND A.SREPLACE_CD = #{sreplace_cd, jdbcType=VARCHAR}  
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+						AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+						AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+						AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+						AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+					</if>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A 
+		WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<!-- WHOIS 대체 키워드 목록 건수 조회  -->
+	<select id="countListPageTbWhoisKeywordNewVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_WHOIS_KEYWORD_NEW A
+		WHERE 
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nwhoisKeywordSeq)">
+				AND A.NWHOIS_KEYWORD_NEW_SEQ = #{nwhoisKeywordSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				AND A.SORGNAME = #{sorgname, jdbcType=VARCHAR}  
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sreplace_cd)">
+				AND A.SREPLACE_CD = #{sreplace_cd, jdbcType=VARCHAR}  
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+	</select>
+	
+	<!-- WHOIS 대체 키워드 등록  -->
+	<insert id="insertTbWhoisKeywordNewVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		INSERT INTO BIF.TB_WHOIS_KEYWORD_NEW
+		(
+			SORGNAME
+			, SREPLACE_CD									
+			, SREPLACE_NM	
+			, DCREATE_DT
+			, SCREATE_ID
+		) VALUES 
+		(
+			#{sorgname, jdbcType=VARCHAR}
+			, #{sreplace_cd, jdbcType=VARCHAR}
+			, #{sreplace_nm, jdbcType=VARCHAR}
+			, CURRENT_TIMESTAMP
+			, #{screateId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<!-- WHOIS 대체 키워드 수정  -->
+	<update id="updateTbWhoisKeywordNewVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		UPDATE BIF.TB_WHOIS_KEYWORD_NEW A SET
+			A.DMODIFY_DT = CURRENT_TIMESTAMP
+			, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				, A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sreplace_cd)">
+				, A.SREPLACE_CD = #{sreplace_cd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sreplace_nm)">
+				, A.SREPLACE_NM = #{sreplace_nm, jdbcType=VARCHAR}
+			</if>
+		WHERE
+			A.NWHOIS_KEYWORD_NEW_SEQ = #{nwhoisKeywordSeq, jdbcType=BIGINT}
+	</update>
+	
+	<!-- WHOIS 대체 키워드 삭제  -->
+	<delete id="deleteTbWhoisKeywordNewVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo">
+		DELETE FROM BIF.TB_WHOIS_KEYWORD_NEW A
+		WHERE
+			A.NWHOIS_KEYWORD_NEW_SEQ = #{nwhoisKeywordSeq, jdbcType=BIGINT}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,42 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": null,
+        "total": null,
+        "result": {
+            "lvl": "7",
+            "roles": "ROLE_USER",
+            "ipAddress": "0:0:0:0:0:0:0:1",
+            "mobile": "02-6191-2081",
+            "agencyName": "NOC",
+            "uid": "dimmby",
+            "name": "dimmby",
+            "email": "test@codejone.com",
+            "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaW1tYnkiLCJzZXNzaW9uSWQiOiJENDJDRjQ2MUM5RTRENUREQzJEMUI4RTc4NjE3NDBGMyIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJhZGRyZXNzIjoiMDowOjA6MDowOjA6MDoxIiwiZGV0YWlscyI6IntcInVpZFwiOlwiZGltbWJ5XCIsXCJuYW1lXCI6XCJkaW1tYnlcIixcImNvbm5lY3RUaW1lXCI6bnVsbCxcImlwQWRkcmVzc1wiOm51bGwsXCJjcmVhdGVUaW1lXCI6bnVsbCxcImx2bFwiOlwiN1wiLFwiZGVwdENkXCI6bnVsbCxcImRlcHROYW1lXCI6bnVsbCxcImFnZW5jeUNkXCI6bnVsbCxcImFnZW5jeU5hbWVcIjpcIk5PQ1wiLFwiY29tcGFueUNkXCI6bnVsbCxcImNvbXBhbnlOYW1lXCI6bnVsbCxcIm1vYmlsZVwiOlwiMDItNjE5MS0yMDgxXCIsXCJlbWFpbFwiOlwidGVzdEBjb2Rlam9uZS5jb21cIixcIm15aWRcIjpudWxsLFwicmVzZXJ2ZWQwXCI6bnVsbCxcInJlc2VydmVkMVwiOm51bGwsXCJyZXNlcnZlZDJcIjpudWxsLFwicmVzZXJ2ZWQzXCI6bnVsbCxcImJsYWNrRHRsTGlzdFwiOm51bGwsXCJyb2xlc1wiOlwiUk9MRV9VU0VSXCJ9IiwiaWF0IjoxNzcxODIyNjY5LCJleHAiOjE3NzE5MDkwNjl9.uOf03XZhiut8Qi-JNaK6CM6elkukKi76_e57gaBcais",
+            "ipsdnToken": {
+                "map": {
+                    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImNvZGVqIiwiaWF0IjoxNzcxODIyNzk4LCJleHAiOjE3NzQ0MTQ3OTh9.jsBj_KZ0p4R22jGEwWBNjXb-rtoneqepfI8buViqG2M",
+                    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImNvZGVqIiwiaWF0IjoxNzcxODIyNzk4LCJleHAiOjE3NzQ1MDExOTh9.Gb9BVclUd1FTcHRjwBUCil4LXZV5pdw69uDK81f399E"
+                },
+                "blobTobase64": false
+            },
+            "otpShow": false
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/auth.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/signin",
+        "urlOrigin": "/signin",
+        "params": null,
+        "data": "{\"data\":{\"key\":\"472acef11c28c38189285fe338a285239bc66cb5f6315753db7847e26f4667aae12f56f93517541efc74f93f220a98f1902caa90e0a0599d2dd03792bf4c7fcf2409894acb3015db4c1363d10041c039f08ccf7cf0b71d7edf9cfeee9ddbda706d8697a134aae07f7cdd2e6d5c7aeb2961151df110ccdfd42d123e11ee5e4bfc\",\"value\":\"MHBBOWlrYmFET1FUMWNvNE43Y0E0Vzh6dkJQSm5tazNtTXdldU1vcEVEcUpxdW5Rby9CbXFxT3poQmppQlIyU1ZSZ3oxT3BURWIvc1NFaC82RERZZlZFRExvUUJkRUJkdmh4K0hTZW82Z3JaNmNzRjNEYmxOZlI0V1dmcXlzZWM=\",\"m\":\"9075771d31c4f3bfe42b8a3e953284ca7145a6c35e850e666f52edf3f6a695c8be2c306b6cfb1d8e40527f539c5e5550b7271fe5f20027eaa5c870f80034e3ac51b58aaf14e72c86e81dd64fae8b662b1390a7430536d43402ecdb33e31f79b49954013b8052db7e8d71123dd69c71592d8f124555977b09ded1d24d7e73bf09\"},\"encrypt\":\"7HhGXq/k/SyWHdsLnqs=\"}",
+        "cmd": "{ \"url\": \"/signin\", \"sqlId\": \"apiLogin\", \"param\": {\"data\":{\"key\":\"472acef11c28c38189285fe338a285239bc66cb5f6315753db7847e26f4667aae12f56f93517541efc74f93f220a98f1902caa90e0a0599d2dd03792bf4c7fcf2409894acb3015db4c1363d10041c039f08ccf7cf0b71d7edf9cfeee9ddbda706d8697a134aae07f7cdd2e6d5c7aeb2961151df110ccdfd42d123e11ee5e4bfc\",\"value\":\"MHBBOWlrYmFET1FUMWNvNE43Y0E0Vzh6dkJQSm5tazNtTXdldU1vcEVEcUpxdW5Rby9CbXFxT3poQmppQlIyU1ZSZ3oxT3BURWIvc1NFaC82RERZZlZFRExvUUJkRUJkdmh4K0hTZW82Z3JaNmNzRjNEYmxOZlI0V1dmcXlzZWM=\",\"m\":\"9075771d31c4f3bfe42b8a3e953284ca7145a6c35e850e666f52edf3f6a695c8be2c306b6cfb1d8e40527f539c5e5550b7271fe5f20027eaa5c870f80034e3ac51b58aaf14e72c86e81dd64fae8b662b1390a7430536d43402ecdb33e31f79b49954013b8052db7e8d71123dd69c71592d8f124555977b09ded1d24d7e73bf09\"},\"encrypt\":\"7HhGXq/k/SyWHdsLnqs=\"} }",
+        "requestTime": "2026-02-23 13:57:48.221",
+        "responseTime": "2026-02-23 13:57:50.098",
+        "duration": 1877,
+        "jsonFileName": "signin_dataobjectObje.json"
+    }
+}

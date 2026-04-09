@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ai.performance.send.mapper.PerformanceMapper">
+
+	<select id="selectUpdateTime" resultType="string">
+		SELECT TO_CHAR(UPDATE_TIME,'yyyy-mm-dd hh24:mi:ss') AS UPDATE_TIME FROM NIA.TB_PERFORMANCE_UPDATE_TIME
+	</select>
+
+	<select id="selectPerformanceDataList" parameterType="hashmap" resultType="com.nia.ai.performance.send.vo.performance.PerformaceVo">
+		SELECT SYSNAME AS sysname , PORT AS port, UNIT AS unit, TMPER AS tmper, RXCUR AS rxcur
+		      , RXMIN AS rxmin, RXMAX AS rxmax, RXAVE AS rxave, TXCUR AS txcur, TXMIN AS txmin, TXMAX AS txmax, TXAVE AS txave, TO_CHAR(OCRTIME,'YYYY-MM-DD HH24:MI:SS') AS ocrtime
+		  FROM NIA.TB_PERFORMACE_MST
+      <![CDATA[   WHERE OCRTIME = #{ocrtime} ::TIMESTAMP ]]>
+		<!--   and ((sysname = '192.168.200.220-SH1' and port like '%S.1%')
+		   or (sysname = '192.168.200.214-SH1' and port like '%S.2%')
+		   or (sysname = '10.38.96.110-SH1' and port like '%S.1%')
+		   or (sysname = '10.85.112.199-SH1' and port like '%S.1%')
+		   or (sysname = '10.85.80.183-SH1' and port like '%S.1%')) -->
+	</select>
+
+	<update id="updatePerformanceDataSendTime" parameterType="hashmap">
+	UPDATE NIA.TB_PERFORMANCE_UPDATE_TIME
+	   SET UPDATE_TIME = #{updateTime} ::TIMESTAMP
+	</update>
+</mapper>
+
+

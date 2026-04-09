@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.rca.cluster.preprocessor.mapper.AlarmMapper">
+
+	<insert id="insertAlarmMst" parameterType="com.nia.rca.cluster.preprocessor.vo.BasicAlarmVo">
+		INSERT INTO RCA.TB_ALARM_CUR_MST
+		(
+			  ALARMNO, CLUSTERNO, TMP_CLUSTER_NO, SYSNAME, EQUIPTYPE
+			, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, UNIT
+			, ALARMLEVEL, CLUSTERNO_ORIGINAL, ALARMMSG_ORIGINAL, PTPNAME, SLOT
+			, PORT, EQUIP_CODE
+		)
+		VALUES
+		(
+			  #{alarmno}, #{clusterno}, #{tmpClusterno}, #{sysname}, #{equiptype}
+		  	, #{alarmtime}, #{receivetime}, #{alarmloc}, #{alarmmsg}, #{unit}
+		  	, #{alarmlevel}, #{clusternoOriginal}, #{alarmmsgOriginal}, #{ptpName}, #{slot}
+		  	, #{port}, #{equipCode}
+		)
+	</insert>
+	
+	<insert id="insertAlTopology" parameterType="com.nia.rca.cluster.preprocessor.vo.TopologyObject">
+		INSERT INTO RCA.TB_CLUSTER_AL_TOPOLOGY
+		(
+			ALARMNO, LINK_ID, TRUNK_ID ,NW_TYPE, OPP_SYSNAME, OPP_PTPNAME,
+			OPP_SLOT, OPP_PORT, INSERT_TIME
+		)
+		SELECT
+			#{alarmno}, #{linkId}, #{trunkId}, #{nwType}, #{oppSysname}, #{oppPtpName},
+			#{oppSlot}, #{oppPort}, #{insertTime}
+		WHERE NOT EXISTS (
+			SELECT 1 FROM RCA.TB_CLUSTER_AL_TOPOLOGY WHERE ALARMNO = #{alarmno}
+		)
+	</insert>
+
+	<update id="updateAlarmClusterNo" parameterType="java.util.HashMap">
+		UPDATE RCA.TB_ALARM_CUR_MST
+		   SET CLUSTERNO  = #{newClusterno}
+			  , CLUSTERNO_ORIGINAL = #{clusterno}
+		 WHERE CLUSTERNO = #{clusterno}
+	</update>
+</mapper>
+
+

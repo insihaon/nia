@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.ip.preprocessor.mapper.EquipmentMapper">
+
+    <select id="selectNodeMst" resultType="com.nia.alarm.ip.preprocessor.vo.euqipment.NodeInfoVo" parameterType="java.util.HashMap">
+        SELECT NODE_NUM, NODE_ID, NODE_NM, MODEL_NUM, MODEL_ID
+             , IP_ADDR, MAC_ADDR, ADMIN_YN, PRIMARY_GB, SNMP_VER
+             , SNMP_COMMUNITY, SNMP_PORT, LATITUDE, LONGITUDE, NETCONF_PORT
+             , NETCONF_ID, NETCONF_PW, NETCONF_TYPE, NODE_DIVISION, VENDOR
+             , SFLOW_IP, UP_DATETIME, CHNG_DATETIME, REG_DATETIME, DATA_SOURCE
+             , (SELECT CODE_NM FROM RESOURCE.TB_CODE WHERE CATEGORY_CD = 'node_model' AND CODE_ID = MODEL_ID) AS MODEL_NM
+         FROM RESOURCE.TB_NODE_MST
+        WHERE NODE_NUM = #{nodeNum}
+    </select>
+
+    <select id="selectPortMst" resultType="com.nia.alarm.ip.preprocessor.vo.euqipment.PortMstVo" parameterType="java.util.HashMap">
+        SELECT NODE_NUM, NODE_ID, IF_NUM, IF_ID, IF_NM, IF_INDEX, IF_DESC, IF_TYPE, IF_SPEED, IP_ADDR, MAC_ADDR
+          FROM RESOURCE.TB_PORT_MST
+         WHERE NODE_NUM = #{nodeNum}
+           AND IF_NUM = #{ifNum}
+    </select>
+
+</mapper>

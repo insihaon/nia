@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.web.mapper.db1st">
+	<sql id="TotalCountPrefix">
+		<if test="TOTAL_COUNT != null">
+			SELECT COUNT(*) AS "count" FROM (
+		</if>
+	</sql>
+    
+	<sql id="TotalCountSuffix">
+	<if test="TOTAL_COUNT != null">
+			) TOTALCOUNT
+	</if>
+	<choose>
+		<when test="TOTAL_COUNT != null and limit != null">
+			LIMIT ${limit}
+		</when>
+		<when test="page != null and limit != null">
+			<!-- LIMIT ${(page - 1) * limit}, ${limit} -->
+			LIMIT ${limit} OFFSET ${(page - 1) * limit}
+		</when>
+		
+		<otherwise>
+		</otherwise>
+	</choose>
+	</sql>
+	
+</mapper>

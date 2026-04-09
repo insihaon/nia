@@ -1,0 +1,688 @@
+//created on: 2020. 11. 02
+package roadm
+
+//list any import classes here.
+import com.nia.engine.common.RcaAlarmType;
+import com.nia.engine.common.RcaCodeInfo;
+import com.nia.engine.common.RcaResultType;
+import com.nia.engine.vo.BasicAlarmVo;
+import com.nia.engine.vo.RcaResult;
+import com.nia.engine.vo.ClusterObject;
+import com.nia.engine.vo.Flag;
+
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.sql.Timestamp;
+
+//declare any global variables here
+global RcaResult rcaResult;
+
+
+rule "ROADM_NVRAM_ERR"
+salience 1000
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_NVRAM_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_NVRAM_ERR");
+        rcaResult.setFaultDetailCode("NVRAM 고장");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_ETC_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_FAN_OUT"
+salience 900
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg matches RcaCodeInfo.ALARM_ROADM_COW_FAN_M1_FAIL || matches RcaCodeInfo.ALARM_ROADM_COW_FAN_M2_FAIL ||
+        matches RcaCodeInfo.ALARM_ROADM_COW_FAN_M3_FAIL || matches RcaCodeInfo.ALARM_ROADM_COW_FAN_M4_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_FAN_OUT");
+        rcaResult.setFaultDetailCode("FAN 모듈 탈장");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_OUT_CASE1"
+salience 900
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_CARD_OUT,
+        (unit matches "BAUp" || matches "LAUp" || matches "MRSA-2A" || matches "PAUp" || matches "WSUp-2"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_OUT_" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("공통부 " + $a1.getUnit() + " 유닛 탈장");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_OUT_CASE2"
+salience 900
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_CARD_OUT,
+        (unit matches "CCU" || matches "RCU" || matches "WCU"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_OUT_" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("제어부 " + $a1.getUnit() + " 유닛 탈장");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_OUT_CASE3"
+salience 900
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_CARD_OUT,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" || matches "OT2U_2" || matches "OTUC2A" ||
+        matches "OTUXA" || matches "OM24A" || matches "OM24U" || matches "OTNU_C"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_OUT_" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("채널부 " + $a1.getUnit() + " 유닛 탈장");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_OUT_CASE4"
+salience 900
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_CARD_OUT, unit matches "SCU")
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_OUT_" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("통신부 " + $a1.getUnit() + " 유닛 탈장");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WSS_ERR"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WSS_ERR)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WSS_ERR");
+        rcaResult.setFaultDetailCode("WSS 모듈 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_IPC_FAIL"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_IPC_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_IPC_FAIL");
+        rcaResult.setFaultDetailCode("유닛 통신 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_PWR_FAIL_RACK_CASE1"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_A_FAIL)
+        $a2 : BasicAlarmVo(sysname == $a1.sysname, unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_FAN_PWR_A_FAIL)
+        $a3 : BasicAlarmVo(sysname == $a1.sysname, unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_RACK_PWR_A_FAIL)
+        $a4 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_A_FAIL)
+        $a5 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_FAN_PWR_A_FAIL)
+        $a6 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_RACK_PWR_A_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_PWR_FAIL_RACK");
+        rcaResult.setFaultDetailCode("전원부 랙 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_POWER_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_PWR_FAIL_RACK_CASE2"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_B_FAIL)
+        $a2 : BasicAlarmVo(sysname == $a1.sysname, unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_FAN_PWR_B_FAIL)
+        $a3 : BasicAlarmVo(sysname == $a1.sysname, unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_RACK_PWR_B_FAIL)
+        $a4 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_B_FAIL)
+        $a5 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_FAN_PWR_B_FAIL)
+        $a6 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_RACK_PWR_B_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_PWR_FAIL_RACK");
+        rcaResult.setFaultDetailCode("전원부 랙 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_POWER_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_FAIL_CASE1"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_HW_FAIL,
+        (unit matches "CCU" || matches "RCU" || matches "WCU"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_FAIL" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("제어부 " + $a1.getUnit() + " 유닛 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_FAIL_CASE2"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_DCC_FAIL, unit == "SCU")
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_FAIL" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("채널부 " + $a1.getUnit() + " 유닛 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNIT_FAIL_CASE3"
+salience 800
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_HW_FAIL, unit == "SCU")
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNIT_FAIL" + $a1.getUnit());
+        rcaResult.setFaultDetailCode("통신부 " + $a1.getUnit() + " 유닛 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_UNIT_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WDM_SF_BI_CASE2"
+salience 700
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_LOS, (unit matches "LAUp" || matches "MRSA-2A" || matches "PAUp"))
+        $a2 : BasicAlarmVo(sysname == $a1.topology.oppSysname, ptpname == $a1.topology.oppPtpName, alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_LOS)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WDM_SF_BI");
+        rcaResult.setFaultDetailCode("WDM NNI 수신단 양방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+        rcaResult.addRelatedAlarm($a2);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WDM_SF_BI_CASE3"
+salience 700
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_LOS, (unit matches "LAUp" || matches "MRSA-2A" || matches "PAUp"))
+        $a2 : BasicAlarmVo(sysname == $a1.topology.oppSysname, $a1.topology.oppPtpName != "", alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_LOS,
+        Integer.parseInt(ptpname.substring(ptpname.length()-1)) == Integer.parseInt($a1.topology.oppPtpName.substring($a1.topology.oppPtpName.length()-1)) + 1)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WDM_SF_BI");
+        rcaResult.setFaultDetailCode("WDM NNI 수신단 양방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+        rcaResult.addRelatedAlarm($a2);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_PWR_FAIL_SHELF_CASE1"
+salience 700
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_A_FAIL)
+        $a2 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_A_FAIL)
+        $a3 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_RACK_PWR_A_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_PWR_FAIL_SHELF");
+        rcaResult.setFaultDetailCode("전원부 셀프 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_POWER_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_PWR_FAIL_SHELF_CASE2"
+salience 700
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit == "CCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_B_FAIL)
+        $a2 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_PDU_PWR_B_FAIL)
+        $a3 : BasicAlarmVo(sysname == $a1.sysname, unit == "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_RACK_PWR_B_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_PWR_FAIL_FAN");
+        rcaResult.setFaultDetailCode("전원부 셀프 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_POWER_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WDM_SF_SI"
+salience 600
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_LOS,
+        (unit matches "LAUp" || matches "MRSA-2A" || matches "PAUp"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WDM_SF_SI");
+        rcaResult.setFaultDetailCode("WDM NNI 수신단 단방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_PWR_FAIL_FAN_CASE1"
+salience 600
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit matches "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_FAN_PWR_A_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_PWR_FAIL_FAN");
+        rcaResult.setFaultDetailCode("전원부 팬 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_POWER_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_PWR_FAIL_FAN_CASE2"
+salience 600
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit matches "WCU", alarmmsg == RcaCodeInfo.ALARM_ROADM_FAN_PWR_B_FAIL)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_PWR_FAIL_FAN");
+        rcaResult.setFaultDetailCode("전원부 팬 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_POWER_FAIL);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WDM_SD_LOW_CASE1"
+salience 500
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_PWR_LOW,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C" ||
+        matches "OM2C2A-L" || matches "OTUC1A-L"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WDM_SD_LOW");
+        rcaResult.setFaultDetailCode("WDM NNI 수신단 단방향 링크 신호 감쇠");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WDM_SD_LOW_CASE2"
+salience 500
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_LOCAL_SD,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C" ||
+        matches "OM2C2A-L" || matches "OTUC1A-L"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WDM_SD_LOW");
+        rcaResult.setFaultDetailCode("WDM NNI 수신단 단방향 링크 신호 감쇠");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_WDM_SD_HIGH"
+salience 500
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_WDM_PWR_HIGH,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C"||
+        matches "OM2C2A-L" || matches "OTUC1A-L"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_WDM_SD_HIGH");
+        rcaResult.setFaultDetailCode("WDM NNI 수신단 단방향 링크 신호 증가");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNI_SF_BI_CASE1"
+salience 400
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(topology != null, alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C" ||
+        matches "OM2C2A-L" || matches "OTUC1A-L"))
+        $a2 : BasicAlarmVo(sysname == $a1.topology.oppSysname, slot == $a1.topology.oppSlot, alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_REMOTE_SF)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNI_SF_BI");
+        rcaResult.setFaultDetailCode("UNI 수신단 양방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+        rcaResult.addRelatedAlarm($a2);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNI_SF_BI_CASE3"
+salience 400
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit matches "CSAU_2", alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS)
+        $a2 : BasicAlarmVo(sysname == $a1.topology.oppSysname, slot == $a1.topology.oppSlot, alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNI_SF_BI");
+        rcaResult.setFaultDetailCode("UNI 수신단 양방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+        rcaResult.addRelatedAlarm($a2);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNI_SF_SI_CASE1"
+salience 300
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C" || matches "OM2C2A-L" ||
+        matches "OTUC1A-L"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNI_SF_SI");
+        rcaResult.setFaultDetailCode("UNI 수신단 단방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNI_SF_SI_CASE2"
+salience 250
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(unit matches "CSAU_2", alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS)
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNI_SF_SI");
+        rcaResult.setFaultDetailCode("UNI 수신단 단방향 링크 장애");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNI_SD_LOW_CASE2"
+salience 200
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_PWR_LOW,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C" || matches "OM2C2A-L" ||
+        matches "OTUC1A-L"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNI_SF_SI");
+        rcaResult.setFaultDetailCode("UNI 수신단 단방향 링크 신호 감쇠");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+
+
+rule "ROADM_UNI_SD_HIGH_CASE2"
+salience 200
+lock-on-active
+no-loop
+    when
+        //conditions
+        flagTF : Flag(flag == false)
+        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_PWR_HIGH,
+        (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
+        matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
+        matches "OM24A" || matches "OM24U" || matches "OTNU_C" || matches "OM2C2A-L" ||
+        matches "OTUC1A-L"))
+    then
+        //actions
+        rcaResult.setRcaResultCode("ROADM_UNI_SD_HIGH");
+        rcaResult.setFaultDetailCode("UNI 수신단 단방향 링크 신호 증가");
+        rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
+        rcaResult.setRcaResultTypeCode(RcaCodeInfo.RCA_RESULT_LINKCUT);
+        rcaResult.addRelatedAlarm($a1);
+
+        flagTF.setFlag(true);
+        update(flagTF);
+end
+

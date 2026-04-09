@@ -1,0 +1,121 @@
+{
+    "nodes": [
+        {
+            "id": "192.168.200.213",
+            "device_name": "수원성균관대",
+            "device_type": "0",
+            "image": {
+                "path": "images/node/roadm.png"
+            },
+            "index": 0,
+            "fx": 600,
+            "fy": 585
+        },
+        {
+            "id": "192.168.200.210",
+            "device_name": "서울NIA",
+            "device_type": "0",
+            "image": {
+                "path": "images/node/roadm.png"
+            },
+            "index": 7,
+            "fx": 600,
+            "fy": 495
+        }
+    ],
+    "links": [
+        {
+            "id": "36",
+            "element_id": "link_36",
+            "source_id": "192.168.200.210",
+            "source_name": "서울NIA",
+            "source_dir": "1",
+            "source_bau": "SH1-S.1",
+            "source_pau": "SH1-S.1",
+            "target_id": "192.168.200.213",
+            "target_name": "수원성균관대",
+            "target_dir": "2",
+            "target_bau": "SH1-S.2",
+            "target_pau": "SH1-S.2",
+            "state": "UP",
+            "source_port_disp": "정보없음",
+            "target_port_disp": "정보없음"
+        },
+        {
+            "id": "39",
+            "element_id": "link_39",
+            "source_id": "192.168.200.213",
+            "source_name": "수원성균관대",
+            "source_dir": "2",
+            "source_bau": "SH1-S.2",
+            "source_pau": "SH1-S.2",
+            "target_id": "192.168.200.210",
+            "target_name": "서울NIA",
+            "target_dir": "1",
+            "target_bau": "SH1-S.1",
+            "target_pau": "SH1-S.1",
+            "state": "UP",
+            "source_port_disp": "정보없음",
+            "target_port_disp": "정보없음"
+        },
+        {
+            "id": "39",
+            "element_id": "link_39",
+            "source_id": "192.168.200.213",
+            "source_name": "수원성균관대",
+            "source_dir": "2",
+            "source_bau": "SH1-S.2",
+            "source_pau": "SH1-S.2",
+            "target_id": "192.168.200.210",
+            "target_name": "서울NIA",
+            "target_dir": "1",
+            "target_bau": "SH1-S.1",
+            "target_pau": "SH1-S.1",
+            "state": "UP",
+            "source_port_disp": "정보없음",
+            "target_port_disp": "정보없음"
+        }
+        
+    ],
+    "config": {
+        "converter": "nia",
+        "options": {
+            "node_fix_size": 1.4,
+            "node_r_show": false,
+            "node_r_width": 45,
+            "node_width": 40,
+            "node_height": 35,
+            "node_badge_size": 25,
+            "node_text_size": 14,
+            "link_text_field": "none",
+            "link_width": 1,
+            "link_text_size": 6,
+            "link_badge_size": 15,
+            "link_traffic_arrow_show": true,
+            "link_traffic_r": 1,
+            "link_traffic_r_color": "#fff",
+            "link_type": "line",
+            "zoom_scale_min": 0.5,
+            "zoom_scale_max": 7,
+            "link_selector_min_width": 0,
+            "link_selector_weight": 1
+        },
+        "map": {
+            "width": "100%",
+            "height": "100%",
+            "opacity": "0.5"
+        },
+        "zoom": {
+            "reset": true,
+            "initScale": 2,
+            "node": {
+                "min_scale": 1,
+                "max_scale": 3
+            },
+            "initPos": {
+                "x": "1000",
+                "y": "530"
+            }
+        }
+    }
+}

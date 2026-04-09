@@ -1,0 +1,30 @@
+const getters = {
+  sidebar: (state) => state.app.sidebar,
+  server: (state) => state.app.server,
+  size: (state) => state.app.size,
+  screenDevice: (state) => state.app.screenDevice,
+  visitedViews: (state) => state.tagsView.visitedViews,
+  cachedViews: (state) => state.tagsView.cachedViews,
+  token: (state) => state.user.token,
+  ipsdnToken: (state) => state.user.ipsdnToken,
+  uid: (state) => state.user.uid,
+  blackDtlList: (state) => state.user.blackDtlList,
+  name: (state) => state.user.name,
+  avatar: (state) => state.user.avatar,
+  roles: (state) => state.user.roles,
+  permission_routes: (state) => state.permission.routes,
+  errorLogs: (state) => state.errorLog.logs,
+  serviceLogs: (state) => state.serviceLog.logs,
+  filterText: (state) => state.bottombarFilter.filterText,
+  aam: (state) => state.aam,
+  aamPersisted: (state) => state.aamPersisted,
+  influenceCircitStore: (state) => state.influenceCircitStore,
+
+  showHistory: (state) => state.app.showHistory,
+  windows: (state) => state.mdi.windows,
+  window_param: (state) => state.mdi.window_param,
+
+  adminYn: (state) => state.ipms.adminYn,
+  ownerYn: (state) => state.ipms.ownerYn,
+}
+export default getters

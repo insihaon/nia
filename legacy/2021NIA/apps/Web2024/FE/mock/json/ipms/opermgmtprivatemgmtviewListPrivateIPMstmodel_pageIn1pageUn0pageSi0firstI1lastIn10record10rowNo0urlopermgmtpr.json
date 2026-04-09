@@ -1,0 +1,23 @@
+{
+    "__body": {},
+    "config": {
+        "url": "/opermgmt/privatemgmt/viewListPrivateIPMst.model",
+        "param": {
+            "pageIndex": 1,
+            "pageUnit": 0,
+            "pageSize": 0,
+            "firstIndex": 1,
+            "lastIndex": 10,
+            "recordCountPerPage": 10,
+            "rowNo": 0,
+            "url": "/opermgmt/privatemgmt/viewListPrivateIPMst.model"
+        },
+        "receivedTime": "2024-08-05 10:20:51.440",
+        "fetch": "error-fetch('/opermgmt/privatemgmt/viewListPrivateIPMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/opermgmt/privatemgmt/viewListPrivateIPMst.model\"}', 'method': 'POST' })",
+        "errorThrown": "Method Not Allowed",
+        "cmd": "{\"url\": \"/opermgmt/privatemgmt/viewListPrivateIPMst.model\", \"sqlId\": \"\", \"param\": \"{\\\"pageIndex\\\": 1, \\\"pageUnit\\\": 0, \\\"pageSize\\\": 0, \\\"firstIndex\\\": 1, \\\"lastIndex\\\": 10, \\\"recordCountPerPage\\\": 10, \\\"rowNo\\\": 0, \\\"url\\\": \\\"/opermgmt/privatemgmt/viewListPrivateIPMst.model\\\"}\"}",
+        "duration": 563,
+        "jsonFileName": "opermgmtprivatemgmtviewListPrivateIPMstmodel_pageIn1pageUn0pageSi0firstI1lastIn10record10rowNo0urlopermgmtpr.json",
+        "oldJsonFileName": "b3Blcm1nbXQvcHJpdmF0ZW1nbXQvdmlld0xpc3RQcml2YXRlSVBNc3QubW9kZWw_MXwwfDB8MXwxMHwxMHwwfC9vcGVybWdtdC8.json"
+    }
+}

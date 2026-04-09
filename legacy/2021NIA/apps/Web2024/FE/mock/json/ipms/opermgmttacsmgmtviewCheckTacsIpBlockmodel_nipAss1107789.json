@@ -1,0 +1,71 @@
+{
+    "__body": {
+        "result": {
+            "data": {
+                "searchBgnDe": "",
+                "searchCnd": "",
+                "searchEndDe": "",
+                "searchWrd": "",
+                "sortType": "",
+                "sortOrdr": "",
+                "searchUseYn": "",
+                "searchBgnCd": "",
+                "searchEndCd": "",
+                "pageIndex": 1,
+                "pageUnit": 0,
+                "pageSize": 0,
+                "firstIndex": 1,
+                "lastIndex": 10,
+                "recordCountPerPage": 10,
+                "rowNo": 0,
+                "typeFlag": "N",
+                "dcreateDt": null,
+                "screateId": null,
+                "screateNm": null,
+                "dmodifyDt": null,
+                "smodifyId": null,
+                "smodifyNm": null,
+                "commonMsg": "SUCCESS",
+                "screateEmail": null,
+                "smodifyEmail": null,
+                "moveType": "",
+                "moveSearchWrd": "",
+                "moveSipVersionTypeCd": null,
+                "url": null,
+                "menuType": null,
+                "paramMap": null,
+                "tacsResponseVos": [
+                    {
+                        "responseCd": 99999,
+                        "responseMsg": "알수 없는 에러",
+                        "targetIp": "172.29.24.148",
+                        "targetType": "MOBILE-JUNIPER-QFX10008",
+                        "flag": "N",
+                        "responseList": null
+                    },
+                    {
+                        "responseCd": 99999,
+                        "responseMsg": "알수 없는 에러",
+                        "targetIp": "172.21.120.241",
+                        "targetType": "MOBILE-JUNIPER_MX960",
+                        "flag": "N",
+                        "responseList": null
+                    }
+                ],
+                "totalCount": 0
+            }
+        }
+    },
+    "config": {
+        "url": "/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model",
+        "param": {
+            "nipAssignMstSeq": "1107789"
+        },
+        "receivedTime": "2024-08-08 11:11:26.696",
+        "fetch": "fetch('/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nipAssignMstSeq\":\"1107789\"}', 'method': 'POST' })",
+        "cmd": "{\"url\": \"/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model\", \"sqlId\": \"\", \"param\": \"{\\\"nipAssignMstSeq\\\": \\\"1107789\\\"}\"}",
+        "duration": 43426,
+        "jsonFileName": "opermgmttacsmgmtviewCheckTacsIpBlockmodel_nipAss1107789.json",
+        "oldJsonFileName": "b3Blcm1nbXQvdGFjc21nbXQvdmlld0NoZWNrVGFjc0lwQmxvY2subW9kZWw_MTEwNzc4OQ.json"
+    }
+}

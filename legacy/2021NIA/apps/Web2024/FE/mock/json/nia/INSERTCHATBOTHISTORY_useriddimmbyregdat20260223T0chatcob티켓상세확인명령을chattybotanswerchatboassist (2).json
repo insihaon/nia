@@ -1,0 +1,26 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "INSERT INTO nia.tb_chatbot_history \n        (\n            user_id\n            , reg_date\n            , chat_content\n            , chat_type\n            , chatbot_action_type\n        ) \n        VALUES \n        (\n            'dimmby'\n            , '2026-02-23T04:34:21.636Z'::timestamp\n            , '<b>티켓상세확인 명령을 실행했습니다.</b><br><br><i class=\"el-icon-minus\" style=\"color: #909399; vertical-align: middle;\"></i>&nbsp; DashBoard화면에서<br><i class=\"el-icon-success\" style=\"color: #67C23A; vertical-align: middle;\"></i>&nbsp; 티켓상세확인 명령을 실행합니다.'\n            , 'bot-answer'\n            , 'assist'\n        )"
+        ],
+        "total": 1,
+        "result": 1
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectOne/INSERT_CHATBOT_HISTORY",
+        "urlOrigin": "/selectOne/INSERT_CHATBOT_HISTORY",
+        "params": null,
+        "data": "{\"user_id\":\"dimmby\",\"reg_date\":\"2026-02-23T04:34:21.636Z\",\"chat_content\":\"<b>티켓상세확인 명령을 실행했습니다.</b><br><br><i class=\\\"el-icon-minus\\\" style=\\\"color: #909399; vertical-align: middle;\\\"></i>&nbsp; DashBoard화면에서<br><i class=\\\"el-icon-success\\\" style=\\\"color: #67C23A; vertical-align: middle;\\\"></i>&nbsp; 티켓상세확인 명령을 실행합니다.\",\"chat_type\":\"bot-answer\",\"chatbot_action_type\":\"assist\",\"encrypt\":\"WrPlklNd92EPQOdf9jM=\"}",
+        "cmd": "{ \"url\": \"/selectOne/INSERT_CHATBOT_HISTORY\", \"sqlId\": \"INSERT_CHATBOT_HISTORY\", \"param\": {\"user_id\":\"dimmby\",\"reg_date\":\"2026-02-23T04:34:21.636Z\",\"chat_content\":\"<b>티켓상세확인 명령을 실행했습니다.</b><br><br><i class=\\\"el-icon-minus\\\" style=\\\"color: #909399; vertical-align: middle;\\\"></i>&nbsp; DashBoard화면에서<br><i class=\\\"el-icon-success\\\" style=\\\"color: #67C23A; vertical-align: middle;\\\"></i>&nbsp; 티켓상세확인 명령을 실행합니다.\",\"chat_type\":\"bot-answer\",\"chatbot_action_type\":\"assist\",\"encrypt\":\"WrPlklNd92EPQOdf9jM=\"} }",
+        "requestTime": "2026-02-23 13:34:21.640",
+        "responseTime": "2026-02-23 13:34:21.739",
+        "duration": 99,
+        "jsonFileName": "INSERTCHATBOTHISTORY_useriddimmbyregdat20260223T0chatcob티켓상세확인명령을chattybotanswerchatboassist.json"
+    }
+}

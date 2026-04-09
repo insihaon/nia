@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.preprocessor.mapper.TopologyMapper">
+
+    <select id="selectTopologyList" resultType="com.nia.alarm.preprocessor.vo.topology.TopologyDataVo" parameterType="hashmap">
+        SELECT LINK_ID AS linkId, SYSNAMEA AS sysnamea, PTPNAMEA_BAU AS ptpnameaBau, PTPNAMEA_PAU AS ptpnameaPau
+              , SYSNAMEZ AS sysnamez, PTPNAMEZ_BAU AS ptpnamezBau, PTPNAMEZ_PAU AS ptpnamezPau
+          FROM NIA.TB_TOPOLOGY
+         WHERE ((SYSNAMEA = #{sysname} AND PTPNAMEA_BAU = #{ptpName}) OR (SYSNAMEA = #{sysname} AND PTPNAMEA_PAU = #{ptpName}))
+            OR ((SYSNAMEZ = #{sysname} AND PTPNAMEZ_BAU = #{ptpName}) OR (SYSNAMEZ = #{sysname} AND PTPNAMEZ_PAU = #{ptpName}))
+    </select>
+
+    <select id="selectUniTopologyList" resultType="com.nia.alarm.preprocessor.vo.topology.UniTopologyDataVo" parameterType="hashmap">
+        SELECT LINK_ID AS linkId, SYSNAMEA AS sysnamea, PTPNAMEA AS ptpnamea
+              , SYSNAMEZ AS sysnamez, PTPNAMEZ AS ptpnamez
+          FROM(
+                SELECT LINK_ID, SYSNAMEA, SPLIT_PART(PTPNAMEA, '-', 1) AS S_PTPNAMEA, PTPNAMEA, SHELFA
+                     , SYSNAMEZ, SPLIT_PART(PTPNAMEZ, '-', 1) AS S_PTPNAMEZ, PTPNAMEZ, SHELFZ
+                  FROM NIA.TB_UNI_TOPOLOGY
+        ) A
+         WHERE ((SYSNAMEA = SPLIT_PART(#{sysname}, '-', 1) AND S_PTPNAMEA = SPLIT_PART(#{ptpName}, '-', 1) and SHELFA = SPLIT_PART(#{sysname}, '-', 2))
+                    OR (SYSNAMEZ = SPLIT_PART(#{sysname}, '-', 1) AND S_PTPNAMEZ = SPLIT_PART(#{ptpName}, '-', 1) and SHELFZ = SPLIT_PART(#{sysname}, '-', 2)))
+        LIMIT 1
+    </select>
+
+    <select id="selectRoadmTrunkId" resultType="com.nia.alarm.preprocessor.vo.topology.RoadmRepeaterRouteVo" parameterType="hashmap">
+        SELECT TRUNK_ID AS trunkId, TRUNK_NAME AS trunkName, ROUTENUM AS routenum, SYSNAME AS sysname
+              , UP_PTPNAME_BAU AS upPtpnameBau, UP_PTPNAME_PAU AS upPtpnamePau
+              , DOWN_PTPNAME_BAU AS downPtpnameBau, DOWN_PTPNAME_PAU AS downPtpnamePau
+          FROM NIA.TB_ROADM_TRUNK_REPEATER
+         WHERE SYSNAME = #{sysname} AND (UP_PTPNAME_BAU = #{ptpname} OR UP_PTPNAME_PAU = #{ptpname} OR DOWN_PTPNAME_BAU = #{ptpname} OR DOWN_PTPNAME_PAU = #{ptpname})
+
+    </select>
+
+    <select id="selectE2eTopologyList" resultType="com.nia.alarm.preprocessor.vo.topology.E2eTopologyVo" parameterType="hashmap">
+        SELECT LINK_ID as linkId, NODE_IDA as nodeIda, PORTA as porta, NODE_IDZ as nodeIdz, PORTZ as portz
+        FROM NIA.TB_E2E_TOPOLOGY
+        WHERE ((NODE_IDA = #{nodeId} AND PORTA = #{port})
+            OR (NODE_IDZ = #{nodeId} AND PORTZ = #{port}))
+    </select>
+</mapper>

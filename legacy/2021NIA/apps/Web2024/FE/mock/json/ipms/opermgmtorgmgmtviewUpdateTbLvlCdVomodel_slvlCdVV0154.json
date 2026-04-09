@@ -1,0 +1,61 @@
+{
+    "data": {
+        "result": {
+            "data": {
+                "searchBgnDe": "",
+                "searchCnd": "",
+                "searchEndDe": "",
+                "searchWrd": "",
+                "sortType": "",
+                "sortOrdr": "",
+                "searchUseYn": "",
+                "searchBgnCd": "",
+                "searchEndCd": "",
+                "pageIndex": 1,
+                "pageUnit": 0,
+                "pageSize": 0,
+                "firstIndex": 1,
+                "lastIndex": 10,
+                "recordCountPerPage": 10,
+                "rowNo": 0,
+                "typeFlag": "",
+                "dcreateDt": "2024-12-20T15:33:03.000+09:00",
+                "screateId": "10150810",
+                "screateNm": null,
+                "dmodifyDt": "2024-12-20T15:33:02.998+09:00",
+                "smodifyId": "10150810",
+                "smodifyNm": null,
+                "commonMsg": null,
+                "screateEmail": null,
+                "smodifyEmail": null,
+                "moveType": "",
+                "moveSearchWrd": "",
+                "moveSipVersionTypeCd": null,
+                "url": null,
+                "menuType": null,
+                "paramMap": null,
+                "slvlCd": "VV0154",
+                "slvlNm": "e2",
+                "sorgOfficeFlagYn": "N",
+                "sexLinkUseTypeCd": "CE0006",
+                "sexLinkUseTypeNm": "수작업데이터",
+                "scomment": "test"
+            }
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/opermgmt/orgmgmt/viewUpdateTbLvlCdVo.model",
+        "urlOrigin": "/opermgmt/orgmgmt/viewUpdateTbLvlCdVo.model",
+        "params": null,
+        "data": "{\"slvlCd\":\"VV0154\",\"encrypt\":\"p5CH2unZs41DeT77qdI=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/orgmgmt/viewUpdateTbLvlCdVo.model\", \"sqlId\": \"\", \"param\": {\"slvlCd\":\"VV0154\",\"encrypt\":\"p5CH2unZs41DeT77qdI=\"} }",
+        "requestTime": "2024-12-20 15:33:11.259",
+        "responseTime": "2024-12-20 15:33:11.481",
+        "duration": 222,
+        "jsonFileName": "opermgmtorgmgmtviewUpdateTbLvlCdVomodel_slvlCdVV0154.json"
+    }
+}

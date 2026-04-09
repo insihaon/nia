@@ -1,0 +1,16 @@
+질문	답변	카테고리	API 호출	설명
+현재 발생한 장애를 보여줘	http://116.89.191.47:8080/fault/current?status=active	장애 조회	/fault/current?status=active	현재 활성 장애 조회
+최근 24시간 장애 현황을 알려줘	http://116.89.191.47:8080/fault/history?period=24h	장애 조회	/fault/history?period=24h	최근 24시간 장애 이력
+장비별 장애 통계를 보고 싶어	http://116.89.191.47:8080/fault/statistics/device	장애 통계	/fault/statistics/device	장비 기준 장애 통계
+오늘 발생한 이벤트 목록을 알려줘	http://116.89.191.47:8080/event/history?date=today	이벤트 이력	/event/history?date=today	오늘 날짜 이벤트
+특정 장비의 이벤트 이력을 보여줘	http://116.89.191.47:8080/device/5678/event	이벤트 이력	/device/{id}/event	장비별 이벤트 이력
+현재 알람이 발생 중인 장비는?	http://116.89.191.47:8080/alarm/active	알람 조회	/alarm/active	활성 알람 장비 리스트
+알람 레벨별 통계를 보고 싶어	http://116.89.191.47:8080/alarm/statistics?group_by=level	알람 통계	/alarm/statistics?group_by=level	알람 레벨별 분포
+장비 목록을 보여줘	http://116.89.191.47:8080/device/list	장비 조회	/device/list	전체 장비 리스트
+장비 상태가 비정상인 것만 보여줘	http://116.89.191.47:8080/device/list?status=down	장비 상태	/device/list?status=down	비정상 장비 필터링
+서울 IDC 트래픽 상황을 보고 싶어	http://116.89.191.47:8080/traffic/region?name=seoul	트래픽 분석	/traffic/region?name=seoul	서울 IDC 트래픽 조회
+링크별 트래픽 사용량을 보여줘	http://116.89.191.47:8080/traffic/link	트래픽 분석	/traffic/link	링크 기준 트래픽 조회
+전체 네트워크 토폴로지를 보여줘	http://116.89.191.47:8080/topology/overview	토폴로지	/topology/overview	전체 네트워크 구조
+장비 간 연결 상태를 확인하고 싶어	http://116.89.191.47:8080/topology/links	토폴로지	/topology/links	장비 간 연결 정보
+장비의 CPU 사용률을 보고 싶어	http://116.89.191.47:8080/performance/cpu?device_id=1234	성능 분석	/performance/cpu?device_id={id}	CPU 사용률 모니터링
+메모리 사용률이 높은 장비를 알려줘	http://116.89.191.47:8080/performance/memory?sort=desc	성능 분석	/performance/memory?sort=desc	메모리 사용률 기준 정렬

@@ -1,0 +1,20 @@
+# 자연어 분석을 위한 elasticsearch 활용
+
+# docker 로 elasticsearch 구성
+up.bat - elasticsearch 도커 컨테이너 실행
+clean.bat - volumes 데이터 삭제
+
+# 환경설정
+pip install elasticsearch==8.18.1 &
+pip install elastic-transport &
+
+# 코드 
+0. main.py 실행
+1. Elasticsearch 연결  
+    def get_es_client() -> Elasticsearch:
+2. 인덱스 생성
+    def create_index(es: Elasticsearch) -> None:
+3. 인덱스 검색
+    def search_docs(es: Elasticsearch, query: str, size: int = 10) -> None:
+
+

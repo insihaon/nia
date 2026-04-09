@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.syscheck.mapper.SysCheckMapper">
+
+
+    <!-- Monitoring -->
+    <select id="selectMonitoringResult" resultType="string" parameterType="java.util.HashMap">
+        select mnt.result from rca.tb_rca_monitoring mnt
+        where mnt.code = #{code} and mnt.name =#{name}
+    </select>
+
+
+    <!-- Engine -->
+    <insert id="insertEngineSystemStatus" parameterType="java.util.HashMap">
+        INSERT INTO nia.tb_rca_monitoring
+            (code, name, result, update_time, description, result_update_time)
+        VALUES
+            (
+             #{code},#{name},#{result},#{update_time},#{description},#{result_update_time}
+             );
+    </insert>
+
+
+    <!-- Sflow -->
+    <select id="selectSflowLastDataTime" resultType="string" parameterType="java.util.HashMap">
+        SELECT sf.collect_timestamp
+        FROM gather.tb_sflow_collect sf
+        WHERE sf.collect_timestamp > #{lasttime}
+        ORDER BY collect_timestamp DESC
+        limit 1
+    </select>
+
+    <update id="updateSflowLastDataTime" parameterType="java.util.HashMap">
+        UPDATE rca.tb_rca_monitoring
+        SET result_content = #{resultContent}
+          , update_time = now()
+          , result = #{result}
+        WHERE code = #{code} AND name = #{name}
+    </update>
+
+
+</mapper>

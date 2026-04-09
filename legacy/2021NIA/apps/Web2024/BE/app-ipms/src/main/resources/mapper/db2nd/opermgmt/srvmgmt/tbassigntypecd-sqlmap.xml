@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.srvmgmt.dao.TbAssignTypeCdDao">
+	<resultMap id="tbAssignTypeCdVoResult" type="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		<result column="SASSIGN_TYPE_CD" property="sassignTypeCd" jdbcType="CHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="SNEOSS_DD_YN" property="sneossDdYn" jdbcType="CHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SASSIGN_TYPE_CD, A.SASSIGN_TYPE_NM, A.SNEOSS_DD_YN, A.SCOMMENT
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+				AND A.SASSIGN_TYPE_CD ILIKE '%' || #{sassignTypeCd, jdbcType=CHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeNm)">
+				AND A.SASSIGN_TYPE_NM ILIKE '%' || #{sassignTypeNm, jdbcType=VARCHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sneossDdYn)">
+				AND A.SNEOSS_DD_YN = #{sneossDdYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbAssignTypeCdVo" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		INSERT
+		INTO MST.TB_ASSIGN_TYPE_CD (
+			SASSIGN_TYPE_CD
+			,	SASSIGN_TYPE_NM
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			(SELECT 'SA1' || TRIM(TO_CHAR(TO_NUMBER(NVL(MAX(RIGHT(sassign_type_cd,3)),'0')) + 1,'000')) AS sassign_type_cd
+				FROM mst.tb_assign_type_cd
+				WHERE LEFT(sassign_type_cd,3) = 'SA1')
+			,	#{sassignTypeNm, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbAssignTypeCdVo" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		UPDATE
+		MST.TB_ASSIGN_TYPE_CD A
+		SET
+			A.DMODIFY_DT = current_timestamp
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeNm)">
+				, A.SASSIGN_TYPE_NM = #{sassignTypeNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sneossDdYn)">
+				, A.SNEOSS_DD_YN = #{sneossDdYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbAssignTypeCdVo" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		DELETE
+		FROM MST.TB_ASSIGN_TYPE_CD A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbAssignTypeCdVo" resultMap="tbAssignTypeCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_ASSIGN_TYPE_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbAssignTypeCdVo" resultMap="tbAssignTypeCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_ASSIGN_TYPE_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbAssignTypeCdVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_ASSIGN_TYPE_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbAssignTypeCdVo" resultMap="tbAssignTypeCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_ASSIGN_TYPE_CD A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				ORDER BY SASSIGN_TYPE_CD ASC
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbAssignTypeCdVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_ASSIGN_TYPE_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+</mapper>

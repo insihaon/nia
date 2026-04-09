@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    primary:
+      driver-class-name: org.postgresql.Driver
+      jdbcUrl: jdbc:postgresql://116.89.191.47:6544/niadb
+      username: ENC(tD78wIra2l5konGYTRXMepLI/gooXj9NI2Mhc+ss0HJ0VNUMvqJtuzZaAnpTwfyE)
+      password: ENC(bVuAREvWcarcjlP/Clu1pKJhQqIzs0+Qk4lLnpmJCc/0bYqGCGcgZNJO588n2yl6)
+      batch-size: 2000
+      hikari:
+        max-lifetime: 30000
+        idle-timeout: 6000
+        maximum-pool-size: 5
+        pool-name: 'nia-pool'
+
+client:
+  base-url: "http://localhost:5050"
+  connect-timeout-ms: 3000
+  read-timeout-ms: 5000
+
