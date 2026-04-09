@@ -1,0 +1,65 @@
+unKnown:
+  code: "-9999"
+  message: "An unknown error has occurred."
+  message_detail: "Please contact the administrator."
+userNotFound:
+  code: "-1000"
+  message: "The user does not exist."
+  message_detail: "Please register a new account."
+emailSigninFailed:
+  code: "-1001"
+  message: "The account does not exist, or the email or password is incorrect."
+  message_detail: "Please check the data you entered."
+entryPointException:
+  code: "-1002"
+  message: "Authentication information not found."
+  message_detail: "Please check your login."
+accessDenied:
+  code: "-1003"
+  message: "Access to the service is denied."
+  message_detail: "Please check your permissions."
+communicationError:
+  code: "-1004"
+  message: "An error occurred during communication."
+  message_detail: "Please check your network and retry the service."
+existingUser:
+  code: "-1005"
+  message: "You have already registered."
+  message_detail: "Please log in."
+notOwner:
+  code: "-1006"
+  message: "You are not the owner of this resource."
+  message_detail: "Only the owner can use this feature."
+resourceNotExist:
+  code: "-1007"
+  message: "The requested resource does not exist."
+  message_detail: "Please check if the resource has been deleted or moved."
+forbiddenRequest:
+  code: "-1008"
+  message: "This request is not allowed."
+  message_detail: "Please check your permissions."
+serviceException:
+  code: "-1009"
+  message: "An error occurred while processing the service."
+  message_detail: "Please check with the administrator."
+serviceNotImplement:
+  code: "-1010"
+  message: "The service has not been implemented."
+  message_detail: "The service is under preparation."
+serviceIncorrectUse:
+  code: "-1011"
+  message: "The service was called incorrectly."
+  message_detail: "Please check the service name."
+mybatisException:
+  code: "-1012"
+  message: "An error occurred during DB processing."
+  message_detail: "Please check the MyBatis query logs."
+httpRelayServiceFail:
+  code: "-1013"
+  message: "An error occurred in the HTTP-RELAY service."
+  message_detail: "Please check the gateway logs."
+untrustedRequest:
+  code: "-1014"
+  message: "The request is untrusted."
+  message_detail: "Authenticate and try again."
+

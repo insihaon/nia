@@ -1,0 +1,440 @@
+@import './variables.scss';
+// cover some element-ui styles
+
+.el-breadcrumb__inner,
+.el-breadcrumb__inner a {
+  font-weight: 400 !important;
+}
+
+.el-upload {
+  input[type="file"] {
+    display: none !important;
+  }
+}
+
+.el-upload__input {
+  display: none;
+}
+
+.cell {
+  .el-tag {
+    margin-right: 0px;
+  }
+}
+
+.small-padding {
+  .cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.fixed-width {
+  .el-button--mini {
+    padding: 7px 10px;
+    min-width: 60px;
+  }
+}
+
+.status-col {
+  .cell {
+    padding: 0 10px;
+    text-align: center;
+
+    .el-tag {
+      margin-right: 0px;
+    }
+  }
+}
+
+
+// to fixed https://github.com/ElemeFE/element/issues/2461
+.el-dialog {
+  transform: none;
+  left: 0;
+  position: relative;
+  margin: 0 auto;
+
+  .el-form-item__error{
+    padding-top: 0;
+  }
+}
+
+// refine element ui upload
+.upload-container {
+  .el-upload {
+    width: 100%;
+
+    .el-upload-dragger {
+      width: 100%;
+      height: 200px;
+    }
+  }
+}
+
+// dropdown
+.el-dropdown-menu {
+  a {
+    display: block
+  }
+}
+
+// fix date-picker ui bug in filter-item
+.el-range-editor.el-input__inner {
+  display: inline-flex !important;
+}
+
+// to fix el-date-picker css style
+.el-range-separator {
+  box-sizing: content-box;
+}
+
+.icon-shareoption{
+  .el-icon-share:before {
+    padding-left: 6px !important;
+  }
+}
+.el-input.is-disabled .el-input__inner{
+  width: 160px !important;
+  margin-left: 1rem !important;
+}
+// <!-- #region Tree Line Customize  -->
+// el-tree 옵션 중 :indent="0" 를 반드시 설정한다.
+.tree-line {
+  @at-root.el-tree-node {
+    position: relative;
+    padding-left: 8px;
+  }
+  @at-root.el-tree-node__children {
+    padding-left: 16px;
+  }
+  @at-root.el-tree-node :last-child:before {
+    height: 38px;
+  }
+  @at-root.el-tree > .el-tree-node:before {
+    border-left: none;
+  }
+  @at-root.el-tree > .el-tree-node:after {
+    border-top: none;
+  }
+  @at-root.el-tree-node:before,
+  .el-tree-node:after {
+    content: "";
+    left: -4px;
+    position: absolute;
+    right: auto;
+    border-width: 1px;
+  }
+  @at-root.tree :first-child .el-tree-node:before{
+    border-left: none;
+  }
+  @at-root.el-tree-node:before {
+    border-left: 1px dotted #c0c4cc;
+    bottom: 0px;
+    height: 100%;
+    top: -20px;
+    width: 1px;
+  }
+  @at-root.el-tree-node:after {
+    border-top: 1px dotted #c0c4cc;
+    height: 20px;
+    top: 17px;
+    width: 24px;
+  }
+}
+// <!-- #endregion -->
+
+div.el-message > p.el-message__content {
+  .print-json {
+    max-height: 90vh;
+    overflow: scroll;
+  }
+}
+
+.xs-checkbox-button {
+  .el-checkbox-button__inner {
+    padding: 3px 5px !important;
+    font-size: 12px;
+    border-radius: 15px !important;
+  }
+}
+
+.xs-checkbox-button.is-checked {
+  .el-checkbox-button__inner {
+    background-color: #304156c7;
+    border-color: #304156c7;
+    border-left-color: #304156c7 !important;
+  }
+}
+
+div.Bottombar {
+  div.expand-bottom-area.el-row {
+    .el-form-item__label {
+      width: 110px;
+    }
+  }
+  .expand-bottom-area {
+    .el-form-item--small.el-form-item {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+div.ticket-text-filter {
+  .el-input__inner {
+    transform: rotate(-0.03deg);
+    letter-spacing: -0.5px;
+    font-weight: 400;
+    color: #5d6b7b;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #5d6b7b3b;
+    border-radius: 0;
+  }
+}
+
+div.ticket-date-filter {
+  display: inline-block;
+  width: 270px;
+  font-size: 13px;
+  transform: rotate(0.03deg);
+  .el-input__inner {
+    width: calc(100% - 10px);
+    transform: rotate(-0.03deg);
+    font-weight: 400;
+    color: #5d6b7b;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #5d6b7b3b;
+    border-radius: 0;
+  }
+}
+.closeTicket-modal,
+.risk-coreAlarm-modal,
+.alarmMng-modal,
+.ModalTopasFin,
+.ModalTopasAck,
+.ModalTree {
+  font-family: 'NanumSquare';
+
+  .el-dialog__header {
+    height: 65px;
+    transform: skew(0.03deg);
+    span {
+      font-weight: 700;
+      font-size: 15px;
+    }
+  }
+
+  .el-dialog__body {
+    height: calc(100% - 130px);
+    padding: 0 15px 0 15px;
+    overflow: auto;
+  }
+
+  .el-dialog__footer {
+    height: 55px !important;
+    padding: 0 20px;
+    text-align:center;
+  }
+  .message-box {
+    height: calc(100% - 100px);
+    transform: skew(0.03deg);
+    .message-title {
+      height: 50px;
+      font-weight: 600;
+    }
+  }
+
+  div.item-group{
+    width: 150px;
+    height: 250px;
+
+    .el-form-item__label{
+      width: 90px;
+      background-color: #76aff575;
+      border-radius: 5px;
+    }
+  }
+}
+
+div.CompSlideNav {
+  .el-tabs .el-tabs__header .el-tabs__item {
+    font-size: 12px;
+    padding: 0 15px !important;
+  }
+
+  .el-tabs .el-tabs__content { padding: 5px 0 0 0; }
+
+  .el-table {
+    font-size: 12px;
+    font-weight: 600;
+    .el-table__header th { padding : 0;}
+    .el-table__body td { padding: 5px;}
+  }
+}
+
+.oasis-dark-dialog {
+  .el-dialog {
+    border: 1px solid #3b3a3a;
+    border-bottom: 11px solid #3b3a3a;
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
+  }
+  .el-dialog__header {
+    background-color: white !important;
+    color: black !important;
+    font-size: 16px;
+    font-family: 'NanumSquare';
+    transform: rotate(0.03deg);
+    font-weight: bold;
+  }
+  .el-dialog__footer {
+    height: 70px !important;
+    background-color: white !important;
+    button:not(.is-disable) {
+      background-color: #3b3a3a !important;
+      border: 1px solid #939393 !important;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    button:not(.is-disable):hover {
+      opacity: 0.75;
+      background-color: #5e5e5e;
+    }
+  }
+}
+
+.rms-dialog {
+  .el-dialog {
+    border: 1px solid $rms-primary;
+    border-bottom: 11px solid $rms-primary;
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
+    border-radius: 7px;
+    margin-top: 13% !important;
+    transform: skew(-0.03deg);
+    overflow: hidden;
+  }
+  .el-dialog__header {
+    background-color: white !important;
+    color: black !important;
+    font-size: 16px;
+    font-family: 'NanumSquare';
+    // transform: skew(0.03deg);
+    transform: rotate(0.03deg);
+    font-weight: bold;
+    border-radius: 7px;
+  }
+  .el-dialog__body {
+    padding: 0;
+    padding-top: 10px;
+    max-height: 360px;
+    overflow-y: auto;
+    .el-form-item__label {
+      font-size: 13px !important;
+    }
+  }
+  .el-dialog__footer {
+    height: 70px !important;
+    background-color: white !important;
+  }
+}
+
+.aam-dialog {
+  .el-dialog {
+    border: 1px solid $cp-primary;
+    border-bottom: 11px solid $cp-primary;
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
+    border-radius: 7px;
+    
+    
+  }
+  .el-dialog__header {
+    background-color: white !important;
+    color: black !important;
+    font-size: 16px;
+    font-family: 'NanumSquare';
+    transform: rotate(0.03deg);
+    font-weight: bold;
+    border-radius: 7px;
+    
+  }
+  .el-dialog__footer {
+    height: 70px !important;
+    background-color: white !important;
+  }
+}
+
+.contextmenu {
+  margin: 0;
+  background: #fff;
+  z-index: 3000;
+  position: absolute;
+  list-style-type: none;
+  padding: 5px 0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+  li {
+    margin: 0;
+    padding: 7px 16px;
+    cursor: pointer;
+    &:hover {
+      background: #eee;
+    }
+  }
+}
+
+.custom-inner-border {
+  .el-input__inner,
+  &.el-range-editor.el-input__inner {
+    border: none;
+    border-bottom: 1px solid #9a9a9a87;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  &.is-disabled .el-input__inner,
+  &.is-disabled.el-range-editor.el-input__inner,
+  &.is-disabled.el-range-editor.el-input__inner .el-range-input {
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 500;
+    border: none;
+    cursor: default !important;
+    opacity: 1 !important;
+  }  
+}
+
+.RmsNavbar .custom-inner-border {
+  &.el-select {
+    width: 100px;
+  }
+
+  .el-input__inner:focus,
+  .el-input.is-focus .el-input__inner {
+    border-color: #0e419457;
+    transform: skew(0.3deg);
+    font-size: 14px;
+  }
+}
+
+.custom-upload-list {
+  width: 100%;
+
+  .el-upload-list {
+    padding-left: 7px;
+    width: 100%;
+  }
+
+  .el-upload-list__item:first-child {
+    margin-top: 3px;
+  }
+
+  .el-upload-list__item-name {
+    padding: 0;
+    font-weight: 500;
+  }
+}

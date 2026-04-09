@@ -1,0 +1,21 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": null,
+        "total": null,
+        "result": {
+            "m": "6646f9c62bd34895EZa8GhrhmmW7KlDqOr07TqFCh6NrrwTDAUTzDaOdMVGOhEzoK4r8u9e0dTsmuGgnDv6BzaKBi3",
+            "e": "10001"
+        }
+    },
+    "config": {
+        "url": "/getkey",
+        "param": {},
+        "receivedTime": "2024-04-03 13:12:04.445",
+        "cmd": "{\"url\": \"/getkey\", \"sqlId\": \"\", \"param\": null}",
+        "duration": 121,
+        "jsonFileName": "getkey_.json",
+        "oldJsonFileName": "Z2V0a2V5_.json"
+    }
+}

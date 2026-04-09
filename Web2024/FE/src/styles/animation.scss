@@ -1,0 +1,98 @@
+@mixin animate_duration($duration) {
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+}
+
+@mixin animate_delay($delay) {
+  -webkit-animation-delay: $delay;
+  animation-delay: $delay;
+}
+
+@mixin animate_fadeIn_Xpos($trans_x: 0, $trans_y: 0) {
+  -webkit-animation-name: fadeIn_Xpos;
+  animation-name: fadeIn_Xpos;
+
+  @keyframes fadeIn_Xpos {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateX($trans_x);
+      -ms-transform: translateX($trans_x);
+      transform: translateX($trans_x);
+    }
+  
+    100% {
+      opacity: 1;
+      -webkit-transform: translateX(0) translateY($trans_y);
+      -ms-transform: translateX(0) translateY($trans_y);
+      transform: translateX(0) translateY($trans_y);
+    }
+  }
+}
+
+@mixin animate_fadeOut_Xpos($trans_x: 0, $trans_y: 0) {
+  -webkit-animation-name: fadeOut_Xpos;
+  animation-name: fadeOut_Xpos;
+  
+  @keyframes fadeOut_Xpos {
+    0% {
+      opacity: 1;
+      -webkit-transform: translateX(0) translateY($trans_y);
+      -ms-transform: translateX(0) translateY($trans_y);
+      transform: translateX(0) translateY($trans_y);
+    }
+  
+    100% {
+      opacity: 0;
+      -webkit-transform: translateX($trans_x);
+      -ms-transform: translateX($trans_x);
+      transform: translateX($trans_x);
+    }
+  }
+}
+
+@mixin animate_bounceIn($animation_name, $trans_x: 0, $trans_y: 0) {
+  -webkit-animation-name: bounceIn;
+  animation-name: bounceIn;
+  
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateX($trans_x) translateY($trans_y) scale(.3);
+      transform: translateX($trans_x) translateY($trans_y) scale(.3);
+    }
+  
+    50% {
+      opacity: 1;
+      -webkit-transform: translateX($trans_x) translateY($trans_y) scale(1.05);
+      transform: translateX($trans_x) translateY($trans_y) scale(1.05);
+    }
+  
+    70% {
+      -webkit-transform: translateX($trans_x) translateY($trans_y) scale(.9);
+      transform: translateX($trans_x) translateY($trans_y) scale(.9);
+    }
+  
+    100% {
+      opacity: 1;
+      -webkit-transform: translateX($trans_x) translateY($trans_y) scale(1);
+      transform: translateX($trans_x) translateY($trans_y) scale(1);
+    }
+  }
+
+}
+
+
+.blinking {
+  animation: blink 1.5s ease-in-out 15 alternate; 
+} 
+
+@keyframes blink{ 
+  0% {
+    color: #ee6666;
+    opacity: 0.3;
+  }
+  100% {
+    color: #ee6666;
+    opacity: 1;
+  } 
+}

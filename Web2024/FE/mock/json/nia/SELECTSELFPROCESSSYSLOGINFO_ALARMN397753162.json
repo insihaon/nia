@@ -1,0 +1,41 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  \n             SA.ALARMNO\n            , TO_CHAR(SA.ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME\n            , SA.NODE_NUM\n            , SA.NODE_NM\n            , SA.ALARMMSG\n            , SA.ALARMLVL\n            , SA.ETC\n            , SA.RULE_ID\n            , SA.ALARMLOC\n            , SA.STATUS\n            , TPD.SELF_PROCESS_GROUP\n            , TPD.SELF_PROCESS_TYPE\n        FROM    rca.tb_syslog_alarm_mst SA\n        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.ALARMNO = SA.ALARMNO\n         WHERE (  SA.ALARMNO = '397753162' )"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "rule_id": 3,
+                "alarmmsg": "IFMGR_IF_UP_4",
+                "alarmlvl": "1",
+                "etc": "Interface xe23 changed state to up",
+                "alarmno": "397753162",
+                "alarmtime": "2025-10-28 13:51:20",
+                "self_process_type": "S",
+                "node_nm": "seoul-s9510-1",
+                "node_num": "1737605079007",
+                "self_process_group": "ST",
+                "alarmloc": "xe23",
+                "status": "FIN"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SELF_PROCESS_SYSLOG_INFO",
+        "urlOrigin": "/selectList/SELECT_SELF_PROCESS_SYSLOG_INFO",
+        "params": null,
+        "data": "{\"ALARMNO\":\"397753162\",\"encrypt\":\"4CTqc82Lr8w5R9cu7+Q=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SELF_PROCESS_SYSLOG_INFO\", \"sqlId\": \"SELECT_SELF_PROCESS_SYSLOG_INFO\", \"param\": {\"ALARMNO\":\"397753162\",\"encrypt\":\"4CTqc82Lr8w5R9cu7+Q=\"} }",
+        "requestTime": "2026-02-23 13:33:50.239",
+        "responseTime": "2026-02-23 13:33:50.443",
+        "duration": 204,
+        "jsonFileName": "SELECTSELFPROCESSSYSLOGINFO_ALARMN397753162.json"
+    }
+}

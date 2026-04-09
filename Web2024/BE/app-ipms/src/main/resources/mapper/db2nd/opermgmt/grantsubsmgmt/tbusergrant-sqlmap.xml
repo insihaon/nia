@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.dao.GrantSubsMgmtDao">
+	<resultMap id="tbUserGrantVoResult" type="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo">
+		<result column="GRANT_SEQ" property="grantSeq" jdbcType="BIGINT" />
+		<result column="SUSER_ID" property="suserId" jdbcType="VARCHAR" />
+		<result column="SUSER_NM" property="suserNm" jdbcType="VARCHAR" />
+		<result column="SUSER_GRADE_CD" property="suserGradeCd" jdbcType="CHAR" />
+		<result column="SUSER_GRADE_NM" property="suserGradeNm" jdbcType="VARCHAR" />
+		<result column="NREQUEST_TYPE_CD" property="nrequestTypeCd" jdbcType="VARCHAR" />
+		<result column="NREQUEST_TYPE_NM" property="nrequestTypeNm" jdbcType="VARCHAR" />	
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+		
+		<result column="SPOS_DEPT_ORG_ID" property="sposDeptOrgId" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_ORG_NM" property="sposDeptOrgNm" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_FULL_NM" property="sposDeptFullNm" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="tbUserAuthTxnSubVoResult" type="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubVo">
+		<result column="NUSER_AUT_SEQ" property="nuserAutSeq" jdbcType="BIGINT" />
+		<result column="SUSER_ID" property="suserId" jdbcType="VARCHAR" />
+		<result column="SUSER_NM" property="suserNm" jdbcType="VARCHAR" />
+		<result column="SUSER_GRADE_CD" property="suserGradeCd" jdbcType="CHAR" />
+		<result column="SUSER_GRADE_NM" property="suserGradeNm" jdbcType="VARCHAR" />		
+		<result column="NLVL_BAS_SEQ" property="nlvlBasSeq" jdbcType="BIGINT" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+		
+		<result column="SPOS_DEPT_ORG_ID" property="sposDeptOrgId" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_ORG_NM" property="sposDeptOrgNm" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_FULL_NM" property="sposDeptFullNm" jdbcType="VARCHAR" />
+		
+		<result column="SSVC_LINE_TYPE_CD" property="tbLvlBasVo.ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="tbLvlBasVo.ssvcLineTypeNm" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_CD" property="tbLvlBasVo.ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="tbLvlBasVo.ssvcGroupNm" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_CD" property="tbLvlBasVo.ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="tbLvlBasVo.ssvcObjNm" jdbcType="CHAR" />
+		<result column="NMAX_SEQ" property="tbLvlBasVo.nmaxSeq" jdbcType="BIGINT" />
+		<result column="SLVL_BAS_LEVEL_CD" property="tbLvlBasVo.slvlBasLevelCd" jdbcType="CHAR" />
+		<result column="GRANT_SEQ" property="grantSeq" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(grantSeq)">
+				AND A.grant_seq = #{grantSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nrequestTypeCd)">
+				AND A.nrequest_type_cd = #{nrequestTypeCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserNm)">
+				AND A.suser_nm ILIKE '%' || #{suserNm, jdbcType=VARCHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sposDeptOrgNm)">
+				AND B.SPOS_DEPT_ORG_ID = #{sposDeptOrgId, jdbcType=VARCHAR}
+			</if>
+			
+		</trim>
+	</sql>
+	
+	<select id="selectTbUserGrantList" resultMap="tbUserGrantVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo">
+		select A.grant_seq , A.SUSER_ID, A.SUSER_GRADE_CD, 
+		 A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID, A.nrequest_type_cd, A.NREQUEST_TYPE_NM
+		 ,A.SUSER_NM , A.SPOS_DEPT_ORG_ID ,
+		 A.SPOS_DEPT_ORG_NM, A.SPOS_DEPT_FULL_NM, A.RNUM from 
+		(select A.grant_seq , A.SUSER_ID, A.SUSER_GRADE_CD, 
+		 A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID, A.nrequest_type_cd, A.NREQUEST_TYPE_NM
+		 ,A.SUSER_NM , A.SPOS_DEPT_ORG_ID ,
+		 A.SPOS_DEPT_ORG_NM, A.SPOS_DEPT_FULL_NM, ROWNUM RNUM FROM
+		(SELECT A.grant_seq , A.SUSER_ID, A.SUSER_GRADE_CD, 
+		 A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID, A.nrequest_type_cd, (select node_type_nm  from mst.tb_node_transfer_type where node_type_cd =A.nrequest_type_cd ) AS NREQUEST_TYPE_NM
+		 ,B.SUSER_NM , B.SPOS_DEPT_ORG_ID ,
+		 C.SORG_NM AS SPOS_DEPT_ORG_NM ,(SELECT STRING_AGG(SORG_NM,'-') FROM 
+		 (SELECT SORG_NM FROM MST.TB_ORG_BAS AS G START WITH G.SKT_ORG_ID = B.SPOS_DEPT_ORG_ID CONNECT BY G.SKT_ORG_ID = PRIOR G.SUP_KT_ORG_ID ORDER BY G.SORG_PREF_ODRG) ) AS SPOS_DEPT_FULL_NM 
+		 FROM MST.tb_user_grant A , MST.TB_USER_BAS B , MST.TB_ORG_BAS C  
+		 <include refid="List_Where_Clause" />
+		 AND A.SUSER_ID = B.SUSER_ID(+)
+		 AND B.SPOS_DEPT_ORG_ID = C.SKT_ORG_ID(+) 
+		 ORDER BY A.grant_seq desc ) A where ROWNUM  <![CDATA[<=]]> #{lastIndex}) A where RNUM  <![CDATA[>=]]> #{firstIndex}
+		
+	</select>
+	
+	<select id="countListPageTbUserGrantVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo">
+		select count(1)
+		FROM MST.tb_user_grant A , MST.TB_USER_BAS B , MST.TB_ORG_BAS C  
+		 <include refid="List_Where_Clause" />
+		 AND A.SUSER_ID = B.SUSER_ID(+)
+		 AND B.SPOS_DEPT_ORG_ID = C.SKT_ORG_ID(+)
+	</select>
+	
+	<insert id="insertTbUserGrant" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubVo" useGeneratedKeys="true" keyProperty="grantSeq" keyColumn="grantSeq">
+		<selectKey keyProperty="grantSeq" resultType="BigInteger" order="BEFORE"> 
+			select NEXTVAL('mst.tb_user_grant_seq') 
+		</selectKey>
+		insert into mst.tb_user_grant(
+			grant_seq,
+			suser_nm,
+			suser_id,
+			suser_grade_cd,
+			nrequest_type_cd,
+			screate_id,
+			smodify_id
+			)
+		values(
+			#{grantSeq, jdbcType=BIGINT},
+			#{suserNm, jdbcType=VARCHAR},
+			#{suserId, jdbcType=CHAR},
+			#{suserGradeCd, jdbcType=CHAR},
+			'nod001',
+			#{suserId, jdbcType=CHAR},
+			#{suserId, jdbcType=CHAR}
+		)
+	</insert>
+	
+	<insert id="insertTbUserAuthTxnSub" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubVo">
+		INSERT
+		INTO mst.tb_user_auth_txn_sub (
+			grant_seq
+			, SUSER_ID
+			,	SUSER_GRADE_CD
+			,	NLVL_BAS_SEQ	
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{grantSeq, jdbcType=BIGINT}
+			,	#{suserId, jdbcType=VARCHAR}
+			,	#{suserGradeCd, jdbcType=CHAR}
+			,	#{nlvlBasSeq, jdbcType=BIGINT}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<select id="selectListTbUserAuthTxnSubVo" resultMap="tbUserAuthTxnSubVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT A.SUSER_ID, A.SUSER_GRADE_CD, A.NLVL_BAS_SEQ , A.DCREATE_DT, A.SCREATE_ID, 
+		A.DMODIFY_DT, A.SMODIFY_ID ,B.SUSER_NM , B.SPOS_DEPT_ORG_ID , C.SORG_NM AS SPOS_DEPT_ORG_NM ,
+		(SELECT STRING_AGG(SORG_NM,'-') FROM (SELECT SORG_NM FROM MST.TB_ORG_BAS AS G START WITH G.SKT_ORG_ID = B.SPOS_DEPT_ORG_ID CONNECT BY G.SKT_ORG_ID = PRIOR G.SUP_KT_ORG_ID ORDER BY G.SORG_PREF_ODRG) ) AS SPOS_DEPT_FULL_NM ,
+		D.SSVC_LINE_TYPE_CD , E.SSVC_LINE_TYPE_NM , D.SSVC_GROUP_CD , D.SSVC_OBJ_CD , F.SLVL_NM AS SSVC_GROUP_NM , G.SLVL_NM AS SSVC_OBJ_NM , H.SUSER_GRADE_NM 
+		FROM MST.tb_user_auth_txn_sub A , MST.TB_USER_BAS B , MST.TB_ORG_BAS C , MST.TB_LVL_BAS D , MST.TB_SVC_LINE_TYPE_CD E , MST.TB_LVL_CD F ,
+		MST.TB_LVL_CD G , MST.TB_USER_GRADE_CD H WHERE 1 = 1 AND A.GRANT_SEQ = #{grantSeq, jdbcType=BIGINT}
+		AND A.SUSER_ID = B.SUSER_ID(+) AND B.SPOS_DEPT_ORG_ID = C.SKT_ORG_ID(+) 
+		AND A.NLVL_BAS_SEQ = D.NLVL_BAS_SEQ(+) AND D.SSVC_LINE_TYPE_CD = E.SSVC_LINE_TYPE_CD(+) AND D.SSVC_GROUP_CD = F.SLVL_CD (+) 
+		AND D.SSVC_OBJ_CD = G.SLVL_CD (+) AND A.SUSER_GRADE_CD = H.SUSER_GRADE_CD(+)
+	</select>
+	
+	<select id="countListTbUserAuthTxnSubVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT count(1) totalCount 
+		FROM MST.tb_user_auth_txn_sub A , MST.TB_USER_BAS B , MST.TB_ORG_BAS C , MST.TB_LVL_BAS D , MST.TB_SVC_LINE_TYPE_CD E , MST.TB_LVL_CD F ,
+		MST.TB_LVL_CD G , MST.TB_USER_GRADE_CD H WHERE 1 = 1 AND A.GRANT_SEQ = #{grantSeq, jdbcType=BIGINT}
+		AND A.SUSER_ID = B.SUSER_ID(+) AND B.SPOS_DEPT_ORG_ID = C.SKT_ORG_ID(+) AND A.NLVL_BAS_SEQ = D.NLVL_BAS_SEQ(+) 
+		AND D.SSVC_LINE_TYPE_CD = E.SSVC_LINE_TYPE_CD(+) 
+		AND D.SSVC_GROUP_CD = F.SLVL_CD (+) AND D.SSVC_OBJ_CD = G.SLVL_CD (+) AND A.SUSER_GRADE_CD = H.SUSER_GRADE_CD(+)
+	</select>
+	
+	<select id="selectNrequestTypeCd" resultType="string" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT nrequest_type_cd
+		FROM mst.tb_user_grant A
+		WHERE 
+			A.GRANT_SEQ = #{grantSeq, jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteGrant" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo">
+		DELETE
+		FROM 
+			mst.tb_user_grant A
+		WHERE
+			A.grant_seq = #{grantSeq, jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteTbUserAuthTxnSubVo" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo">
+		DELETE
+		FROM 
+			mst.tb_user_auth_txn_sub A
+		WHERE
+			nuser_auth_sub_seq in (select nuser_auth_sub_seq where grant_seq =  #{grantSeq, jdbcType=BIGINT})
+	</delete>
+	
+	<update id="updateGrant" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo">
+		UPDATE
+			mst.tb_user_grant 
+		SET
+			nrequest_type_cd = #{nrequestTypeCd, jdbcType=VARCHAR}
+		WHERE
+			grant_seq = #{grantSeq, jdbcType=BIGINT}
+	</update>
+	
+	<select id="selectGrantVo" resultMap="tbUserGrantVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo">
+		SELECT A.grant_seq , A.SUSER_ID, A.SUSER_GRADE_CD, 
+		 A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID, A.nrequest_type_cd, (select node_type_nm  from mst.tb_node_transfer_type where node_type_cd =A.nrequest_type_cd ) AS NREQUEST_TYPE_NM
+		 ,B.SUSER_NM , B.SPOS_DEPT_ORG_ID ,
+		 C.SORG_NM AS SPOS_DEPT_ORG_NM ,(SELECT STRING_AGG(SORG_NM,'-') FROM 
+		 (SELECT SORG_NM FROM MST.TB_ORG_BAS AS G START WITH G.SKT_ORG_ID = B.SPOS_DEPT_ORG_ID CONNECT BY G.SKT_ORG_ID = PRIOR G.SUP_KT_ORG_ID ORDER BY G.SORG_PREF_ODRG) ) AS SPOS_DEPT_FULL_NM 
+		 FROM MST.tb_user_grant A , MST.TB_USER_BAS B , MST.TB_ORG_BAS C  
+		 where
+		 grant_seq = #{grantSeq, jdbcType=BIGINT}
+		 and A.SUSER_ID = B.SUSER_ID(+)
+		 AND B.SPOS_DEPT_ORG_ID = C.SKT_ORG_ID(+);
+	</select>
+</mapper>

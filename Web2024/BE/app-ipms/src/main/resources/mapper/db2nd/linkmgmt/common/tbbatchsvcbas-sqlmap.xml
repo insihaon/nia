@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkSvcBasDao">
+	<resultMap id="tbBatchSvcBasVoResult" type="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		<result column="BAT_MST_SEQ" property="batMstSeq" jdbcType="BIGINT" />
+		<result column="LNK_SVC_MST_SEQ" property="lnkSvcMstSeq" jdbcType="BIGINT" />
+		<result column="SIF_ID" property="sifId" jdbcType="VARCHAR" />
+		<result column="SSYSTEM_NM" property="ssystemNm" jdbcType="VARCHAR" />
+		<result column="STABLE_NM" property="stableNm" jdbcType="VARCHAR" />
+		<result column="SSCRIPT_PATH" property="sscriptPath" jdbcType="VARCHAR" />
+		<result column="SSCRIPT_NM" property="sscriptNm" jdbcType="VARCHAR" />
+		<result column="SINTERLOCK_PATH" property="sinterlockPath" jdbcType="VARCHAR" />
+		<result column="SINTERLOCK_NM" property="sinterlockNm" jdbcType="VARCHAR" />
+		<result column="SPROVIDER_SYS" property="sproviderSys" jdbcType="VARCHAR" />
+		<result column="SPERIOD" property="speriod" jdbcType="VARCHAR" />
+		<result column="BATCH_SDT" property="batchSdt" jdbcType="VARCHAR" />
+		<result column="LINKTYPE" property="linktype" jdbcType="VARCHAR" />
+		<result column="SOPSTATE" property="sopstate" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="BaseBT_Column_List">
+		A.BAT_MST_SEQ, A.LNK_SVC_MST_SEQ, A.SIF_ID, A.SSYSTEM_NM
+		, A.STABLE_NM, A.SSCRIPT_PATH, A.SSCRIPT_NM, A.SINTERLOCK_PATH
+		, A.SINTERLOCK_NM, A.SPROVIDER_SYS, A.SPERIOD, A.BATCH_SDT
+		, A.LINKTYPE, A.SOPSTATE, A.SCOMMENT, A.DCREATE_DT
+		, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="AppendBT_Column_List">
+	
+	</sql>
+	
+	<sql id="AppendBT_From_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+		</trim>
+	</sql>
+	
+	<sql id="VoBT_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.BAT_MST_SEQ = #{batMstSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="ListBT_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(batMstSeq)">
+				AND A.BAT_MST_SEQ = #{batMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(lnkSvcMstSeq)">
+				AND A.LNK_SVC_MST_SEQ = #{lnkSvcMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifId)">
+				AND A.SIF_ID = #{sifId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssystemNm)">
+				AND A.SSYSTEM_NM = #{ssystemNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(stableNm)">
+				AND A.STABLE_NM = #{stableNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscriptPath)">
+				AND A.SSCRIPT_PATH = #{sscriptPath, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscriptNm)">
+				AND A.SSCRIPT_NM = #{sscriptNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinterlockPath)">
+				AND A.SINTERLOCK_PATH = #{sinterlockPath, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinterlockNm)">
+				AND A.SINTERLOCK_NM = #{sinterlockNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sproviderSys)">
+				AND A.SPROVIDER_SYS = #{sproviderSys, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(speriod)">
+				AND A.SPERIOD = #{speriod, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(batchSdt)">
+				AND A.BATCH_SDT = #{batchSdt, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(linktype)">
+				AND A.LINKTYPE = #{linktype, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sopstate)">
+				AND A.SOPSTATE = #{sopstate, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="AppendBT_Where_Clause">
+	</sql>
+	
+	<insert id="insertTbBatchSvcBasVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		INSERT
+		INTO BIF.TB_BATCH_SVC_BAS (
+			LNK_SVC_MST_SEQ
+			,	SIF_ID
+			,	SSYSTEM_NM
+			,	STABLE_NM
+			,	SSCRIPT_PATH
+			,	SSCRIPT_NM
+			,	SINTERLOCK_PATH
+			,	SINTERLOCK_NM
+			,	SPROVIDER_SYS
+			,	SPERIOD
+			,	BATCH_SDT
+			,	LINKTYPE
+			,	SOPSTATE
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{lnkSvcMstSeq, jdbcType=BIGINT}
+			,	#{sifId, jdbcType=VARCHAR}
+			,	#{ssystemNm, jdbcType=VARCHAR}
+			,	#{stableNm, jdbcType=VARCHAR}
+			,	#{sscriptPath, jdbcType=VARCHAR}
+			,	#{sscriptNm, jdbcType=VARCHAR}
+			,	#{sinterlockPath, jdbcType=VARCHAR}
+			,	#{sinterlockNm, jdbcType=VARCHAR}
+			,	#{sproviderSys, jdbcType=VARCHAR}
+			,	#{speriod, jdbcType=VARCHAR}
+			,	#{batchSdt, jdbcType=VARCHAR}
+			,	#{linktype, jdbcType=VARCHAR}
+			,	#{sopstate, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbBatchSvcBasVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		UPDATE
+		BIF.TB_BATCH_SVC_BAS A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sopstate)">
+				A.SOPSTATE = #{sopstate, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifId)">
+				, A.SIF_ID = #{sifId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssystemNm)">
+				, A.SSYSTEM_NM = #{ssystemNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(stableNm)">
+				, A.STABLE_NM = #{stableNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscriptPath)">
+				, A.SSCRIPT_PATH = #{sscriptPath, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscriptNm)">
+				, A.SSCRIPT_NM = #{sscriptNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinterlockPath)">
+				, A.SINTERLOCK_PATH = #{sinterlockPath, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sinterlockNm)">
+				, A.SINTERLOCK_NM = #{sinterlockNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sproviderSys)">
+				, A.SPROVIDER_SYS = #{sproviderSys, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(speriod)">
+				, A.SPERIOD = #{speriod, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(batchSdt)">
+				, A.BATCH_SDT = #{batchSdt, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(linktype)">
+				, A.LINKTYPE = #{linktype, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="VoBT_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbBatchSvcBasVo" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		DELETE
+		FROM BIF.TB_BATCH_SVC_BAS A
+		<include refid="VoBT_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbBatchSvcBasVo" resultMap="tbBatchSvcBasVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		SELECT
+		<include refid="BaseBT_Column_List" />
+		<include refid="AppendBT_Column_List"/>
+		FROM BIF.TB_BATCH_SVC_BAS A
+		<include refid="AppendBT_From_Clause"/>
+		<include refid="VoBT_Where_Clause" />
+		<include refid="AppendBT_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbBatchSvcBasVo" resultMap="tbBatchSvcBasVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		SELECT
+		<include refid="BaseBT_Column_List" />
+		<include refid="AppendBT_Column_List"/>
+		FROM BIF.TB_BATCH_SVC_BAS A
+		<include refid="AppendBT_From_Clause"/>
+		<include refid="ListBT_Where_Clause" />
+		<include refid="AppendBT_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbBatchSvcBasVo" resultMap="tbBatchSvcBasVoResult" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		SELECT 
+		<include refid="BaseBT_Column_List" />
+		<include refid="AppendBT_Column_List"/>
+		,	RNUM
+		FROM (
+			SELECT
+			<include refid="BaseBT_Column_List" />
+			<include refid="AppendBT_Column_List"/>
+				,	ROWNUM RNUM FROM (
+				SELECT
+				<include refid="BaseBT_Column_List" />
+				<include refid="AppendBT_Column_List"/>
+				FROM BIF.TB_BATCH_SVC_BAS A
+				<include refid="AppendBT_From_Clause"/>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifId)">
+					AND A.SIF_ID LIKE '%' || #{sifId, jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssystemNm)">
+					AND A.SSYSTEM_NM LIKE '%' || #{ssystemNm, jdbcType=VARCHAR} || '%'
+				</if>
+				ORDER BY A.BAT_MST_SEQ DESC
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbBatchSvcBasVo" resultType="int" parameterType="com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_BATCH_SVC_BAS A
+		<include refid="AppendBT_From_Clause"/>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifId)">
+			AND A.SIF_ID LIKE '%' || #{sifId, jdbcType=VARCHAR} || '%'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssystemNm)">
+			AND A.SSYSTEM_NM LIKE '%' || #{ssystemNm, jdbcType=VARCHAR} || '%'
+		</if>
+	</select>
+	
+	<select id="selectListBatchConf" resultMap="tbBatchSvcBasVoResult">
+		SELECT
+			<include refid="BaseBT_Column_List"/>
+		FROM 
+			BIF.TB_BATCH_SVC_BAS A
+		WHERE 1=1 AND A.SPERIOD IS NOT NULL AND A.SSCRIPT_NM IS NOT NULL AND A.SOPSTATE ='U'
+	</select>
+	
+</mapper>

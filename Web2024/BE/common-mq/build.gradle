@@ -1,0 +1,18 @@
+//=================================================================//
+// common-mq
+//=================================================================//
+bootJar {
+	enabled = false
+}
+jar {
+	enabled = true
+}
+
+dependencies {
+	implementation project(':common-base')
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp' /* RabbitMQConfiguration */
+	implementation 'io.arivera.oss:embedded-rabbitmq:1.5.0' /* EmbeddedRabbitMq */
+}

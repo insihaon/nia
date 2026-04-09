@@ -1,0 +1,79 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": "SELECT  TACM.API_ID,\n            TACM.TABLE_NM,\n            TACM.COLUMN_NM,\n            TACM.DATA_TYPE,\n            TO_CHAR(TACM.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME,\n            TAM.EXEC_MODE_CD\n    FROM    DATAHUB.TB_API_COL_MST TACM\n    INNER JOIN DATAHUB.TB_API_MST TAM ON TACM.API_ID = TAM.API_ID\n    WHERE   TAM.EXEC_MODE_CD = 'O'\n        AND TACM.API_ID = 41\n            LIMIT 30 OFFSET 0",
+        "total": 7,
+        "result": [
+            {
+                "table_nm": "TB_TT_MNPL_DTL",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "INTEGER",
+                "column_nm": "TT_SRL_NUM"
+            },
+            {
+                "table_nm": "TB_TT_MNPL_DTL",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "INTEGER",
+                "column_nm": "TT_SRL_NUM"
+            },
+            {
+                "table_nm": "TB_TT_MNPL_DTL",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "INTEGER",
+                "column_nm": "MNPL_SRL_NUM"
+            },
+            {
+                "table_nm": "TB_TT_MNPL_DTL",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "VARCHAR",
+                "column_nm": "TT_MNPL_KIND"
+            },
+            {
+                "table_nm": "TB_TT_MNPL_DTL",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "VARCHAR",
+                "column_nm": "MNPL_CONT"
+            },
+            {
+                "table_nm": "TB_TT_MNPL_DTL",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "DATETIME",
+                "column_nm": "MNPL_TIME"
+            },
+            {
+                "table_nm": "TB_USER_MST",
+                "api_id": 41,
+                "create_time": "2023-10-10 13:54:44",
+                "exec_mode_cd": "O",
+                "data_type": "VARCHAR",
+                "column_nm": "LOGIN_ID"
+            }
+        ]
+    },
+    "config": {
+        "param": {
+            "api_id": 41,
+            "limit": 30,
+            "page": 1
+        },
+        "receivedTime": "2024-04-03 09:05:58.572",
+        "url": "/selectList/SELECT_API_TABLE_LIST",
+        "cmd": "{\"url\": \"/selectList/SELECT_API_TABLE_LIST\", \"sqlId\": \"\", \"param\": \"{\\\"api_id\\\": 41, \\\"limit\\\": 30, \\\"page\\\": 1}\"}",
+        "duration": 31,
+        "jsonFileName": "SELECTAPITABLELIST_apiid41limit30page1.json",
+        "oldJsonFileName": "L1NFTEVDVF9BUElfVEFCTEVfTElTVA_NDF8MzB8MQ.json"
+    }
+}

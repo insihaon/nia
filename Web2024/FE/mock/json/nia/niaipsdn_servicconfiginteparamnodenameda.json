@@ -1,0 +1,28 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": false,
+            "message": "daejeon-n9kis not exist.",
+            "data": null
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=daejeon-n9k&ifname=Ethernet1/28\",\"encrypt\":\"TFL/+HTp6odO3ASvFww=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=daejeon-n9k&ifname=Ethernet1/28\",\"encrypt\":\"TFL/+HTp6odO3ASvFww=\"} }",
+        "requestTime": "2026-02-23 13:34:38.238",
+        "responseTime": "2026-02-23 13:34:38.438",
+        "duration": 200,
+        "jsonFileName": "niaipsdn_servicconfiginteparamnodenameda.json"
+    }
+}

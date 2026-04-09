@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.tacsmgmt.dao.TbTacsConnHistDao">
+	<resultMap id="tbTacsConnHistVoResult" type="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		<result column="NTACS_CONN_HIST_SEQ" property="ntacsConnHistSeq" jdbcType="BIGINT" />
+		<result column="PIP_FCLT_INET" property="pipFcltInet" jdbcType="VARCHAR" />
+		<result column="SFCLT_PROMPT_NM" property="sfcltPromptNm" jdbcType="VARCHAR" />
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="SAVAIL_YN" property="savailYn" jdbcType="CHAR" />
+		<result column="NRESULT_CD" property="nresultCd" jdbcType="INTEGER" />
+		<result column="SRESULT_MSG" property="sresultMsg" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NTACS_CONN_HIST_SEQ, A.PIP_FCLT_INET, A.SFCLT_PROMPT_NM, A.PIP_PREFIX, A.SAVAIL_YN
+		, A.NRESULT_CD, A.SRESULT_MSG, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ntacsConnHistSeq)">
+				A.NTACS_CONN_HIST_SEQ = #{ntacsConnHistSeq, jdbcType=BIGINT}
+			</if>
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ntacsConnHistSeq)">
+				AND A.NTACS_CONN_HIST_SEQ = #{ntacsConnHistSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipFcltInet)">
+				AND A.PIP_FCLT_INET = #{pipFcltInet, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sfcltPromptNm)">
+				AND A.SFCLT_PROMPT_NM ILIKE '%' || #{sfcltPromptNm, jdbcType=VARCHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefix)">
+				AND A.PIP_PREFIX = #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(savailYn)">
+				AND A.SAVAIL_YN = #{savailYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nresultCd)">
+				AND A.NRESULT_CD = #{nresultCd, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sresultMsg)">
+				AND A.SRESULT_MSG ILIKE '%' || #{sresultMsg, jdbcType=VARCHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+				AND A.DCREATE_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+				</if>
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbTacsConnHistVo" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		INSERT
+		INTO BIF.TB_TACS_CONN_HIST (
+			PIP_FCLT_INET
+			,	SFCLT_PROMPT_NM
+			,	PIP_PREFIX
+			,	SAVAIL_YN
+			,	NRESULT_CD
+			,	SRESULT_MSG
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{pipFcltInet, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			,	#{sfcltPromptNm, jdbcType=VARCHAR}
+			,	#{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			,	#{savailYn, jdbcType=CHAR}
+			,	#{nresultCd, jdbcType=INTEGER}
+			,	#{sresultMsg, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbTacsConnHistVo" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		UPDATE
+		BIF.TB_TACS_CONN_HIST A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ntacsConnHistSeq)">
+			A.NTACS_CONN_HIST_SEQ = #{ntacsConnHistSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipFcltInet)">
+				, A.PIP_FCLT_INET = #{pipFcltInet, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sfcltPromptNm)">
+				, A.SFCLT_PROMPT_NM = #{sfcltPromptNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefix)">
+				, A.PIP_PREFIX = #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(savailYn)">
+				, A.SAVAIL_YN = #{savailYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nresultCd)">
+				, A.NRESULT_CD = #{nresultCd, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sresultMsg)">
+				, A.SRESULT_MSG = #{sresultMsg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbTacsConnHistVo" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		DELETE
+		FROM BIF.TB_TACS_CONN_HIST A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbTacsConnHistVo" resultMap="tbTacsConnHistVoResult" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_TACS_CONN_HIST A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbTacsConnHistVo" resultMap="tbTacsConnHistVoResult" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_TACS_CONN_HIST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbTacsConnHistVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_TACS_CONN_HIST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbTacsConnHistVo" resultMap="tbTacsConnHistVoResult" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM BIF.TB_TACS_CONN_HIST A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				ORDER BY A.ntacs_conn_hist_seq DESC
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbTacsConnHistVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo">
+		SELECT
+			count(1) totalCount
+		FROM TB_TACS_CONN_HIST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectSresultMsg" resultType = "hashmap">
+		select DISTINCT sresult_msg  from BIF.TB_TACS_CONN_HIST;
+	</select>
+	
+</mapper>

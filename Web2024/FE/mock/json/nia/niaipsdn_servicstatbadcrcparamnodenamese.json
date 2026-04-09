@@ -1,0 +1,28 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": false,
+            "message": "Seoul-S9510-1 is not registed.",
+            "data": null
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=seoul-s9510-1&ifname=xe23\",\"encrypt\":\"DLEhdZjrXv0p9Y/WuDg=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=seoul-s9510-1&ifname=xe23\",\"encrypt\":\"DLEhdZjrXv0p9Y/WuDg=\"} }",
+        "requestTime": "2026-02-23 13:33:54.802",
+        "responseTime": "2026-02-23 13:33:55.015",
+        "duration": 213,
+        "jsonFileName": "niaipsdn_servicstatbadcrcparamnodenamese.json"
+    }
+}

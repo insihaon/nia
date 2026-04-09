@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.limitmgmt.dao.TbAuditAssignBasDao">
+	<resultMap id="tbAuditAssignBasVoResult" type="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		<result column="NMAIN_NODE_ASSIGN_VALUE" property="nmainNodeAssignValue" jdbcType="NUMERIC" />
+		<result column="NMAIN_NODE_ASSIGN_NO_VALUE" property="nmainNodeAssignNoValue" jdbcType="NUMERIC" />
+		<result column="NMAIN_NODE_DHCP_VALUE" property="nmainNodeDhcpValue" jdbcType="NUMERIC" />
+		<result column="NMAIN_NODE_TICKET_CNT_VALUE" property="nmainNodeTicketCntValue" jdbcType="NUMERIC" />
+		<result column="NMAIN_NODE_NEOSS_IPBLOCK_CHK_VALUE" property="nmainNodeNeossIpblockChkValue" jdbcType="NUMERIC" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NMAIN_NODE_ASSIGN_VALUE, A.NMAIN_NODE_ASSIGN_NO_VALUE, A.NMAIN_NODE_DHCP_VALUE, A.NMAIN_NODE_TICKET_CNT_VALUE
+		, A.NMAIN_NODE_NEOSS_IPBLOCK_CHK_VALUE, A.SCOMMENT, A.DCREATE_DT, A.SCREATE_ID
+		, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NMAIN_NODE_ASSIGN_VALUE = #{nmainNodeAssignValue, jdbcType=NUMERIC}
+				AND A.NMAIN_NODE_ASSIGN_NO_VALUE = #{nmainNodeAssignNoValue, jdbcType=NUMERIC}
+				AND A.NMAIN_NODE_DHCP_VALUE = #{nmainNodeDhcpValue, jdbcType=NUMERIC}
+				AND A.NMAIN_NODE_TICKET_CNT_VALUE = #{nmainNodeTicketCntValue, jdbcType=NUMERIC}
+				AND A.NMAIN_NODE_NEOSS_IPBLOCK_CHK_VALUE = #{nmainNodeNeossIpblockChkValue, jdbcType=NUMERIC}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeAssignValue)">
+				AND A.NMAIN_NODE_ASSIGN_VALUE = #{nmainNodeAssignValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeAssignNoValue)">
+				AND A.NMAIN_NODE_ASSIGN_NO_VALUE = #{nmainNodeAssignNoValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeDhcpValue)">
+				AND A.NMAIN_NODE_DHCP_VALUE = #{nmainNodeDhcpValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeTicketCntValue)">
+				AND A.NMAIN_NODE_TICKET_CNT_VALUE = #{nmainNodeTicketCntValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeNeossIpblockChkValue)">
+				AND A.NMAIN_NODE_NEOSS_IPBLOCK_CHK_VALUE = #{nmainNodeNeossIpblockChkValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbAuditAssignBasVo" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		INSERT
+		INTO MST.TB_AUDIT_ASSIGN_BAS (
+			SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbAuditAssignBasVo" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		UPDATE
+		MST.TB_AUDIT_ASSIGN_BAS A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				,A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeAssignValue)">
+				, A.nmain_node_assign_value =  #{nmainNodeAssignValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeAssignNoValue)">
+				, A.nmain_node_assign_no_value = #{nmainNodeAssignNoValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeDhcpValue)">
+				, A.nmain_node_dhcp_value = #{nmainNodeDhcpValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeTicketCntValue)">
+				, A.nmain_node_ticket_cnt_value = #{nmainNodeTicketCntValue, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmainNodeNeossIpblockChkValue)">
+				, A.nmain_node_neoss_ipblock_chk_value = #{nmainNodeNeossIpblockChkValue, jdbcType=NUMERIC}
+			</if>
+			    , A.DMODIFY_DT = sysdate
+
+	
+	
+	</update>
+	
+	<delete id="deleteTbAuditAssignBasVo" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		DELETE
+		FROM MST.TB_AUDIT_ASSIGN_BAS A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbAuditAssignBasVo" resultMap="tbAuditAssignBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_AUDIT_ASSIGN_BAS A
+	</select>
+	
+	<select id="selectListTbAuditAssignBasVo" resultMap="tbAuditAssignBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_AUDIT_ASSIGN_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbAuditAssignBasVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_AUDIT_ASSIGN_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbAuditAssignBasVo" resultMap="tbAuditAssignBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_AUDIT_ASSIGN_BAS A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbAuditAssignBasVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_AUDIT_ASSIGN_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+</mapper>

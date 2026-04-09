@@ -1,0 +1,1448 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            row_number() over () AS index\n            , node.id\n            , node.device_name\n            , node.ip_addr\n            , node.device_type\n            , node.visible\n            , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as fx\n            , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as x\n            , coalesce(cast (node.fy as integer), 100) as fy\n            , coalesce(cast (node.fy as integer), 100) as y\n        from (\n            SELECT DISTINCT ON (nm.node_id, nm.node_nm, nm.ip_addr)\n                row_number() over () AS index\n                , nm.node_num\n                , nm.node_id AS id\n                , nm.node_nm AS device_name\n                , nm.ip_addr AS ip_addr\n                , '4' as device_type\n                , case when nm.admin_yn = 'W' then true\n                    else false end as visible\n                , np.fx as fx  \n                , np.fy  as fy\n            FROM resource.tb_node_mst nm\n            LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = '3'\n            where np.fx is not null\n            UNION \n            SELECT distinct on (em.tid, em.sysname, em.model)\n                row_number() over () AS index\n                , null as node_num\n                , em.tid AS id\n                , em.sysname  AS device_name\n                , em.tid AS ip_addr\n                , CASE model\n                WHEN 'Utrans-6300p-H3' THEN '1'\n                WHEN 'Utrans-6300p-V9' THEN '0'\n                ELSE '2'\n                END AS device_type\n                , true as visible\n                , np.fx as fx\n                , np.fy  as fy\n            FROM nia.tb_equip_mst em\n            LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = em.tid AND np.topology_type= '3'\n            order by node_num\n        ) as node"
+        ],
+        "total": 45,
+        "result": [
+            {
+                "device_name": "seoul-7712",
+                "fx": 580,
+                "visible": true,
+                "fy": 460,
+                "x": 580,
+                "index": 0,
+                "y": 460,
+                "device_type": "4",
+                "id": "seoul-7712",
+                "ip_addr": "116.89.169.11",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "daejeon-7712",
+                "fx": 1140,
+                "visible": true,
+                "fy": 460,
+                "x": 1140,
+                "index": 1,
+                "y": 460,
+                "device_type": "4",
+                "id": "daejeon-7712",
+                "ip_addr": "116.89.169.21",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "daejeon-5812",
+                "fx": 1180,
+                "visible": true,
+                "fy": 400,
+                "x": 1180,
+                "index": 2,
+                "y": 400,
+                "device_type": "4",
+                "id": "daejeon-5812",
+                "ip_addr": "116.89.169.23",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "pangyo-7712",
+                "fx": 730,
+                "visible": true,
+                "fy": 360,
+                "x": 730,
+                "index": 3,
+                "y": 360,
+                "device_type": "4",
+                "id": "pangyo-7712",
+                "ip_addr": "116.89.169.31",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "pangyo-5812",
+                "fx": 770,
+                "visible": true,
+                "fy": 310,
+                "x": 770,
+                "index": 4,
+                "y": 310,
+                "device_type": "4",
+                "id": "pangyo-5812",
+                "ip_addr": "116.89.169.33",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "daegu-7712",
+                "fx": 820,
+                "visible": true,
+                "fy": 360,
+                "x": 820,
+                "index": 5,
+                "y": 360,
+                "device_type": "4",
+                "id": "daegu-7712",
+                "ip_addr": "116.89.169.51",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "busan-7712",
+                "fx": 1090,
+                "visible": true,
+                "fy": 360,
+                "x": 1090,
+                "index": 6,
+                "y": 360,
+                "device_type": "4",
+                "id": "busan-7712",
+                "ip_addr": "116.89.169.61",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "seoul-5812",
+                "fx": 630,
+                "visible": true,
+                "fy": 400,
+                "x": 630,
+                "index": 7,
+                "y": 400,
+                "device_type": "4",
+                "id": "seoul-5812",
+                "ip_addr": "116.89.169.13",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "daegu-5812",
+                "fx": 860,
+                "visible": true,
+                "fy": 310,
+                "x": 860,
+                "index": 8,
+                "y": 310,
+                "device_type": "4",
+                "id": "daegu-5812",
+                "ip_addr": "116.89.169.53",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "suwon-5812",
+                "fx": 1000,
+                "visible": true,
+                "fy": 360,
+                "x": 1000,
+                "index": 9,
+                "y": 360,
+                "device_type": "4",
+                "id": "suwon-5812",
+                "ip_addr": "116.89.169.101",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "gwangju-5812",
+                "fx": 940,
+                "visible": true,
+                "fy": 310,
+                "x": 940,
+                "index": 10,
+                "y": 310,
+                "device_type": "4",
+                "id": "gwangju-5812",
+                "ip_addr": "116.89.169.43",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "busan-5812",
+                "fx": 1130,
+                "visible": true,
+                "fy": 310,
+                "x": 1130,
+                "index": 11,
+                "y": 310,
+                "device_type": "4",
+                "id": "busan-5812",
+                "ip_addr": "116.89.169.63",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "jeonju-5812",
+                "fx": 1210,
+                "visible": true,
+                "fy": 360,
+                "x": 1210,
+                "index": 12,
+                "y": 360,
+                "device_type": "4",
+                "id": "jeonju-5812",
+                "ip_addr": "116.89.169.81",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "jeju-5812",
+                "fx": 1010,
+                "visible": true,
+                "fy": 310,
+                "x": 1010,
+                "index": 13,
+                "y": 310,
+                "device_type": "4",
+                "id": "jeju-5812",
+                "ip_addr": "116.89.169.71",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "chuncheon-5812",
+                "fx": 665,
+                "visible": true,
+                "fy": 351,
+                "x": 665,
+                "index": 14,
+                "y": 351,
+                "device_type": "4",
+                "id": "chuncheon-5812",
+                "ip_addr": "116.89.169.91",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "gwangju-7712",
+                "fx": 910,
+                "visible": true,
+                "fy": 360,
+                "x": 910,
+                "index": 15,
+                "y": 360,
+                "device_type": "4",
+                "id": "gwangju-7712",
+                "ip_addr": "116.89.169.41",
+                "image": {
+                    "path": "images/node/switch.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_동전주_0707B",
+                "fx": 850,
+                "visible": true,
+                "fy": 660,
+                "x": 850,
+                "index": 16,
+                "y": 660,
+                "device_type": "1",
+                "id": "10.54.48.70",
+                "ip_addr": "10.54.48.70",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "SEOUL",
+                "fx": 1290,
+                "visible": true,
+                "fy": 360,
+                "x": 1290,
+                "index": 17,
+                "y": 360,
+                "device_type": "2",
+                "id": "SEOUL",
+                "ip_addr": "SEOUL",
+                "image": {
+                    "path": "images/node/ptn.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "DAEJEON",
+                "fx": 1220,
+                "visible": true,
+                "fy": 460,
+                "x": 1220,
+                "index": 18,
+                "y": 460,
+                "device_type": "2",
+                "id": "DAEJEON",
+                "ip_addr": "DAEJEON",
+                "image": {
+                    "path": "images/node/ptn.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "대구NIA",
+                "fx": 1220,
+                "visible": true,
+                "fy": 570,
+                "x": 1220,
+                "index": 19,
+                "y": 570,
+                "device_type": "0",
+                "id": "192.168.200.215",
+                "ip_addr": "192.168.200.215",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "전주전북대",
+                "fx": 590,
+                "visible": true,
+                "fy": 660,
+                "x": 590,
+                "index": 20,
+                "y": 660,
+                "device_type": "0",
+                "id": "192.168.200.218",
+                "ip_addr": "192.168.200.218",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "수원성균관대",
+                "fx": 700,
+                "visible": true,
+                "fy": 620,
+                "x": 700,
+                "index": 21,
+                "y": 620,
+                "device_type": "0",
+                "id": "192.168.200.213",
+                "ip_addr": "192.168.200.213",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "대전ETRI",
+                "fx": 900,
+                "visible": true,
+                "fy": 630,
+                "x": 900,
+                "index": 22,
+                "y": 630,
+                "device_type": "0",
+                "id": "192.168.200.220",
+                "ip_addr": "192.168.200.220",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_북대구_0707B",
+                "fx": 1040,
+                "visible": true,
+                "fy": 720,
+                "x": 1040,
+                "index": 23,
+                "y": 720,
+                "device_type": "1",
+                "id": "10.65.145.229",
+                "ip_addr": "10.65.145.229",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_보은_0502B",
+                "fx": 970,
+                "visible": true,
+                "fy": 570,
+                "x": 970,
+                "index": 24,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.85.177.120",
+                "ip_addr": "10.85.177.120",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_이천중_0613B",
+                "fx": 730,
+                "visible": true,
+                "fy": 570,
+                "x": 730,
+                "index": 25,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.38.96.110",
+                "ip_addr": "10.38.96.110",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_울산중_0211B",
+                "fx": 1280,
+                "visible": true,
+                "fy": 640,
+                "x": 1280,
+                "index": 26,
+                "y": 640,
+                "device_type": "1",
+                "id": "10.21.112.238",
+                "ip_addr": "10.21.112.238",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_상주_1307B",
+                "fx": 1060,
+                "visible": true,
+                "fy": 570,
+                "x": 1060,
+                "index": 27,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.71.49.13",
+                "ip_addr": "10.71.49.13",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_영동중_0801B",
+                "fx": 950,
+                "visible": true,
+                "fy": 660,
+                "x": 950,
+                "index": 28,
+                "y": 660,
+                "device_type": "1",
+                "id": "10.85.241.115",
+                "ip_addr": "10.85.241.115",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_천안중_0204B",
+                "fx": 780,
+                "visible": true,
+                "fy": 620,
+                "x": 780,
+                "index": 29,
+                "y": 620,
+                "device_type": "1",
+                "id": "10.82.49.182",
+                "ip_addr": "10.82.49.182",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_밀양_0329B",
+                "fx": 1140,
+                "visible": true,
+                "fy": 720,
+                "x": 1140,
+                "index": 30,
+                "y": 720,
+                "device_type": "1",
+                "id": "10.20.144.201",
+                "ip_addr": "10.20.144.201",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "광주전남대",
+                "fx": 710,
+                "visible": true,
+                "fy": 720,
+                "x": 710,
+                "index": 31,
+                "y": 720,
+                "device_type": "0",
+                "id": "192.168.200.217",
+                "ip_addr": "192.168.200.217",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_순창_0122B",
+                "fx": 820,
+                "visible": true,
+                "fy": 720,
+                "x": 820,
+                "index": 32,
+                "y": 720,
+                "device_type": "1",
+                "id": "10.54.240.58",
+                "ip_addr": "10.54.240.58",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "PANGYO",
+                "fx": 1330,
+                "visible": true,
+                "fy": 460,
+                "x": 1330,
+                "index": 33,
+                "y": 460,
+                "device_type": "2",
+                "id": "PANGYO",
+                "ip_addr": "PANGYO",
+                "image": {
+                    "path": "images/node/ptn.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_경주_0848B",
+                "fx": 1320,
+                "visible": true,
+                "fy": 570,
+                "x": 1320,
+                "index": 34,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.71.241.93",
+                "ip_addr": "10.71.241.93",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "판교NOC",
+                "fx": 660,
+                "visible": true,
+                "fy": 570,
+                "x": 660,
+                "index": 35,
+                "y": 570,
+                "device_type": "0",
+                "id": "192.168.200.214",
+                "ip_addr": "192.168.200.214",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_정읍중_0328B",
+                "fx": 550,
+                "visible": true,
+                "fy": 720,
+                "x": 550,
+                "index": 36,
+                "y": 720,
+                "device_type": "1",
+                "id": "10.56.113.53",
+                "ip_addr": "10.56.113.53",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_논산_0316B",
+                "fx": 750,
+                "visible": true,
+                "fy": 660,
+                "x": 750,
+                "index": 37,
+                "y": 660,
+                "device_type": "1",
+                "id": "10.81.81.153",
+                "ip_addr": "10.81.81.153",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "부산부경대",
+                "fx": 1230,
+                "visible": true,
+                "fy": 720,
+                "x": 1230,
+                "index": 38,
+                "y": 720,
+                "device_type": "0",
+                "id": "192.168.200.216",
+                "ip_addr": "192.168.200.216",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_청주중_1304B",
+                "fx": 900,
+                "visible": true,
+                "fy": 570,
+                "x": 900,
+                "index": 39,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.85.112.199",
+                "ip_addr": "10.85.112.199",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "서울NIA",
+                "fx": 620,
+                "visible": true,
+                "fy": 620,
+                "x": 620,
+                "index": 40,
+                "y": 620,
+                "device_type": "0",
+                "id": "192.168.200.210",
+                "ip_addr": "192.168.200.210",
+                "image": {
+                    "path": "images/node/roadm.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_동대구_0315B",
+                "fx": 1150,
+                "visible": true,
+                "fy": 570,
+                "x": 1150,
+                "index": 41,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.66.177.138",
+                "ip_addr": "10.66.177.138",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "SUWON",
+                "fx": 1390,
+                "visible": true,
+                "fy": 360,
+                "x": 1390,
+                "index": 42,
+                "y": 360,
+                "device_type": "2",
+                "id": "SUWON",
+                "ip_addr": "SUWON",
+                "image": {
+                    "path": "images/node/ptn.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_진천_0122B",
+                "fx": 810,
+                "visible": true,
+                "fy": 570,
+                "x": 810,
+                "index": 43,
+                "y": 570,
+                "device_type": "1",
+                "id": "10.85.80.183",
+                "ip_addr": "10.85.80.183",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "device_name": "중계_구미_0109B",
+                "fx": 930,
+                "visible": true,
+                "fy": 720,
+                "x": 930,
+                "index": 44,
+                "y": 720,
+                "device_type": "1",
+                "id": "10.70.113.47",
+                "ip_addr": "10.70.113.47",
+                "image": {
+                    "path": "images/node/repeater.png"
+                },
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_1",
+                "index": 45,
+                "x": 25.29279018100841,
+                "y": 62.131109477132995,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_2",
+                "index": 46,
+                "x": -61.28892214086734,
+                "y": -29.04596396766168,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_3",
+                "index": 47,
+                "x": 65.51350990159324,
+                "y": -20.198515301225584,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_4",
+                "index": 48,
+                "x": -35.030544341630474,
+                "y": 59.77341351411228,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_5",
+                "index": 49,
+                "x": -14.696666530084995,
+                "y": -68.43981292276798,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_6",
+                "index": 50,
+                "x": 57.64667212478689,
+                "y": 40.9494956371543,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_7",
+                "index": 51,
+                "x": -70.86605355446326,
+                "y": 8.831899773884732,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_8",
+                "index": 52,
+                "x": 46.74016622598717,
+                "y": -54.912265125080104,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_9",
+                "index": 53,
+                "x": 2.6531066949857944,
+                "y": 72.75273895094962,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_10",
+                "index": 54,
+                "x": -51.57991090299893,
+                "y": -52.34035528384091,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_11",
+                "index": 55,
+                "x": 74.0652320075174,
+                "y": 3.7870051059672996,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_12",
+                "index": 56,
+                "x": -57.6888817488349,
+                "y": 47.665426910591535,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_13",
+                "index": 57,
+                "x": 10.432369706108961,
+                "y": -74.7740975359453,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_14",
+                "index": 58,
+                "x": 43.19062423897526,
+                "y": 62.72615066977762,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_15",
+                "index": 59,
+                "x": -74.85540699153151,
+                "y": -17.224054230412072,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_16",
+                "index": 60,
+                "x": 67.39471132676982,
+                "y": -38.18314923079765,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_17",
+                "index": 61,
+                "x": -24.100779669432555,
+                "y": 74.29099823885439,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_18",
+                "index": 62,
+                "x": -32.67627295640393,
+                "y": -71.63980168648281,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_19",
+                "index": 63,
+                "x": 73.06868734670485,
+                "y": 30.999466599112544,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_20",
+                "index": 64,
+                "x": -75.40987395007019,
+                "y": 26.7086298943717,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_21",
+                "index": 65,
+                "x": 37.855801046705174,
+                "y": -71.1824299045226,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_22",
+                "index": 66,
+                "x": 20.3239076497276,
+                "y": 78.657096169674,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_23",
+                "index": 67,
+                "x": -68.6324298562459,
+                "y": -44.6048155699302,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_24",
+                "index": 68,
+                "x": 81.33782515425389,
+                "y": -13.570490012376958,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_25",
+                "index": 69,
+                "x": -51.18148047664099,
+                "y": 65.42519435369844,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_26",
+                "index": 70,
+                "x": -6.501056102210902,
+                "y": -83.41304615919447,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_27",
+                "index": 71,
+                "x": 61.57353364008794,
+                "y": 57.5213000120213,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_28",
+                "index": 72,
+                "x": -84.84877515776738,
+                "y": -0.8278612363409139,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_29",
+                "index": 73,
+                "x": 63.56090828162586,
+                "y": -57.09650548338965,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_30",
+                "index": 74,
+                "x": -8.356354241304723,
+                "y": 85.61641982583616,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_31",
+                "index": 75,
+                "x": -52.01930418721218,
+                "y": -69.23865966263567,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_32",
+                "index": 76,
+                "x": 85.69309573315454,
+                "y": 16.02165233889483,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_33",
+                "index": 77,
+                "x": -74.49520848340097,
+                "y": 46.37309471034498,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_34",
+                "index": 78,
+                "x": 23.758663326403614,
+                "y": -85.06189462351874,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_35",
+                "index": 79,
+                "x": 40.194792922708864,
+                "y": 79.27407282271142,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_36",
+                "index": 80,
+                "x": -83.71210207962406,
+                "y": -31.50053912888796,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_37",
+                "index": 81,
+                "x": 83.52217739526044,
+                "y": -33.52679351137899,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_38",
+                "index": 82,
+                "x": -39.179261383870426,
+                "y": 81.63936230406482,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_39",
+                "index": 83,
+                "x": -26.4166475224289,
+                "y": -87.19037064765669,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_40",
+                "index": 84,
+                "x": 78.84578820243294,
+                "y": 46.72624190684592,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_41",
+                "index": 85,
+                "x": -90.233911389071,
+                "y": 18.916691979024318,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_42",
+                "index": 86,
+                "x": 54.07293293162175,
+                "y": -75.340015424556,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_43",
+                "index": 87,
+                "x": 11.083634450004226,
+                "y": 92.612920520728,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_44",
+                "index": 88,
+                "x": -71.13719950202413,
+                "y": -61.151441904579976,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_45",
+                "index": 89,
+                "x": 94.2927937071088,
+                "y": -2.978095852826337,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_46",
+                "index": 90,
+                "x": -67.89514554197386,
+                "y": 66.25895571041087,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_47",
+                "index": 91,
+                "x": 5.335884843254843,
+                "y": -95.2445711468088,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_48",
+                "index": 92,
+                "x": 60.73324177924158,
+                "y": 74.2392978346656,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_49",
+                "index": 93,
+                "x": -95.44526094990952,
+                "y": -13.791379996348347,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_50",
+                "index": 94,
+                "x": 80.12162670581947,
+                "y": -54.59418406765797,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_51",
+                "index": 95,
+                "x": -22.31913241807743,
+                "y": 94.8781130087668,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_52",
+                "index": 96,
+                "x": -47.88184831492389,
+                "y": -85.48291409367499,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_53",
+                "index": 97,
+                "x": 93.5328406571534,
+                "y": 30.848139629539254,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_54",
+                "index": 98,
+                "x": -90.26755434325707,
+                "y": 40.64195655830475,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_55",
+                "index": 99,
+                "x": 39.306258386646405,
+                "y": -91.40578784542141,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_56",
+                "index": 100,
+                "x": 32.92555228250726,
+                "y": 94.42408594681699,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_57",
+                "index": 101,
+                "x": -88.50004001324625,
+                "y": -47.62082441174042,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_58",
+                "index": 102,
+                "x": 97.90569187186156,
+                "y": -24.788616320644003,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_59",
+                "index": 103,
+                "x": -55.71928210825297,
+                "y": 84.8254773127798,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_60",
+                "index": 104,
+                "x": -16.291636463043353,
+                "y": -100.67066395607031,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_61",
+                "index": 105,
+                "x": 80.39876931987966,
+                "y": 63.52981891874693,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_62",
+                "index": 106,
+                "x": -102.68282712850646,
+                "y": 7.499134143170147,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_63",
+                "index": 107,
+                "x": 70.98199891532852,
+                "y": -75.24331086538061,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_64",
+                "index": 108,
+                "x": -1.520848043872843,
+                "y": 103.91191953393725,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_65",
+                "index": 109,
+                "x": -69.38909911808031,
+                "y": -78.00739018568194,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_66",
+                "index": 110,
+                "x": 104.33392498929655,
+                "y": 10.697293878726581,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_67",
+                "index": 111,
+                "x": -84.54018059829595,
+                "y": 62.87255255202785,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_68",
+                "index": 112,
+                "x": 19.956791676637142,
+                "y": -103.93135458549217,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_69",
+                "index": 113,
+                "x": 55.736272928638,
+                "y": 90.51777659677892,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_70",
+                "index": 114,
+                "x": -102.69347466076889,
+                "y": -29.224138346545278,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_71",
+                "index": 115,
+                "x": 95.8813797851009,
+                "y": -48.02875191492325,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_72",
+                "index": 116,
+                "x": -38.422964380848626,
+                "y": 100.6164788103223,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_73",
+                "index": 117,
+                "x": -39.80402443860088,
+                "y": -100.57653622237775,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_74",
+                "index": 118,
+                "x": 97.70360205721731,
+                "y": 47.47637459879302,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_75",
+                "index": 119,
+                "x": -104.55365354629213,
+                "y": 31.121271344884274,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_76",
+                "index": 120,
+                "x": 56.307599301461735,
+                "y": -93.96517578819308,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_77",
+                "index": 121,
+                "x": 22.044374364663536,
+                "y": 107.76848128683342,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_78",
+                "index": 122,
+                "x": -89.41862255052826,
+                "y": -64.8406503758727,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_79",
+                "index": 123,
+                "x": 110.18255001506358,
+                "y": -12.641426825244661,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_80",
+                "index": 124,
+                "x": -73.00097681021879,
+                "y": 84.0883903089713,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_81",
+                "index": 125,
+                "x": -2.9842039299380594,
+                "y": -111.76356529256098,
+                "vy": 0,
+                "vx": 0
+            },
+            {
+                "nodeId": "intermediate_82",
+                "index": 126,
+                "x": 78.00582627040549,
+                "y": 80.71611405333707,
+                "vy": 0,
+                "vx": 0
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_TOPOLOGY_NODE_LIST",
+        "urlOrigin": "/selectList/SELECT_TOPOLOGY_NODE_LIST",
+        "params": null,
+        "data": "{\"TYPE\":\"3\",\"encrypt\":\"DBshsBAD01mgK8rVZFI=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_TOPOLOGY_NODE_LIST\", \"sqlId\": \"SELECT_TOPOLOGY_NODE_LIST\", \"param\": {\"TYPE\":\"3\",\"encrypt\":\"DBshsBAD01mgK8rVZFI=\"} }",
+        "requestTime": "2026-02-23 13:33:40.900",
+        "responseTime": "2026-02-23 13:33:40.972",
+        "duration": 72,
+        "jsonFileName": "SELECTTOPOLOGYNODELIST_TYPE3.json"
+    }
+}

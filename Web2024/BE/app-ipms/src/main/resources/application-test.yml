@@ -1,0 +1,33 @@
+server:
+  port: 8070
+
+spring:
+  config:
+    import: "classpath:/properties/config.test"
+  profiles:
+    active: test
+    dev: false
+
+  h2:
+    console:
+      enabled: true
+      settings.web-allow-others: true
+
+  datasource2nd:
+    enabled: true
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://10.217.180.106:5432/ipms
+    username: ipms_user
+    password: tjsgkdb!
+    mapper-packages: >
+      com.kt.ipms.mapper.db2nd,
+      com.kt.ipms.legacy
+
+  sql:
+    init:
+      platform: postgres
+      encoding: UTF-8
+
+file:
+  # upload-dir: ./external # 주석해제 시 파일 업로드 경로는 /local/external/excelFiles 된다. (default: /uploads/excelFiles )
+  excel-upload-dir: excelFiles

@@ -1,0 +1,166 @@
+<template>
+  <div :class="{ [name]: true }">
+    <CompInquiryPannel
+      ref="trafficAnalysis"
+      :ag-grid="trafficAgGrid"
+      :items="searchItems"
+      :is-excel="true"
+      :title="titleName"
+      :search-model.sync="searchModel"
+      :pagination-info="paginationInfo"
+      class="w-100 h-100"
+      @handleClickSearch="onClickSearch"
+      @onChangePage="(curPage) => onChangePage(curPage)"
+      @searchClear="searchClear"
+      @onDebugTest="autoTest"
+    >
+      <template slot="add-function">
+        <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
+      </template>
+    </CompInquiryPannel>
+    <ModalProfileDetail ref="ModalProfileDetail" @systemEdit="onLoadProfileList()" />
+  </div>
+</template>
+<script>
+import { Base } from '@/min/Base.min'
+import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
+import CellRenderHyperlink from '@/views-nia/components/cellRenderer/CellRenderHyperlink'
+import ModalProfileDetail from '@/views-nia/modal/ModalProfileDetail'
+import { apiSelectProfileList } from '@/api/nia'
+
+const routeName = 'ProfileInquiry'
+export default {
+  name: routeName,
+  // eslint-disable-next-line vue/no-unused-components
+  components: { CompInquiryPannel, CellRenderHyperlink, ModalProfileDetail },
+  extends: Base,
+  data() {
+    return {
+      name: routeName,
+      src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      titleName: '조치 프로파일',
+      paginationInfo: {
+        currentPage: 1, // 현재 페이지
+        pageSize: 50, // 페이지당 항목 수
+        totalCount: 0, // 총 항목 수
+        totalPages: null, // 전체 페이지 수
+        pagerCount: 11
+      },
+      selectedRow: [],
+      trafficData: [],
+      searchItems: [
+        { label: '제목', type: 'input', model: 'profile_title', placeholder: '제목을 검색하세요' },
+        { label: '네트워크', type: 'input', model: 'network_type', placeholder: '인터페이스를 검색하세요' },
+        { label: '장애대응', type: 'input', model: 'processing_template', placeholder: '인터페이스를 검색하세요' }
+      ],
+      searchModel: {
+        profile_title: '',
+        network_type: '',
+        processing_template: ''
+      },
+    }
+  },
+
+  computed: {
+    trafficAgGrid() {
+      const options = {
+        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+      }
+      const columns = [
+        { type: '', prop: 'rownum', name: '번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'profile_title', name: '제목', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center',
+          cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'profileDetail', action: this.handleOpenModalDetail.bind(this) } },
+        { type: '', prop: 'network_type', name: '네트워크', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'processing_template', name: '장애대응', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: this.formatterProcessing },
+        { type: '', prop: 'auto_process_info', name: '자동처리기간', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+      ]
+      return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
+    },
+  },
+  mounted() {
+    this.onLoadProfileList()
+  },
+  methods: {
+    onSortedChange(param) {
+      this.onLoadProfileList()
+    },
+    onClickSearch(params) {
+      this.onLoadProfileList(params)
+    },
+    convertProcessingTemplateDescToValue(desc) {
+      if (!desc) return ''
+
+      const templates = [
+        { value: 'recovery', display_name: '자가회복' },
+        { value: 'construction', display_name: '공사' }
+      ]
+
+      // 검색어가 포함된 display_name을 찾아 해당 value 값을 반환
+      return templates
+        .filter(template => template.display_name.includes(desc)) // 부분 일치하는 항목 찾기
+        .map(template => template.value) // 일치하는 value 값을 배열로 반환
+        .join(',') // 여러 값이 있으면 콤마로 연결해 반환
+    },
+    async onLoadProfileList() {
+      const target = { vue: this.$refs.trafficAnalysis }
+      this.openLoading(target)
+      const param = {
+        profile_title: this.searchModel.profile_title,
+        network_type: this.searchModel.network_type,
+        processing_template: this.convertProcessingTemplateDescToValue(this.searchModel.processing_template),
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
+      }
+      try {
+        const res = await apiSelectProfileList(param)
+        this.trafficData = res?.result
+        this.paginationInfo.totalCount = res.total // 총 항목 수 설정
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
+    },
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadProfileList()
+    },
+    searchClear() {
+      this.searchModel = {}
+    },
+    handleOpenModalDetail(row, type) {
+      this.$refs.ModalProfileDetail.open({ row, type })
+    },
+    formatterProcessing(row, col, value, index) {
+      if (row.processing_template === 'recovery') {
+        return '자가회복'
+      }
+      if (row.processing_template === 'construction') {
+        return '공사'
+      }
+    },
+    async autoTest() {
+      const { assert, wait, onLoadProfileList, query } = this
+      query.writer = '대전'
+      await onLoadProfileList()
+      assert(this.trafficData.length > 0)
+      window.ref.ModalProfileDetail.open({ type: 'OPEN' })
+      await wait(1000)
+      window.ref.ModalProfileDetail.close()
+      await wait(1000)
+      window.ref.ModalProfileDetail.open({ row: this.trafficData[0], type: 'profileDetail' })
+      await wait(1000)
+      window.ref.ModalProfileDetail.handleUpdateProfile('test')
+      document.querySelector(Base.confirmBtn).click()
+      await wait(1000)
+      document.querySelector(Base.confirmBtn).click()
+      await wait(1000)
+      window.ref.ModalProfileDetail.close()
+      await wait(1000)
+    }
+  }
+}
+</script>
+

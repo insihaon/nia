@@ -1,0 +1,2745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.nia.mapper.db2nd.NiaMapper">
+
+<sql id="TotalCountPrefix">
+    <if test="TOTAL_COUNT != null">
+        SELECT COUNT(*) AS "count" FROM (
+    </if>
+</sql>
+
+<sql id="TotalCountSuffix">
+<if test="TOTAL_COUNT == null and sort_column_name != null and sort_type != null">
+    ORDER BY ${sort_column_name} ${sort_type}
+</if>
+<if test="TOTAL_COUNT != null">
+    ) TOTALCOUNT
+</if>
+<choose>
+    <when test="TOTAL_COUNT != null and limit != null">
+        LIMIT ${limit}
+    </when>
+    <when test="TOTAL_COUNT == null and page != null and limit != null">
+        LIMIT ${limit} OFFSET ${(page - 1) * limit}
+    </when>
+    <when test="TOTAL_COUNT == null and page != null and limit == null">
+        <!--  default 10으로 설정 -->
+        LIMIT 10 OFFSET ${(page - 1) * limit}
+    </when>
+</choose>
+</sql>
+
+<!-- email발송 user list / 사용자 관리-->
+<select id="SELECT_USER_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT
+        U.NAME
+        , U.EMAIL
+        , U.AGENCY_NAME
+        , U.ID
+        , U.PW
+        , U.LVL
+        , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
+        , U.PHONE_NUMBER
+    FROM nia.tb_user U
+    <where>
+        <if test="AGENCY_NAME != null">
+            AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
+        </if>
+        <if test="NAME != null and NAME != ''">
+            AND UPPER(U.NAME) LIKE '%' || UPPER(#{NAME}) || '%'
+        </if>
+        <if test="LVL_VALUE != null">
+            AND U.lvl <![CDATA[ & ]]> #{LVL_VALUE}!= 0
+        </if>
+        <!-- <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
+            AND CAST(U.LVL AS VARCHAR) IN
+            <foreach item="LEVEL" collection="LVL_VALUE" open="(" separator="," close=")">
+                #{LEVEL}
+            </foreach>
+        </if> -->
+    </where>
+    <if test="IS_ALL == true">
+        ORDER BY LAST_LOGIN DESC
+    </if>
+    <if test="IS_ALL != true">
+        ORDER BY NAME DESC
+    </if>
+</select>
+
+<!-- 사용자 권한 수정 -->
+<update id="UPDATE_USER_GRANT_LIST" parameterType="hashmap">
+    UPDATE NIA.TB_USER 
+    SET    LVL = #{lvl_value}
+    WHERE NAME = #{name} 
+        AND ID = #{id}
+</update>
+
+<select id="SELECT_SELF_PROCESS_STATISTICS" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <if test="STATISTICS_TYPE != null">
+        <bind name="STATISTICS_TYPE" value="STATISTICS_TYPE"/>
+        <bind name="SERIES_TYPE" value="SERIES_TYPE"/>
+        <if test="STATISTICS_TYPE == 'hour'">
+            <bind name="STATISTICS_FORMAT" value="'YYYY-MM-DD HH24:MI'"/>
+            <bind name="SERIES_FORMAT" value="'YYYY-MM-DD'"/>
+        </if>
+        <if test="STATISTICS_TYPE == 'day'">
+            <bind name="STATISTICS_FORMAT" value="'YYYY-MM-DD'"/>
+            <bind name="SERIES_FORMAT" value="'YYYY-MM'"/>
+        </if>
+        <if test="STATISTICS_TYPE == 'month'">
+            <bind name="STATISTICS_FORMAT" value="'YYYY-MM'"/>
+            <bind name="SERIES_FORMAT" value="'YYYY'"/>
+        </if>
+    </if>
+    <if test="STATISTICS_TYPE == null">
+        <!-- hour, day, month -->
+        <bind name="STATISTICS_TYPE" value="'hour'"/>
+        <!-- day, month, year -->
+        <bind name="SERIES_TYPE" value="'day'"/>
+    </if>
+    <if test="FORMAT != null">
+        <bind name="FORMAT" value="FORMAT"/>
+    </if>
+    WITH 
+    series AS (
+        SELECT generate_series (
+        <if test="DATE != null and DATE != ''">
+            DATE_TRUNC(#{SERIES_TYPE}, TO_DATE(#{DATE}, #{SERIES_FORMAT})::date),
+            DATE_TRUNC(#{SERIES_TYPE}, TO_DATE(#{DATE}, #{SERIES_FORMAT})::date) + ('1 ' || #{SERIES_TYPE})::INTERVAL - ('1 ' || #{STATISTICS_TYPE})::INTERVAL,
+        </if>
+        <if test="DATE == null or DATE == ''">
+            DATE_TRUNC(#{SERIES_TYPE}, CURRENT_DATE),
+            DATE_TRUNC(#{SERIES_TYPE}, CURRENT_DATE) + ('1 ' || #{SERIES_TYPE})::INTERVAL - ('1 ' || #{STATISTICS_TYPE})::INTERVAL,
+        </if>
+        ('1 '|| #{STATISTICS_TYPE})::INTERVAL
+        ) AS series_time
+    )
+    SELECT
+        TO_CHAR(series.series_time, #{STATISTICS_FORMAT}) AS series_time,
+        <!-- SO: 최적화 / ST: 회복 -->
+        COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') THEN 1 END), 0) AS SO_TOTALCOUNT,
+        COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS SO_COUNT,
+        COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') THEN 1 END), 0) AS ST_TOTALCOUNT,
+        COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS ST_COUNT
+    FROM series
+    LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON DATE_TRUNC(#{STATISTICS_TYPE}, TPD.occur_time) = series.series_time
+    GROUP BY series_time
+    ORDER BY series_time
+</select>
+
+<!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
+<select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    WITH params AS (
+    SELECT
+        now() - interval '7 days' AS dt_from,
+        now() AS dt_to
+    )
+    SELECT DISTINCT
+        ALARMNO,
+        TICKET_ID,
+        CLUSTERNO,
+        NODE_NUM,
+        NODE_NM,
+        ALARMLOC,
+        IF_NUM,
+        T.TICKET_TYPE,
+        TO_CHAR(ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME,
+        TO_CHAR(FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME,
+        PORT,
+        ALARMMSG,
+        FAULT_TYPE,
+        ALARMMSG_ORIGINAL,
+        TICKET_RCA_RESULT_CODE,
+        STATUS,
+        TICKET_RCA_RESULT_DTL_CODE,
+        TOTAL_RELATED_ALARM_CNT,
+        ROOT_CAUSE_SYSNAMEA,
+        ROOT_CAUSE_SYSNAMEZ,
+        ROOT_CAUSE_PORTA,
+        ROOT_CAUSE_PORTZ,
+        ZERO1_ENTROPY,
+        IP_ADDR,
+        AI_ACCURACY
+    FROM (
+        SELECT 
+            ACM.ALARMNO,
+            TC.TICKET_ID,
+            ACM.CLUSTERNO,
+            NM.NODE_NUM AS NODE_NUM,
+            NM.NODE_NM AS NODE_NM,
+            ACM.ALARMLOC,
+            NULL AS IF_NUM,
+            TC.TICKET_TYPE,
+            TC.root_cause_type AS FAULT_TYPE,
+            ACM.ALARMTIME AS ALARMTIME,
+            NULL FAULT_TIME,
+            ACM.ALARMMSG,
+            ACM.PORT,
+            ACM.ALARMMSG_ORIGINAL,
+            TC.STATUS,
+            TC.TICKET_RCA_RESULT_CODE,
+            TC.TICKET_RCA_RESULT_DTL_CODE,
+            NULL TOTAL_RELATED_ALARM_CNT,
+            AL.ROOT_CAUSE_SYSNAMEA,
+            AL.ROOT_CAUSE_SYSNAMEZ,
+            AL.ROOT_CAUSE_PORTA,
+            AL.ROOT_CAUSE_PORTZ,
+            TC.ZERO1_ENTROPY,
+            NM.IP_ADDR AS IP_ADDR,
+            SOP.AI_ACCURACY
+        FROM (
+            SELECT 
+                ACM.ALARMNO,
+                MAX(ACM.CLUSTERNO) AS CLUSTERNO,
+                ACM.SYSNAME,
+                ACM.ALARMTIME AS ALARMTIME,
+                ACM.CLEARTIME,
+                ACM.ALARMLOC,
+                ACM.ALARMMSG,
+                ACM.ALARMLEVEL,
+                ACM.PORT,
+                ACM.ALARMMSG_ORIGINAL
+            FROM rca.tb_alarm_cur_mst ACM
+            CROSS JOIN params p
+            WHERE ALARMNO LIKE 'I%'
+            <if test="IS_TEST == null">
+                AND ACM.ALARMTIME <![CDATA[ >= ]]> p.dt_from
+                AND ACM.ALARMTIME <![CDATA[ < ]]>  p.dt_to
+            </if>
+            GROUP BY ACM.ALARMNO, ACM.SYSNAME, ACM.ALARMTIME, ACM.CLEARTIME, ACM.ALARMLOC, ACM.ALARMMSG, ACM.ALARMLEVEL, ACM.PORT, ACM.ALARMMSG_ORIGINAL
+        ) ACM
+        LEFT JOIN rca.tb_rca_ticket_current TC ON ACM.clusterno = TC.cluster_no
+        LEFT JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
+        LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
+        LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        UNION ALL
+        SELECT
+            NULL ALARMNO,
+            TC.TICKET_ID,
+            CLUSTER_NO AS CLUSTERNO,
+            nm.node_num AS NODE_NUM,
+            nm.node_nm AS NODE_NM,
+            pt.if_id AS ALARMLOC,
+            pt.if_num AS IF_NUM,
+            TC.TICKET_TYPE,
+            TC.root_cause_type AS FAULT_TYPE,
+            TICKET_GENERATION_TIME AS ALARMTIME,
+            FAULT_TIME,
+            TC.root_cause_type AS ALARMMSG,
+            NULL PORT,
+            NULL ALARMMSG_ORIGINAL,
+            TC.STATUS,
+            TC.TICKET_RCA_RESULT_CODE,
+            TC.TICKET_RCA_RESULT_DTL_CODE,
+            TOTAL_RELATED_ALARM_CNT,
+            ROOT_CAUSE_SYSNAMEA,
+            ROOT_CAUSE_SYSNAMEZ,
+            ROOT_CAUSE_PORTA,
+            ROOT_CAUSE_PORTZ,
+            TC.ZERO1_ENTROPY,
+            NM.IP_ADDR AS IP_ADDR,
+            SOP.AI_ACCURACY
+        FROM rca.tb_rca_ticket_current TC
+        INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
+        INNER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
+        INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID and PT.node_id = NM.node_id
+        LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        CROSS JOIN params p
+        WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'ATT2_AI')
+            AND TC.PARENT_TICKET_ID IS NULL
+            <if test="IS_TEST == null">
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> p.dt_from
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ < ]]>  p.dt_to
+            </if>
+        UNION ALL
+        SELECT
+            NULL ALARMNO,
+            TC.TICKET_ID,
+            CLUSTER_NO AS CLUSTERNO,
+            '-' AS NODE_NUM,
+            '-' AS NODE_NM,
+            '-' AS ALARMLOC,
+            '-' AS IF_NUM,
+            TC.TICKET_TYPE,
+            TC.root_cause_type AS FAULT_TYPE,
+            TICKET_GENERATION_TIME AS ALARMTIME,
+            FAULT_TIME,
+            TC.root_cause_type AS ALARMMSG,
+            NULL PORT,
+            NULL ALARMMSG_ORIGINAL,
+            TC.STATUS,
+            TC.TICKET_RCA_RESULT_CODE,
+            TC.TICKET_RCA_RESULT_DTL_CODE,
+            TOTAL_RELATED_ALARM_CNT,
+            '-' AS ROOT_CAUSE_SYSNAMEA,
+            '-' AS ROOT_CAUSE_SYSNAMEZ,
+            '-' AS ROOT_CAUSE_PORTA,
+            '-' AS ROOT_CAUSE_PORTZ,
+            TC.ZERO1_ENTROPY,
+            '-' AS IP_ADDR,
+            SOP.AI_ACCURACY
+        FROM rca.tb_rca_ticket_current TC
+        LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        CROSS JOIN params p
+        WHERE TC.TICKET_TYPE IN ('NTT', 'NTT_AI')
+            AND TC.PARENT_TICKET_ID IS NULL
+            <if test="IS_TEST == null">
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> p.dt_from
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ < ]]>  p.dt_to
+            </if>
+        UNION ALL
+        SELECT 
+            SAM.ALARMNO,
+            NULL TICKET_ID,
+            NULL CLUSTERNO,
+            SAM.NODE_NUM,
+            SAM.NODE_NM,
+            SAM.ALARMLOC,
+            NULL AS IF_NUM,
+            'SYSLOG' AS TICKET_TYPE,
+            NULL FAULT_TYPE,
+            SAM.ALARMTIME AS ALARMTIME,
+            NULL FAULT_TIME,
+            SAM.ALARMMSG,
+            NULL PORT,
+            SAM.ETC AS ALARMMSG_ORIGINAL,
+            CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS
+                ELSE '-'
+            END AS STATUS,
+            NULL TICKET_RCA_RESULT_DTL_CODE,
+            NULL TICKET_RCA_RESULT_CODE,
+            NULL TOTAL_RELATED_ALARM_CNT,
+            NULL ROOT_CAUSE_SYSNAMEA,
+            NULL ROOT_CAUSE_SYSNAMEZ,
+            NULL ROOT_CAUSE_PORTA,
+            NULL ROOT_CAUSE_PORTZ,
+            NULL ZERO1_ENTROPY,
+            NM.IP_ADDR AS IP_ADDR,
+            NULL AS AI_ACCURACY
+        FROM rca.tb_syslog_alarm_mst SAM
+        LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
+        CROSS JOIN params p
+        <if test="IS_TEST == null">
+            WHERE SAM.ALARMTIME <![CDATA[ >= ]]> (p.dt_to - interval '2 days')
+            AND SAM.ALARMTIME <![CDATA[ < ]]>  p.dt_to
+        </if>
+    ) T
+    WHERE 1=1 
+    <if test="IS_POLLING != null and IS_POLLING == true">
+        AND T.ALARMTIME <![CDATA[ > ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+    </if>
+    <if test="TICKET_ID != null">
+        AND T.TICKET_ID = #{TICKET_ID}
+    </if>
+    <if test="ALARMNO != null">
+        AND T.ALARMNO = #{ALARMNO}
+    </if>
+    ORDER BY ALARMTIME DESC
+</select>
+
+<!-- 전송망 TICKET -->
+<select id="SELECT_TRANSMISSION_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        ALARMNO
+        , SYSNAME
+        , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') ALARMTIME
+        , ALARMLOC
+        , ALARMMSG
+        , ALARMMSG_ORIGINAL
+        , TICKET_ID
+        , TICKET_TYPE
+        , TICKET_GENERATION_TIME
+        , FAULT_TIME
+        , ROOT_CAUSE_TYPE
+        , COALESCE(ROOT_CAUSE_DOMAIN, '기타') AS ROOT_CAUSE_DOMAIN
+        , TOTAL_RELATED_ALARM_CNT
+        , STATUS
+        , TICKET_RCA_RESULT_CODE
+        , TICKET_RCA_RESULT_DTL_CODE
+        , TICKET_UPDATE_TIME
+    FROM (
+        SELECT 
+            AC.ALARMNO
+            , AC.SYSNAME
+            , AC.ALARMTIME
+            , AC.ALARMLOC
+            , AC.ALARMMSG
+            , AC.ALARMMSG_ORIGINAL
+            , RT.TICKET_ID
+            , RT.TICKET_TYPE
+            , TO_CHAR(RT.TICKET_GENERATION_TIME , 'YYYY-MM-DD HH24:MI:SS') AS TICKET_GENERATION_TIME
+            , TO_CHAR(RT.FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
+            , RT.ROOT_CAUSE_TYPE
+            , RT.ROOT_CAUSE_DOMAIN
+            , RT.TOTAL_RELATED_ALARM_CNT
+            , RT.STATUS
+            , RT.TICKET_RCA_RESULT_CODE
+            , RT.TICKET_RCA_RESULT_DTL_CODE
+            , TO_CHAR(RT.TICKET_UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME
+        FROM rca.tb_alarm_cur_mst AC
+        LEFT JOIN rca.tb_rca_ticket_al_current AL ON AC.ALARMNO = AL.ROOT_CAUSE_ALARM_NOA
+        LEFT JOIN rca.tb_rca_ticket_current RT ON RT.TICKET_ID = AL.TICKET_ID 
+        WHERE ALARMNO LIKE 'T%' 
+        UNION ALL
+        SELECT 
+            NULL ALARMNO
+            , AL.root_cause_sysnamea SYSNAME
+            , TICKET_GENERATION_TIME AS ALARMTIME
+            , AL.root_cause_porta ALARMLOC
+            , TC.root_cause_type AS ALARMMSG
+            , NULL ALARMMSG_ORIGINAL
+            , TC.TICKET_ID
+            , TC.TICKET_TYPE
+            , TO_CHAR(TC.TICKET_GENERATION_TIME, 'YYYY-MM-DD HH24:MI:SS' ) AS TICKET_GENERATION_TIME
+            , TO_CHAR(TC.FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
+            , TC.ROOT_CAUSE_TYPE
+            , TC.ROOT_CAUSE_DOMAIN
+            , TC.TOTAL_RELATED_ALARM_CNT
+            , TC.STATUS
+            , TC.TICKET_RCA_RESULT_CODE
+            , TC.TICKET_RCA_RESULT_DTL_CODE
+            , TO_CHAR(TC.TICKET_UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME
+        FROM RCA.TB_RCA_TICKET_CURRENT TC
+        LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL ON AL.TICKET_ID = TC.TICKET_ID
+        WHERE TICKET_TYPE = 'PF'
+    ) T
+    WHERE 1=1
+        <if test="IS_POLLING == null">
+            AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '14' DAY
+        </if>
+        <if test="IS_POLLING != null and IS_POLLING == true">
+            AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+        </if>
+    ORDER BY ALARMTIME DESC
+</select>
+
+<!-- 전송망 전표 상세 내역 조회 (근원/파생 알람) -->
+<select id="SELECT_TRANSMISSION_TICKET_DETAIL" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        AC.ALARMNO
+        , AC.CLUSTERNO
+        , AC.SYSNAME
+        , AC.EQUIPTYPE
+        , TO_CHAR(AC.ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+        , TO_CHAR(AC.RECEIVETIME , 'YYYY-MM-DD HH24:MI:SS') AS RECEIVETIME
+        , AC.ALARMLOC
+        , AC.ALARMMSG
+        , AC.UNIT
+        , AC.ALARMLEVEL
+        , AC.CLUSTERNO_ORIGINAL
+        , TO_CHAR(AC.CLEARTIME , 'YYYY-MM-DD HH24:MI:SS') AS CLEARTIME
+        , AC.PTPNAME
+        , AC.SLOT
+        , AC.PORT
+        , AC.ALARMMSG_ORIGINAL
+        , AL.TICKET_ID AS AL_TICKET_ID
+    FROM rca.tb_alarm_cur_mst AC
+    LEFT JOIN rca.tb_rca_ticket_al_current AL ON AC.ALARMNO = AL.ROOT_CAUSE_ALARM_NOA
+    WHERE CLUSTERNO IN (
+        SELECT CLUSTER_NO
+        FROM rca.tb_rca_ticket_current
+        WHERE TICKET_ID = #{TICKET_ID}
+    )
+    AND ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' YEAR
+</select>
+
+<!-- 시스템 현황 모니터링 -->
+<select id="SELECT_SYSTEM_MONITORING_CURRENT" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        KEY_NAME
+        , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE
+        , YD_DATE AS YD_DATE1
+        , NORMAL_TIME_LIMIT
+    FROM NIA.TB_LINKAGE_SEQ
+    WHERE KEY_NAME IN (
+        'aiIpSdnTrafficeKey',
+        'aiIpSdnSflowKey',
+        'aiIpSdnSyslogKey',
+        'aiIpSdnNodeFactorKey',
+        'aiTrafficNoxKey',
+        'aiTrafficAnoKey',
+        'aiTrafficNoxKey2',
+        'aiTrafficAnoKey2',
+        'aiIpPerfKey',
+        'aiIpResourceIfKey',
+        'aiIpResourceKey',
+        'ipSdnTrafficeKey',
+        'ipSdnSflowKey',
+        'ipSdnSyslogKey',
+        'ipSdnNodeFactorKey',
+        'ipPerfKey',
+        'ipResourceIfKey',
+        'ipResourceKey',
+        'emsSipcKey',
+        'emsPmKey'
+    )
+</select>
+
+<!-- AI관제 시스템 처리량 -->
+<select id="SELECT_DASHBOARD_STATISTICS" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  COALESCE(SUM(TRANS_PERF_CNT), 0)AS TRANS_PERF_CNT,
+            COALESCE(SUM(TRANS_ALARM_CNT), 0)AS TRANS_ALARM_CNT,
+            COALESCE(SUM(IP_RESOURCE_CNT), 0)AS IP_RESOURCE_CNT,
+            COALESCE(SUM(IP_ALARM_CNT), 0)AS IP_ALARM_CNT,
+            COALESCE(SUM(IP_PERF_CNT), 0)AS IP_PERF_CNT,
+            COALESCE(SUM(IP_SFLOW_CNT), 0)AS IP_SFLOW_CNT,
+            COALESCE(SUM(TICKET_RT_CNT), 0)AS TICKET_RT_CNT,
+            COALESCE(SUM(TICKET_ATT_CNT), 0)AS TICKET_ATT_CNT,
+            COALESCE(SUM(TICKET_NTT_CNT), 0)AS TICKET_NTT_CNT,
+            COALESCE(SUM(TICKET_PF_CNT), 0)AS TICKET_PF_CNT,
+            COALESCE(SUM(LINK_TOTAL_RESOURCE_CNT), 0) AS LINK_TOTAL_RESOURCE_CNT,
+            COALESCE(SUM(LINK_TOTAL_ALARM_CNT), 0) AS LINK_TOTAL_ALARM_CNT,
+            COALESCE(SUM(LINK_IP_PERF_CNT), 0) AS LINK_IP_PERF_CNT,
+            COALESCE(SUM(LINK_TRANS_PERF_CNT), 0) AS LINK_TRANS_PERF_CNT
+    FROM    nia.tb_opsts
+    WHERE 1=1
+    <if test="SEARCH_DATE != null">
+        AND OPSTS_TIME <![CDATA[ = ]]> #{SEARCH_DATE}
+    </if>
+    <if test="DATE_TYPE != null">
+        AND OPSTS_GB <![CDATA[ = ]]> #{DATE_TYPE}
+    </if>
+</select>
+
+<!-- 자가처리 조회 -->
+<select id="SELECT_SELF_PROCESS_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        CASE 
+            WHEN tpd.SELF_PROCESS_TYPE = 'S' THEN tpd.ALARMNO
+            ELSE tpd.TICKET_ID
+            END AS TICKET_ID
+        , TO_CHAR(OCCUR_TIME, 'YYYY-MM-DD HH24:MI:SS') AS OCCUR_TIME
+        , TO_CHAR(CLOS_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CLOS_TIME
+        , CASE WHEN tpd.TICKET_TYPE IS NULL THEN 'SYSLOG'
+            ELSE tpd.TICKET_TYPE
+            END AS TICKET_TYPE
+        , SELF_PROCESS_TYPE <!--  A:이상트래픽 / N: 유해트래픽 / S:SYSLOG / F: 비장애 -->
+        , CASE 
+            WHEN tpd.SELF_PROCESS_TYPE = 'S' THEN tss.FAULT_DETAIL_CONTENT
+            ELSE ts.FAULT_DETAIL_CONTENT
+            END AS FAULT_DETAIL_CONTENT
+        , CLOS_TYPE <!--  A: 자동 / ELSE: 수동 -->
+        , CLOS_STATUS <!-- Y: red / N: blue -->
+        , TO_CHAR((
+            SELECT FAULT_TIME
+            FROM rca.tb_rca_ticket_current rtc
+            WHERE rtc.ticket_id = tpd.ticket_id
+        ), 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
+        , TS.TICKET_RESULT
+        , (
+            SELECT  ZERO1_ENTROPY
+            FROM rca.tb_rca_ticket_current rtc
+            WHERE tpd.ticket_id = rtc.ticket_id
+        ) ZERO1_ENTROPY
+    FROM nia.tb_auto_treat_process_dtl tpd
+    LEFT JOIN nia.tb_sop ts ON tpd.ticket_id = ts.ticket_id 
+    LEFT JOIN nia.tb_syslog_sop tss ON tpd.alarmno = tss.alarmno
+    WHERE 1=1
+    <choose>
+        <when test="TICKET_ID != '' and TICKET_ID != null">
+            tpd.ticket_id = #{TICKET_ID}
+        </when>
+        <when test="ALARMNO != '' and ALARMNO != null">
+            tpd.alarmno = #{ALARMNO}
+        </when>
+        <otherwise>
+            <if test="DATE_TIME != null and DATE_TYPE == 'month'">
+                AND DATE_TRUNC('MONTH', tpd.OCCUR_TIME) = TO_TIMESTAMP(CONCAT(#{DATE_TIME}, '-01'), 'YYYY-MM-DD')
+            </if>
+            <if test="DATE_TIME != null and DATE_TYPE != 'month'">
+                AND tpd.OCCUR_TIME <![CDATA[ >= ]]> #{DATE_TIME}::TIMESTAMP
+                AND tpd.OCCUR_TIME <![CDATA[ < ]]> #{DATE_TIME}::TIMESTAMP + ('1'||#{DATE_TYPE})::INTERVAL
+            </if>
+            <if test="SELF_PROCESS_GROUP != '' and SELF_PROCESS_GROUP != null">
+                AND tpd.SELF_PROCESS_GROUP = #{SELF_PROCESS_GROUP}
+            </if>
+            <if test="SELF_PROCESS_TYPE != '' and SELF_PROCESS_TYPE != null">
+                AND tpd.SELF_PROCESS_TYPE = #{SELF_PROCESS_TYPE}
+            </if>
+            <if test="CLOS_TYPE != '' and CLOS_TYPE != null">
+                AND tpd.CLOS_TYPE = #{CLOS_TYPE}
+            </if>
+            <if test="CLOS_STATUS != '' and CLOS_STATUS != null">
+                AND tpd.CLOS_STATUS = #{CLOS_STATUS}
+            </if>
+        </otherwise>
+    </choose>
+
+
+
+
+    ORDER BY TPD.OCCUR_TIME DESC
+    <include refid="TotalCountSuffix"/>
+</select>
+
+    <!-- 자가처리/자가구성 TICKET 트래픽 정보조회 -->
+<select id="SELECT_SELF_PROCESS_TRAFFIC_INFO"  parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT  
+        AL.TICKET_ID
+        , AL.ROOT_CAUSE_SYSNAMEA
+        , AL.ROOT_CAUSE_PORTA
+        , AL.ROOT_CAUSE_SYSNAMEZ
+        , AL.ROOT_CAUSE_PORTZ
+        , TPD.SELF_PROCESS_GROUP
+        , TPD.SELF_PROCESS_TYPE
+    FROM    rca.tb_rca_ticket_al_current AL
+    LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.TICKET_ID = AL.TICKET_ID
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="TICKET_ID != null and TICKET_ID != ''">
+                AND AL.TICKET_ID = #{TICKET_ID}
+            </if>
+        </trim>
+    </where>   
+</select>
+
+    <!-- 자가처리 SYSLOG ALARM 정보조회 -->
+<select id="SELECT_SELF_PROCESS_SYSLOG_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT  
+            SA.ALARMNO
+        , TO_CHAR(SA.ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+        , SA.NODE_NUM
+        , SA.NODE_NM
+        , SA.ALARMMSG
+        , SA.ALARMLVL
+        , SA.ETC
+        , SA.RULE_ID
+        , SA.ALARMLOC
+        , SA.STATUS
+        , TPD.SELF_PROCESS_GROUP
+        , TPD.SELF_PROCESS_TYPE
+    FROM    rca.tb_syslog_alarm_mst SA
+    LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.ALARMNO = SA.ALARMNO
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="ALARMNO != null and ALARMNO != ''">
+                AND SA.ALARMNO = #{ALARMNO}
+            </if>
+        </trim>
+    </where>   
+</select>
+
+<!-- 유해트래픽(NTT) 차트 정보 조회 -->
+<select id="SELECT_NTT_CHART" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+<!-- 2025-01-15 수정해놓았으나 테스트 못함. -->
+    WITH DATEREGDATE_DATA AS (
+        SELECT DISTINCT COLLECT_TIMESTAMP DATEREGDATE
+        FROM GATHER.TB_SFLOW_COLLECT
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="FAULT_TIME != null and FAULT_TIME != ''">
+                    AND COLLECT_TIMESTAMP BETWEEN #{FAULT_TIME}::TIMESTAMP - INTERVAL '1 HOUR' AND #{FAULT_TIME}::TIMESTAMP + INTERVAL '1 HOUR'
+                </if>
+            </trim>
+        </where>
+        ORDER BY DATEREGDATE
+    )
+    WITH TOTAL_COUNT AS (
+        SELECT COUNT(*) AS STRCOUNTS
+        FROM GATHER.TB_SFLOW_COLLECT
+    )
+    SELECT
+        COLLECT_TIME
+        , STRBYTES_COL
+        , STRCOUNTS
+    FROM
+    (
+        SELECT
+            CASE WHEN DD.DATEREGDATE = XSL.DATEREGDATE THEN XSL.STRBYTES_COL
+                ELSE '0'
+                END STRBYTES_COL
+            , CASE WHEN DD.DATEREGDATE = XSL.DATEREGDATE THEN STRCOUNTS
+                ELSE '0'
+                END STRCOUNTS
+            , DD.DATEREGDATE AS COLLECT_TIME
+        FROM DATEREGDATE_DATA DD
+        LEFT JOIN (
+            SELECT TC.STRCOUNTS, SC.PACKET_BYTES * TC.STRCOUNTS STRBYTES_COL, COLLECT_TIMESTAMP DATEREGDATE
+            FROM GATHER.TB_SFLOW_COLLECT SC
+            CROSS JOIN TOTAL_COUNT TC
+            <where>
+                <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                    <if test="FAULT_TIME != null and FAULT_TIME != ''">
+                        AND COLLECT_TIMESTAMP = #{FAULT_TIME}::TIMESTAMP
+                    </if>
+                    <if test="TICKET_ID != null and TICKET_ID != ''">
+                        AND AGENT_ADDRESS = (
+                            SELECT DISTINCT STRSENDERIP 
+                            FROM RCA.TB_NOXIOUS_TRAFFIC 
+                            WHERE TICKET_ID = #{TICKET_ID}
+                        )
+                    </if>
+                    <if test="START_NODE != null and START_NODE != ''">
+                        AND SRC_IP  = #{START_NODE}
+                    </if>
+                    <if test="START_PORT != null and START_PORT != ''">
+                        AND SRC_PORT  = #{START_PORT}
+                    </if>
+                    <if test="END_NODE != null and END_NODE != ''">
+                        AND DST_IP  = #{END_NODE}
+                    </if>
+                    <if test="END_PORT != null and END_PORT != ''">
+                        AND DST_PORT  = #{END_PORT}
+                    </if>
+                </trim>
+            </where>
+        ) XSL ON 1=1
+    ) T
+    GROUP BY COLLECT_TIME, STRBYTES_COL, STRCOUNTS
+</select>
+
+<!-- 이상트래픽(ATT2) 차트 정보 조회 -->
+<select id="SELECT_ATT2_CHART" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  
+        N.ID AS SDN_NODE_ID,
+        NM.NODE_NUM AS STRRESID,
+        NM.NODE_NM AS STRRESNM, 
+        I.ID AS SDN_IF_ID,
+        I.IF_NAME AS STRIFNM, 
+        PM.IF_NUM AS STRIFID, 
+        LT.TX_BIT_RATE AS FLTBPS_OUT,
+        LT.RX_BIT_RATE AS FLTBPS_IN,
+        LT.TX_PKT_RATE AS FLTPPS_OUT,
+        LT.RX_PKT_RATE AS FLTPPS_IN,
+        ROUND(AR.FLTBPSIN_THRESHOLD_UPPER::NUMERIC, 2) AS IN_THRESHOLD_UPPER, 
+        ROUND(AR.FLTBPSOUT_THRESHOLD_UPPER::NUMERIC, 2) AS OUT_THRESHOLD_UPPER, 
+        UO.NREN_ID,
+        UO.NREN_NAME,
+        TO_CHAR(LT.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
+        LT.ID,
+        PM.IF_NUM,
+        PM.NODE_NUM
+    FROM IP_SDN.TB_LINK_TRAFFIC LT
+    INNER JOIN IP_SDN.TB_INTERFACE I ON LT.IF_ID = I.ID
+    INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.IF_ID = LOWER(I.IF_NAME)
+    INNER JOIN IP_SDN.TB_NODE N ON I.NODE_ID = N.ID
+    INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT and PM.NODE_NUM = NM.NODE_NUM
+    LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON UO.NODE_ID = NM.NODE_ID AND UO.IF_ID = PM.IF_ID
+    INNER JOIN 
+        (
+            select 
+                STRIFID
+                , STRRESID
+                , MIN(FLTBPSIN_THRESHOLD_UPPER) FLTBPSIN_THRESHOLD_UPPER
+                , MIN(FLTBPSOUT_THRESHOLD_UPPER) FLTBPSOUT_THRESHOLD_UPPER
+            from rca.tb_anomalous_ai_result 
+            where MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' 
+                            AND #{FAULT_TIME}::TIMESTAMP + interval '10 min'
+            group by STRIFID, STRRESID
+        ) AR ON AR.STRIFID = PM.IF_NUM 
+        AND AR.STRRESID = PM.NODE_NUM 
+    WHERE   
+        NM.NODE_NM = #{START_NODE}
+        AND I.IF_NAME = #{START_PORT}
+        AND LT.MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' 
+                                    AND #{FAULT_TIME}::TIMESTAMP + interval '10 min' 
+    ORDER BY 
+        LT.ID
+</select>
+
+<!-- 이상트래픽(ATT2) - AI탐지정보 -->
+<select id="SELECT_AI_DETECTION_INFO" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  
+        FLTBPSIN AS IN_BPS
+        , ROUND(FLTBPSIN_PREDICT::NUMERIC , 2) AS IN_PREDICT
+        , ROUND(FLTBPSIN_THRESHOLD_UPPER::NUMERIC , 2) AS IN_THRESHOLD_UPPER
+        , ROUND(FLTBPSIN_THRESHOLD_LOWER::NUMERIC , 2) AS IN_THRESHOLD_LOWER
+        , FLTBPSIN_ANOMALY AS IN_ANOMALY
+        , FLTBPSOUT AS OUT_BPS
+        , ROUND(FLTBPSOUT_PREDICT::NUMERIC , 2) AS out_predict
+        , ROUND(FLTBPSOUT_THRESHOLD_UPPER::NUMERIC, 2) AS OUT_THRESHOLD_UPPER
+        , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER
+        , FLTBPSOUT_ANOMALY AS OUT_ANOMALY
+    FROM    rca.tb_anomalous_ai_result AR
+    INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.IF_NUM AND AR.STRRESID = PM.NODE_NUM
+    WHERE   PM.node_id= #{START_NODE}
+    AND     PM.if_id = #{START_PORT}
+    AND     MEASURED_DATETIME = #{FAULT_TIME}::TIMESTAMP
+</select>
+
+<!-- 자가회복 이력 / SYSLOG 이력-->
+<select id="SELECT_SOP_SYSLOG_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT  SYSLOG.ALARMNO
+            , SYSLOG.NODE_NM
+            , SYSLOG.NODE_NUM
+            , SYSLOG.ALARMLOC
+            , TO_CHAR(SYSLOG.ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+            , SYSLOG.ALARMMSG
+            , SYSLOG.ETC
+            , SOP.PROC_STATUS
+            , SOP.FAULT_CLASSIFY
+            , SOP.FAULT_TYPE
+            , SOP.FAULT_DETAIL_CONTENT
+            , SOP.ETC_CONTENT
+            , TO_CHAR(SOP.ALARM_OCCUR_TIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARM_OCCUR_TIME
+            , TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME
+            , SOP.HANDLING_FIN_USER
+            , SOP.STATUS
+    FROM    nia.tb_syslog_sop SOP
+    INNER JOIN rca.tb_syslog_alarm_mst SYSLOG ON SOP.ALARMNO = SYSLOG.ALARMNO
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="ISHISTORY == null or ISHISTORY == false">
+                AND SYSLOG.ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
+            </if>
+            <if test="ISHISTORY != null or ISHISTORY == true">
+                AND SOP.HANDLING_FIN_TIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
+            </if>
+            <if test="ALARM_NO != null and ALARM_NO != ''">
+                AND SYSLOG.ALARMNO LIKE '%' || #{ALARM_NO} || '%'
+            </if>
+            <if test="NODE_NM != null and NODE_NM != ''">
+                AND SYSLOG.NODE_NM = #{NODE_NM}
+            </if>
+            <if test="ALARMLOC != null and ALARMLOC != ''">
+                AND SYSLOG.ALARMLOC = #{ALARMLOC}
+            </if>
+            <if test="STATUS != null and STATUS != ''">
+                AND SOP.STATUS = #{STATUS}
+            </if>
+            <if test="START_DATE != null and START_DATE != ''">
+                AND SOP.ALARM_OCCUR_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+            </if>
+            <if test="END_DATE != null and END_DATE != ''">
+                AND SOP.HANDLING_FIN_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+            </if>
+        </trim>
+    </where>
+    ORDER BY SYSLOG.ALARMTIME DESC
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<update id="UPDATE_SYSLOG_HIST" parameterType="java.util.HashMap">
+    UPDATE nia.tb_syslog_sop
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="FAULT_CLASSIFY != null">
+            fault_classify = #{FAULT_CLASSIFY},
+        </if>
+        <if test="FAULT_TYPE != null">
+            fault_type = #{FAULT_TYPE},
+        </if>
+        <if test="FAULT_DETAIL_CONTENT != null">
+            fault_detail_content = #{FAULT_DETAIL_CONTENT}
+        </if>
+    </trim>
+    WHERE  alarmno = #{ALARMNO}
+</update>
+
+<delete id="DELETE_SYSLOG_HIST" parameterType="java.util.HashMap">
+    DELETE from nia.tb_syslog_sop
+    WHERE alarmno = #{ALARMNO}
+</delete>
+
+<select id="SELECT_SYSLOG_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT DISTINCT ALARMLOC AS VALUE
+    FROM rca.tb_syslog_alarm_mst
+    WHERE ALARMLOC IS NOT NULL
+</select>
+
+<!-- SOP 이력 조회 new -->
+    <select id="SELECT_SOP_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+        SOP.SOP_ID ,
+        SOP.TICKET_ID ,
+        SOP.TICKET_TYPE ,
+        CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽(Model-A)'
+        WHEN SOP.TICKET_TYPE = 'ATT2_AI' THEN '이상 트래픽(Model-C)'
+        WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽(Model-A)'
+        WHEN SOP.TICKET_TYPE = 'NTT_AI' THEN '유해 트래픽(Model-C)'
+        WHEN SOP.TICKET_TYPE = 'NFTT' THEN '장비 과부하 장애'
+        WHEN SOP.TICKET_TYPE = 'FTT' THEN '비장애'
+        ELSE '장애' END AS TICKETTYPE,
+        SOP.TICKET_RESULT ,
+        SOP.STATUS ,
+        TO_CHAR(SOP.REQUEST_TIME, 'YYYY-MM-DD HH24:MI:SS') AS REQUEST_TIME,
+        TO_CHAR(SOP.RECEIVE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS RECEIVE_TIME,
+        SOP.DETAIL ,
+        SOP.FAULT_CLASSIFY ,
+        SOP.FAULT_TYPE ,
+        SOP.FAULT_DETAIL_CONTENT ,
+        SOP.ETC_CONTENT ,
+        SOP.AI_ACCURACY ,
+        AL.ROOT_CAUSE_SYSNAMEA ,
+        AL.ROOT_CAUSE_SYSNAMEZ ,
+        AL.ROOT_CAUSE_PORTA ,
+        AL.ROOT_CAUSE_PORTZ ,
+        NODEA.IP_ADDR AS IP_ADDRA ,
+        NODEZ.IP_ADDR AS IP_ADDRZ ,
+        TC.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE ,
+        TO_CHAR(TC.FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME ,
+        SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
+        TO_CHAR(SOP.HANDLING_ACK_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_ACK_TIME ,
+        SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
+        TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME,
+        TRNTDI.TRAFFIC_TYPE AS TRAFFIC_TYPE
+    FROM nia.tb_sop SOP
+    LEFT JOIN rca.tb_rca_ticket_al_current AL ON SOP.TICKET_ID = AL.TICKET_ID
+    LEFT JOIN rca.tb_rca_ticket_current TC    ON SOP.TICKET_ID = TC.TICKET_ID
+    LEFT JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
+    LEFT JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
+    LEFT JOIN RCA.TB_RCA_NTT_TICKET_DETAIL_INFO TRNTDI on TRNTDI.TICKET_ID = TC.TICKET_ID
+    WHERE 1=1
+        AND TC.PARENT_TICKET_ID IS NULL
+    <if test="TICKET_ID != null">
+        AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+    </if>
+    <if test="NTT_TRAFFIC_TYPE != null and NTT_TRAFFIC_TYPE != ''">
+        AND TRNTDI.TRAFFIC_TYPE = #{NTT_TRAFFIC_TYPE}
+    </if>
+    <if test="NODE_NM != null and NODE_NM != ''">
+        AND AL.ROOT_CAUSE_SYSNAMEA = #{NODE_NM}
+    </if>
+    <if test="ALARMLOC != null and ALARMLOC != ''">
+        AND AL.ROOT_CAUSE_PORTA = #{ALARMLOC}
+    </if>
+    <if test="START_DATE != null">
+        AND COALESCE(SOP.RECEIVE_TIME, SOP.REQUEST_TIME)  <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+    </if>
+    <if test="END_DATE != null">
+        AND COALESCE(SOP.RECEIVE_TIME, SOP.REQUEST_TIME)  <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+    </if>
+    <if test="TICKET_TYPE != null">
+        AND TC.TICKET_TYPE = #{TICKET_TYPE}
+    </if>
+    <if test="ROOT_CAUSE_SYSNAMEA != null">
+        AND AL.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
+        AND request_time <![CDATA[ > ]]> now() - INTERVAL '1' month
+    </if>
+    ORDER BY SOP.REQUEST_TIME DESC 
+<include refid="TotalCountSuffix"/>
+</select>
+
+<update id="UPDATE_SOP_HIST" parameterType="java.util.HashMap">
+    UPDATE nia.tb_sop
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="FAULT_CLASSIFY != null">
+            fault_classify = #{FAULT_CLASSIFY},
+        </if>
+        <if test="FAULT_TYPE != null">
+            fault_type = #{FAULT_TYPE},
+        </if>
+        <if test="FAULT_DETAIL_CONTENT != null">
+            fault_detail_content = #{FAULT_DETAIL_CONTENT}
+        </if>
+    </trim>
+    WHERE ticket_id = #{TICKET_ID}
+</update>
+
+<delete id="DELETE_SOP_HIST" parameterType="java.util.HashMap">
+    DELETE FROM nia.tb_sop
+    WHERE ticket_id = #{TICKET_ID}
+</delete>
+
+<!-- 장애 현황 및 이력 -->
+<select id="SELECT_ALARM_CURRENT_HISTORY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT  TC.TICKET_ID
+            , TC.PARENT_TICKET_ID 
+            , TC.FAULT_TIME
+            , CASE WHEN TC.STATUS = 'AUTO_FIN' 
+                THEN TC.TICKET_UPDATE_TIME 
+                ELSE SOP.HANDLING_FIN_TIME 
+            END AS HANDLING_FIN_TIME
+            , TC.TICKET_TYPE
+            , TC.TICKET_RCA_RESULT_DTL_CODE
+            , TC.STATUS 
+            , TA.ROOT_CAUSE_SYSNAMEA
+            , TA.ROOT_CAUSE_PORTA
+            , TA.ROOT_CAUSE_SYSNAMEZ
+            , TA.ROOT_CAUSE_PORTZ
+    FROM    rca.tb_rca_ticket_current TC
+    INNER JOIN rca.tb_rca_ticket_al_current TA ON TC.TICKET_ID = TA.TICKET_ID
+    LEFT JOIN NIA.TB_SOP SOP ON TC.TICKET_ID = SOP.TICKET_ID
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="TICKET_ID != null and TICKET_ID != ''">
+                AND TC.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+            </if>
+            <if test="TICKET_TYPE != null and TICKET_TYPE != ''">
+                AND TC.TICKET_TYPE = #{TICKET_TYPE}
+            </if>
+            <if test="NODE_NM != null and NODE_NM != ''">
+                AND (
+                    TA.ROOT_CAUSE_SYSNAMEA LIKE '%' || #{NODE_NM} || '%'
+                    OR 
+                    TA.ROOT_CAUSE_SYSNAMEZ LIKE '%' || #{NODE_NM} || '%'
+                )
+            </if>
+            <if test="ALARMLOC != null and ALARMLOC != ''">
+                AND (
+                    TA.ROOT_CAUSE_PORTA LIKE '%' || #{ALARMLOC} || '%'
+                )
+            </if>
+            <choose>
+                <when test="INIT_START_DATE != null and INIT_START_DATE != '' and INIT_END_DATE != null and INIT_END_DATE != ''">
+                AND TC.FAULT_TIME <![CDATA[ >= ]]> #{INIT_START_DATE}::TIMESTAMP
+                AND TC.FAULT_TIME <![CDATA[ <= ]]> #{INIT_END_DATE}::TIMESTAMP
+                </when>
+                <when test="FIN_START_DATE != null and FIN_START_DATE != '' and FIN_END_DATE != null and FIN_END_DATE != ''">
+                AND CASE WHEN TC.STATUS = 'AUTO_FIN' 
+                    THEN TC.TICKET_UPDATE_TIME 
+                    ELSE SOP.HANDLING_FIN_TIME END <![CDATA[ >= ]]> #{FIN_START_DATE}::TIMESTAMP
+                AND CASE WHEN TC.STATUS = 'AUTO_FIN' 
+                    THEN TC.TICKET_UPDATE_TIME 
+                    ELSE SOP.HANDLING_FIN_TIME END <![CDATA[ <= ]]> #{FIN_END_DATE}::TIMESTAMP
+                </when>
+                <otherwise>
+                AND TC.FAULT_TIME <![CDATA[ > ]]> RCA.FC_GET_MINUS_DAY(7)
+                </otherwise>
+            </choose>
+        </trim>
+    </where>
+    ORDER BY TC.TICKET_ID DESC
+    <include refid="TotalCountSuffix"/>
+</select>
+
+    <!-- syslog 이력조회 -->
+<select id="SELECT_SYSLOG_HIST_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+<include refid="TotalCountPrefix"/>
+    SELECT  sysDialog.alarmno,
+            sysDialog.alarmtime,
+            TO_CHAR(sysDialog.alarmtime, 'YYYY-MM-DD HH24:MI:SS') AS syslog_alarmtime,
+            sysDialog.node_num,
+            sysDialog.node_nm,
+            sysDialog.alarmmsg,
+            sysDialog.alarmlvl,
+            sysDialog.etc,
+            sysDialog.rule_id,
+            sysDialog.alarmloc,
+            CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+            WHEN sysDialog.status = 'FIN' THEN '수동 마감'
+            WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+            ELSE '-'
+            END AS status
+    FROM    rca.tb_syslog_alarm_mst sysDialog
+        <where>
+            <if test="start_date == null">
+            sysDialog.alarmtime BETWEEN NOW()::timestamp - interval '30 day' AND NOW()::timestamp
+            </if>
+        <if test="start_date != null">
+            AND sysDialog.alarmtime <![CDATA[ > ]]> #{start_date}::timestamp 
+            </if>
+            <if test="end_date != null">
+            AND sysDialog.alarmtime <![CDATA[ <= ]]> #{end_date}::timestamp 
+            </if>
+            <if test="alarmno != null and alarmno != ''">
+            AND sysDialog.alarmno LIKE '%' || #{alarmno} || '%'
+            </if>
+            <if test="node_nm != null and node_nm != ''">
+            AND sysDialog.node_nm LIKE '%' || #{node_nm} || '%'
+            </if>
+            <if test="node_num != null and node_num != ''">
+            AND sysDialog.node_num LIKE '%' || #{node_num} || '%'
+            </if>
+            <if test="alarmmsg != null and alarmmsg != ''">
+            AND UPPER(sysDialog.alarmmsg) LIKE '%' || UPPER(#{alarmmsg}) || '%'
+            </if>
+            ORDER BY sysDialog.alarmno DESC
+        </where> 
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 장비명 리스트 조회 -->
+<select id="SELECT_SYSLOG_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  DISTINCT NODE_NM AS VALUE
+    FROM    rca.tb_syslog_alarm_mst
+</select>
+
+<!-- SYSLOG RULE 관리 리스트 조회 -->
+<select id="SELECT_SYSLOG_RULE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT  syslog_rule_id ,
+            syslog_rule_nm ,
+            occur_str1 ,
+            occur_str2 ,
+            occur_str3 ,
+            occur_except_str1 ,
+            occur_except_str2 ,
+            occur_except_str3 ,
+            CASE
+                    WHEN tsrm.use_yn = 'Y'
+                    THEN '사용'
+                    ELSE '미사용'
+            END AS use_yn
+    FROM    gather.tb_syslog_rule_mst tsrm
+    WHERE 1=1
+        <if test="syslog_rule_nm != null and syslog_rule_nm != ''">
+            AND syslog_rule_nm = #{syslog_rule_nm}
+        </if>
+        <if test="occur_str != null and occur_str != ''">
+            AND (UPPER(occur_str1) LIKE '%' || UPPER(#{occur_str}) || '%'
+            OR UPPER(occur_str2) LIKE '%' || UPPER(#{occur_str}) || '%'
+            OR UPPER(occur_str3) LIKE '%' || UPPER(#{occur_str}) || '%')
+        </if>
+        <if test="occur_except_str != null and occur_except_str != ''">
+            AND (UPPER(occur_except_str1) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            OR UPPER(occur_except_str2) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            OR UPPER(occur_except_str3) LIKE '%' || UPPER(#{occur_except_str}) || '%')
+        </if>
+    ORDER BY syslog_rule_id
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- SYSLOG RULE 수정 -->
+<update id="UPDATE_NIA_SYSLOG_RULE">
+    UPDATE GATHER.TB_SYSLOG_RULE_MST
+    SET    SYSLOG_RULE_NM = #{syslog_rule_nm},
+            OCCUR_STR1 = #{occur_str1},
+            OCCUR_STR2 = #{occur_str2},
+            OCCUR_STR3 = #{occur_str3},
+            OCCUR_EXCEPT_STR1 = #{occur_except_str1},
+            OCCUR_EXCEPT_STR2 = #{occur_except_str2},
+            OCCUR_EXCEPT_STR3 = #{occur_except_str3},
+            USE_YN = CASE WHEN #{use_yn} = '사용' THEN 'Y' ELSE 'N' END
+    WHERE SYSLOG_RULE_ID = #{syslog_rule_id}
+</update>
+
+<!-- SYSLOG RULE 삭제 -->
+    <delete id="DELETE_NIA_SYSLOG_RULE" parameterType="hashmap">
+    DELETE FROM  GATHER.TB_SYSLOG_RULE_MST 
+    WHERE SYSLOG_RULE_ID = #{syslog_rule_id}
+</delete>
+
+<!-- SYSLOG RULE 등록 -->
+<insert id="INSERT_NIA_SYSLOG_RULE" parameterType="java.util.HashMap">
+    INSERT INTO    gather.tb_syslog_rule_mst
+    (
+            syslog_rule_id,
+            syslog_rule_nm,
+            node_type,
+            priority_order,
+            alarm_severity,
+            occur_str1,
+            occur_str2,
+            occur_str3,
+            occur_except_str1,
+            occur_except_str2,
+            occur_except_str3,
+            use_yn
+    )
+    VALUES
+    (
+            NEXTVAL('gather.seq_syslog_rule')
+            ,#{syslog_rule_nm}
+            ,'*'
+            ,1
+            ,7
+            ,#{occur_str1}
+            <if test="occur_str2 != null">
+            ,#{occur_str2}
+            </if>
+            <if test="occur_str3 != null">
+            ,#{occur_str3}
+            </if>
+            <if test="occur_except_str1 != null">
+            ,#{occur_except_str1}
+            </if>
+            <if test="occur_except_str2 != null">
+            ,#{occur_except_str2}
+            </if>
+            <if test="occur_except_str3 != null">
+            ,#{occur_except_str3}
+            </if>
+            <if test="use_yn != null">
+            ,#{use_yn}
+            </if>
+    )
+</insert>
+
+<insert id="INSERT_CHATBOT_HISTORY" parameterType="java.util.HashMap">
+    INSERT INTO nia.tb_chatbot_history 
+    (
+        user_id
+        , reg_date
+        , chat_content
+        , chat_type
+        , chatbot_action_type
+    ) 
+    VALUES 
+    (
+        #{user_id}
+        , #{reg_date}::timestamp
+        , #{chat_content}
+        , #{chat_type}
+        , #{chatbot_action_type}
+    )
+</insert>
+
+<!-- SYSLOG RULE NAME 중복 체크 -->
+<select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+SELECT  syslog_rule_nm, COUNT(*)
+FROM    gather.tb_syslog_rule_mst
+WHERE   syslog_rule_nm = TRIM(#{syslog_rule_nm})
+GROUP BY syslog_rule_nm
+HAVING  COUNT(*) <![CDATA[ > ]]> 0
+</select>
+
+
+<!-- 조치 SOP 정보 -->
+<select id="SELECT_SOP_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+        FAULT_GB
+        <choose>
+            <when test="IS_OPTION != null and IS_OPTION == true">
+            , ARRAY_AGG(FAULT_TYPE) AS CODE_ARR
+            </when>
+            <when test="IS_OPTION == null or IS_OPTION == false">
+            , SEQ
+            , USER_ID
+            , FAULT_TYPE
+            , REG_TIME
+            </when>
+        </choose>
+    FROM nia.tb_sop_code
+    <if test="IS_OPTION != null and IS_OPTION == true">
+    GROUP BY FAULT_GB
+    </if>
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="USER_ID != null">
+                AND USER_ID LIKE '%' || #{USER_ID} || '%'
+            </if>
+            <if test="FAULT_GB != null">
+                AND FAULT_GB LIKE '%' || #{FAULT_GB} || '%'
+            </if>
+            <if test="FAULT_TYPE != null">
+                AND FAULT_TYPE LIKE '%' || #{FAULT_TYPE} || '%'
+            </if>
+            <if test="START_DATE != null">
+                AND REG_TIME <![CDATA[ > ]]> #{START_DATE}::TIMESTAMP
+            </if>
+            <if test="END_DATE != null">
+                AND REG_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+            </if>
+        </trim>
+    </where>
+    <if test="IS_OPTION == null or IS_OPTION == false">
+    ORDER BY REG_TIME
+    </if>
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<update id="UPDATE_SOP_CODE" parameterType="hashmap">
+    UPDATE nia.tb_sop_code
+    <set>
+        <if test="FAULT_GB != null">
+            , FAULT_GB = #{FAULT_GB}
+        </if>
+        <if test="FAULT_TYPE != null">
+            , FAULT_TYPE = #{FAULT_TYPE}
+        </if>
+    </set>
+    WHERE SEQ = #{SEQ}
+</update>
+<insert id="INSERT_SOP_CODE" parameterType="hashmap">
+    INSERT
+    INTO nia.tb_sop_code
+    (
+        <if test="USER_ID != null">
+            USER_ID
+        </if>
+        <if test="FAULT_GB != null">
+        , FAULT_GB
+        </if>
+        <if test="FAULT_TYPE != null">
+        , FAULT_TYPE
+        </if>
+        , REG_TIME
+    )
+    SELECT 
+        <if test="USER_ID != null">
+            #{USER_ID}
+        </if>
+        <if test="FAULT_GB != null">
+        , #{FAULT_GB}
+        </if>
+        <if test="FAULT_TYPE != null">
+        , #{FAULT_TYPE}
+        </if>
+        , now()
+</insert>
+
+<delete id="DELETE_SOP_CODE" parameterType="hashmap">
+    DELETE FROM nia.tb_sop_code
+    WHERE SEQ = #{SEQ}
+</delete>
+
+
+<!-- 이용기관별 트래픽 분석 리스트 조회  -->  
+<select id="SELECT_TRAFFIC_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+        SELECT
+        src_ip,
+        src_nren_id,
+        CASE
+            WHEN src_nren_name IS NULL OR src_nren_name = '' THEN '기타'
+            ELSE src_nren_name
+        END AS src_nren_name,
+        src_country_code,
+        dst_ip,
+        dst_nren_id,
+        CASE
+            WHEN dst_nren_name IS NULL OR dst_nren_name = '' THEN '기타'
+            ELSE dst_nren_name
+    END AS dst_nren_name,
+        dst_country_code,
+        packet_bytes,
+        row_num
+    FROM (
+        SELECT
+            src_ip,
+            src_nren_id,
+            src_nren_name,
+            src_country_code,
+            dst_ip,
+            dst_nren_id,
+            dst_nren_name,
+            dst_country_code,
+            SUM(packet_bytes) AS packet_bytes,
+            row_number() OVER (
+                ORDER BY
+                    SUM(packet_bytes) desc,
+                    CASE
+                        WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
+                        ELSE 2
+                    END desc
+            ) AS row_num
+        FROM
+            gather.tb_mdb_sflow_traffic_day dt
+        WHERE
+            1=1
+            AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE
+            AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - INTERVAL '5 days'
+            <if test="src_nren_name != null and src_nren_name != ''">
+                AND src_nren_id = #{src_nren_name}
+            </if>
+            <if test="src_ip != null and src_ip != ''">
+                AND src_ip LIKE '%' || #{src_ip} || '%'
+            </if>
+            <if test="dst_nren_name != null and dst_nren_name != ''">
+                AND dst_nren_id = #{dst_nren_name}
+            </if>
+            <if test="dst_ip != null and dst_ip != ''">
+                AND dst_ip LIKE '%' || #{dst_ip} || '%'
+            </if>
+        GROUP BY
+            src_ip,
+            src_nren_id,
+            src_nren_name,
+            src_country_code,
+            dst_ip,
+            dst_nren_id,
+            dst_nren_name,
+            dst_country_code
+    ) AS subquery
+    WHERE 1=1
+        <if test="top_n != null and top_n != ''">
+            AND row_num <![CDATA[ <= ]]> #{top_n}
+        </if>
+        <if test="top_n == null or top_n == ''">
+            AND row_num <![CDATA[ < ]]> 101
+        </if>
+        <include refid="TotalCountSuffix"/>
+</select>
+
+<select id="SELECT_NTT_TICKET_TOTAL_DATA_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    WITH TargetKey AS (
+        SELECT 
+            CAST(json_key AS BIGINT) AS start_key 
+        FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO
+        WHERE ticket_id = #{TICKET_ID}
+        LIMIT 1
+    ),
+    RowRange AS (
+        SELECT
+            h.row_cnt
+        FROM TargetKey T
+        INNER JOIN nia.tb_linkage_hist H ON
+            H.key_name = 'aiIpSdnSflowKey'
+            AND H.file_name = CONCAT('ipSdnSflow_', CAST(T.start_key AS TEXT), '.json')
+        LIMIT 1
+    ),
+    TargetRange AS (
+        SELECT *
+        FROM rca.tb_sflow_collect_hist
+        WHERE
+            COLLECT_SEQ <![CDATA[ <= ]]> (SELECT T.start_key FROM TargetKey T)
+            AND COLLECT_SEQ <![CDATA[ >= ]]> (
+                (SELECT T.start_key FROM TargetKey T)
+                - (SELECT R.row_cnt FROM RowRange R)
+            )
+    ),
+    Top5Dest AS (
+        SELECT DST_IP
+        FROM TargetRange 
+        GROUP BY DST_IP
+        ORDER BY COUNT(DST_IP) DESC
+        LIMIT 5
+    ),
+    RankedSrc AS (
+        SELECT
+            T.DST_IP,
+            T.SRC_IP,
+            ROW_NUMBER() OVER (PARTITION BY T.DST_IP ORDER BY COUNT(T.SRC_IP) DESC) AS RN
+        FROM TargetRange T
+        INNER JOIN Top5Dest D ON T.DST_IP = D.DST_IP
+        GROUP BY T.DST_IP, T.SRC_IP
+    )
+    SELECT TR.*
+    FROM TargetRange TR
+    INNER JOIN RankedSrc RS ON TR.SRC_IP = RS.SRC_IP AND TR.DST_IP = RS.DST_IP
+    WHERE RS.RN <![CDATA[ <= ]]> 20
+    ORDER BY TR.DST_IP, TR.COLLECT_SEQ
+</select>
+
+<select id="SELECT_RCA_NTT_TICKET_DETAIL_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    WITH TicketData AS (
+        SELECT
+            T.traffic_type,
+            T.json_key,
+            T.normal_traffic_ratio,
+            T.tcp_syn_flooding_ratio,
+            T.land_attack_ratio,
+            T.ping_of_death_ratio,
+            T.udp_flooding_ratio,
+            CAST(T.json_key AS BIGINT) start_key,
+            H.row_cnt,        
+            T.TICKET_ID
+        FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO T
+        INNER JOIN nia.tb_linkage_hist H ON
+            H.key_name = 'aiIpSdnSflowKey'
+            AND H.file_name = CONCAT('ipSdnSflow_', CAST(T.json_key AS TEXT), '.json')
+        WHERE T.TICKET_ID = #{ticket_id}
+    ),
+    TimeRange AS (
+        SELECT 
+            MIN(collect_timestamp) as oldest_timestamp, 
+            MAX(collect_timestamp) as latest_timestamp
+        FROM rca.tb_sflow_collect_hist
+        WHERE COLLECT_SEQ <![CDATA[ <= ]]> (SELECT start_key FROM TicketData)
+        AND COLLECT_SEQ <![CDATA[ >= ]]> ((SELECT start_key FROM TicketData) - (SELECT row_cnt FROM TicketData))
+    )
+    SELECT 
+        t.*, 
+        r.oldest_timestamp, 
+        r.latest_timestamp 
+    FROM TicketData t, TimeRange r
+    limit 1
+</select>
+
+
+<!-- 이용기관 리스트 -->
+<select id="SELECT_AGENCY_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        NREN_NAME AS NAME, 
+        NREN_ID AS ID 
+    FROM RESOURCE.TB_USER_ORGAN TCC
+    WHERE NREN_ID IS NOT NULL 
+    ORDER BY NREN_NAME
+</select>
+
+<!-- 어플리케이션별 트래픽 분석 리스트 -->
+<select id="SELECT_APP_TRAFFIC_TOP_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT  src_protocol,
+            src_port,
+            dst_protocol,
+            dst_port,
+            packet_bytes,
+            rank_order
+    FROM    ( SELECT src_protocol,
+                    src_port,
+                    dst_protocol,
+                    dst_port,
+                    SUM(packet_bytes) packet_bytes ,
+                    row_number() over (ORDER BY
+                    CASE
+                            WHEN src_protocol IS NULL
+                            AND     dst_protocol IS NULL
+                            THEN 0
+                            ELSE 2
+                    END DESC, SUM(packet_bytes) DESC) rank_order
+            FROM    gather.tb_mdb_sflow_traffic_day dt
+            WHERE   1=1
+                    AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
+                    AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
+                    <if test="src_protocol != null and src_protocol != ''">
+                        AND src_port = #{src_protocol}
+                    </if>
+                    <if test="src_port != null and src_port != ''">
+                        AND src_port like '%' || #{src_port} || '%'
+                    </if>
+                    <if test="dst_protocol != null and dst_protocol != ''">
+                        AND dst_port = #{dst_protocol}
+                    </if>
+                    <if test="dst_port != null and dst_port != ''">
+                        AND dst_port like '%' || #{dst_port} || '%'
+                    </if>
+            GROUP BY src_protocol,
+                    src_port,
+                    dst_protocol,
+                    dst_port ) dt
+            WHERE   1=1
+            <if test="top_n != null and top_n != ''">
+                AND rank_order <![CDATA[ <= ]]> #{top_n}
+            </if>
+            <if test="top_n == null or top_n == ''">
+                AND rank_order <![CDATA[ < ]]> 101
+            </if>
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 어플리케이션 코드리스트 -->
+<select id="SELECT_APPLICATION_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  port_num AS port_code ,
+            protocol AS protocol_name
+    FROM    gather.tb_default_port_number
+    WHERE protocol IS NOT NULL
+    ORDER BY protocol
+</select>
+
+<!-- 장비 포트별 in/out 트래픽 감시 및 이력조회 -->
+<select id="SELECT_INOUT_TRAFFIC_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    WITH TRAFFIC_DATA AS
+            ( SELECT NM.NODE_NUM, NM.NODE_NM, N.ID AS SDN_NODE_ID, PM.IF_NUM, I.ID AS SDN_IF_ID, I.IF_NAME, LT.TX_BIT_RATE, LT.RX_BIT_RATE, LT.TX_PKT_RATE, LT.RX_PKT_RATE, LT.MEASURED_DATETIME
+            FROM    IP_SDN.TB_LINK_TRAFFIC LT
+            INNER JOIN IP_SDN.TB_INTERFACE I   ON LT.IF_ID = I.ID
+            INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.IF_ID = LOWER(I.IF_NAME)
+            INNER JOIN IP_SDN.TB_NODE N        ON I.NODE_ID = N.ID
+            INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
+            WHERE   PM.NODE_NUM = NM.NODE_NUM 
+                <if test="start_date == null and end_date == null">
+                AND LT.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '10 min' AND NOW()::timestamp
+                </if>
+                <if test="start_date != null">
+                AND LT.MEASURED_DATETIME <![CDATA[ > ]]> #{start_date}::timestamp 
+                </if>
+                <if test="end_date != null">
+                AND LT.MEASURED_DATETIME <![CDATA[ <= ]]> #{end_date}::timestamp 
+                </if>
+                <if test="node_name != null and node_name != ''">
+                    AND nm.NODE_NM LIKE '%' || #{node_name} || '%'
+                </if>
+                <if test="if_name != null and if_name != ''">
+                    AND I.IF_NAME LIKE '%' || #{if_name} || '%'
+                </if>
+            )
+    SELECT  T.NODE_NUM, 
+            T.NODE_NM AS NODE_NAME, 
+            T.SDN_NODE_ID, 
+            T.IF_NUM,
+            T.SDN_IF_ID,
+            T.IF_NAME,
+            T.DIRECTION,
+            T.RX_BIT_RATE,
+            T.RX_PKT_RATE,
+            T.TX_BIT_RATE,
+            T.TX_PKT_RATE,
+            TO_CHAR(T.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
+            CASE WHEN (SELECT 1
+                                    FROM    RCA.TB_ANOMALOUS_1MI_TRAFFIC
+                                    WHERE   STRRESID = T.NODE_NUM AND STRIFID = T.IF_NUM AND MEASURED_DATETIME = T.MEASURED_DATETIME 
+                                        <if test="start_date == null and end_date == null">
+                                        AND MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '10 min' AND NOW()::timestamp
+                                        </if>
+                                        <if test="start_date != null">
+                                        AND MEASURED_DATETIME <![CDATA[ > ]]> #{start_date}::timestamp 
+                                        </if>
+                                        <if test="end_date != null">
+                                        AND MEASURED_DATETIME <![CDATA[ <= ]]> #{end_date}::timestamp 
+                                        </if>
+                        ) =1 THEN TRUE ELSE FALSE
+            END AI_RESULT
+    FROM   ( SELECT NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'IN' AS DIRECTION, RX_BIT_RATE, RX_PKT_RATE, 0 AS TX_BIT_RATE, 0 AS TX_PKT_RATE, MEASURED_DATETIME
+            FROM    TRAFFIC_DATA
+            UNION ALL
+            SELECT  NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'OUT' AS DIRECTION, 0 AS RX_BIT_RATE, 0 AS RX_PKT_RATE, TX_BIT_RATE, TX_PKT_RATE, MEASURED_DATETIME
+            FROM    TRAFFIC_DATA ) T
+    ORDER BY MEASURED_DATETIME DESC
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 미확인 트래픽 조회 (국가) -->
+<select id="SELECT_UNIDENTIFIED_NATION_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        COUNTRY_NAME,
+        KOICA
+    FROM GATHER.TB_COUNTRY_CODE
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="country_name != null and country_name != ''">
+                AND COUNTRY_NAME LIKE '%' || #{country_name} || '%' 
+            </if>
+            <if test="country_code != null and country_code != ''">
+                AND KOICA LIKE '%' || #{country_code} || '%'
+            </if>
+        </trim>
+        </where>   
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 미확인 트래픽 조회 (이용기관) -->
+<select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        IP.NREN_ID AS NREN_ID,
+        IP.NREN_NAME AS NREN_NAME,
+        IP.NREN_IP AS NREN_IP
+    FROM RESOURCE.TB_USER_ORGAN UO
+    INNER JOIN RESOURCE.TB_USER_ORGAN_IP IP ON UO.NREN_ID = IP.NREN_ID 
+    <where>
+        <if test="nren_name != null and nren_name.trim() != ''">
+            AND IP.NREN_NAME LIKE '%' || #{nren_name} || '%'
+        </if>
+        <if test="nren_ip != null and nren_ip.trim() != ''">
+            AND IP.nren_ip LIKE '%' || #{nren_ip} || '%' 
+        </if>
+    </where>
+        <include refid="TotalCountSuffix"/>
+    </select>
+
+
+<!-- 미확인 트래픽 조회 (어플리케이션) -->
+<select id="SELECT_UNIDENTIFIED_APP_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+SELECT  
+    MAPP_SERIAL, 
+    PORT_NUM, 
+    IP_TYPE, 
+    PROTOCOL, 
+    DESCRIPTION
+FROM   GATHER.TB_DEFAULT_PORT_NUMBER
+<where>
+        AND PROTOCOL IS NOT NULL
+        <if test="protocol != null and protocol != ''">
+            AND PROTOCOL LIKE '%' || #{protocol} || '%'
+        </if>
+        <if test="port_num != null and port_num != ''">
+            AND PORT_NUM like '%' || #{port_num} || '%' 
+        </if>
+</where>
+ORDER BY PROTOCOL ASC
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 어플리케이션 수정 -->
+<update id="UPDATE_APP_IP">
+    UPDATE GATHER.TB_DEFAULT_PORT_NUMBER
+    <set>
+        <!-- PROTOCOL = #{protocol}, -->
+        <if test="description != null and description != ''">
+        DESCRIPTION = #{description}
+        </if>
+    </set>
+    <where>
+        MAPP_SERIAL= #{mapp_serial}
+    </where>
+</update>
+
+
+<!-- 어플리케이션 삭제 -->
+    <delete id="DELETE_APP_IP" parameterType="hashmap">
+    DELETE FROM GATHER.TB_DEFAULT_PORT_NUMBER
+    <where>
+        MAPP_SERIAL = #{mapp_serial}
+    </where>
+</delete>
+
+
+<insert id="INSERT_APP_IP" parameterType="java.util.HashMap">
+INSERT INTO GATHER.TB_DEFAULT_PORT_NUMBER
+( 
+    PROTOCOL, 
+    PORT_NUM, 
+    <!-- IP_TYPE,  -->
+    DESCRIPTION
+)
+values
+(
+    #{protocol},
+    #{port_num},
+    <!-- null, -->
+    #{description}
+)
+</insert>
+
+
+<!-- 장비 사용량 감시 및 이력 조회 -->
+    <select id="SELECT_EQUIP_AMOUNT_USED_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>    
+        SELECT  A.NODE_NUM AS NODE_NUM,
+                A.SDN_NODE_ID AS SDN_NODE_ID,
+                A.NODE_NM AS NODE_NM,
+                CASE WHEN A.CPU_USAGE = -1 THEN A.CPU_USAGE ELSE TRUNC(A.CPU_USAGE::NUMERIC, 3) * 100 END AS CPU_USAGE,
+                CASE WHEN A.MEM_USAGE = -1 THEN A.MEM_USAGE ELSE TRUNC(A.MEM_USAGE::NUMERIC, 3) * 100 END AS MEM_USAGE,
+                TO_CHAR(A.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
+                CASE WHEN TN.STRRESID IS NOT NULL THEN TRUE ELSE FALSE
+                END AS AI_RESULT
+        FROM   ( SELECT NM.NODE_NUM,
+                        N.ID AS SDN_NODE_ID,
+                        NM.NODE_NM,
+                        NF.CPU_USAGE,
+                        NF.MEM_USAGE,
+                        NF.MEASURED_DATETIME
+                FROM    IP_SDN.TB_NODEFACTOR NF
+                INNER JOIN IP_SDN.TB_NODE N        ON NF.NODE_ID = N.ID
+                INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
+                WHERE   1=1 
+                    <if test="start_date == null and end_date == null">
+                    AND NF.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
+                    </if>
+                    <if test="node_nm != null and node_nm != ''">
+                    AND NM.NODE_NM LIKE '%' || #{node_nm} || '%'
+                    </if>
+                    <if test="start_date != null">
+                    AND NF.MEASURED_DATETIME::timestamp <![CDATA[ >= ]]> #{start_date}::timestamp
+                    </if>
+                    <if test="end_date != null">
+                    AND NF.MEASURED_DATETIME::timestamp <![CDATA[ <= ]]> #{end_date}::timestamp
+                    </if>
+                    <if test="cpu_usage != null and cpu_usage != ''">
+                    AND NF.CPU_USAGE::VARCHAR LIKE #{cpu_usage} || '%'
+                    </if>
+                    <if test="mem_usage != null and mem_usage != ''">
+                    AND NF.MEM_USAGE::VARCHAR LIKE #{mem_usage} || '%'
+                    </if>
+                    ORDER BY MEASURED_DATETIME DESC
+                ) A
+        LEFT OUTER JOIN RCA.TB_NODEFACTOR TN 
+            ON TN.STRRESID = A.NODE_NUM 
+                AND TN.MEASURED_DATETIME = A.MEASURED_DATETIME
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 조치프로파일 리스트 조회 -->
+    <select id="SELECT_PROFILE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+    PROFILE_NUM,
+    PROFILE_TITLE,
+    PROFILE_DESC,
+    NETWORK_TYPE,
+    PROCESSING_TEMPLATE,
+    <!-- CASE 
+        WHEN PROCESSING_TEMPLATE = 'recovery' THEN '자가회복'
+        WHEN PROCESSING_TEMPLATE = 'construction' THEN '공사'
+    END AS PROCESSING_TEMPLATE_DESC, -->
+    CONSTRUCTION_CHECK,
+    AUTO_PROCESS_CHECK,
+    TICKET_TYPE,
+    PROCESS_TYPE,
+    AUTO_RECOVERY,
+    EMAIL_CHECK,
+    TO_CHAR(AUTO_PROCESS_START_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_START_DATETIME,
+    TO_CHAR(AUTO_PROCESS_END_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_END_DATETIME,
+    CASE
+        WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
+        ELSE 
+            CASE
+                WHEN AUTO_PROCESS_START_DATETIME IS NOT NULL AND AUTO_PROCESS_END_DATETIME IS NOT NULL THEN 
+                    AUTO_PROCESS_START_DATETIME || ' ~ ' || AUTO_PROCESS_END_DATETIME
+                ELSE NULL 
+            END
+    END AS AUTO_PROCESS_INFO,
+    TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
+    ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
+FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
+    WHERE 1=1
+    <if test="profile_title != null and profile_title != ''">
+        AND PROFILE_TITLE LIKE '%' || #{profile_title} || '%'
+    </if>
+    <if test="network_type != null and network_type != ''">
+        AND UPPER(NETWORK_TYPE) LIKE '%' || UPPER(#{network_type}) || '%'
+    </if>
+    <if test="processing_template != null and processing_template != ''">
+        AND PROCESSING_TEMPLATE LIKE '%' || #{processing_template} || '%'
+    </if>
+    ORDER BY PROFILE_NUM
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 프로파일 번호 max 값  -->
+    <select id="SELECT_MAX_PROFILE_NUM" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT MAX(PROFILE_NUM) AS max_profile_num FROM RESOURCE.TB_FAULT_PROCESS_PROFILE;
+</select>
+
+<!-- 조치 프로파일 리스트 추가 -->
+<insert id="INSERT_PROFILE_LIST" parameterType="java.util.HashMap">
+    INSERT INTO RESOURCE.TB_FAULT_PROCESS_PROFILE
+    (
+        PROFILE_NUM,
+        PROFILE_TITLE,
+        PROFILE_DESC,
+        NETWORK_TYPE,
+        PROCESSING_TEMPLATE,
+        AUTO_PROCESS_CHECK,
+        <if test="auto_process_check != true">
+            AUTO_PROCESS_START_DATETIME,
+        </if>
+        <if test="auto_process_check != true">
+            AUTO_PROCESS_END_DATETIME,
+        </if>
+        TICKET_TYPE,
+        PROCESS_TYPE,
+        CHNG_DATETIME,
+        REG_DATETIME,
+        AUTO_RECOVERY,
+        EMAIL_CHECK
+    )
+    values
+    (
+        resource.uf_self_healing_profile_num(''),
+        #{profile_title},
+        #{profile_desc},
+        #{network_type},
+        #{processing_template},
+        #{auto_process_check},
+        <if test="auto_process_check != true">
+            #{auto_process_start_datetime}::timestamp,
+        </if>
+        <if test="auto_process_check != true">
+            #{auto_process_end_datetime}::timestamp,
+        </if>
+        #{ticket_type},
+        #{process_type},
+        now(),
+        now(),
+        #{auto_recovery},
+        #{email_check}
+    )
+</insert>
+
+<!-- 조치 프로파일 리스트 수정 -->
+<update id="UPDATE_PROFILE_LIST">
+    UPDATE
+        RESOURCE.TB_FAULT_PROCESS_PROFILE
+    SET
+        PROFILE_TITLE = #{profile_title},
+        PROFILE_DESC = #{profile_desc},
+        NETWORK_TYPE = #{network_type},
+        PROCESSING_TEMPLATE = #{processing_template},
+        AUTO_PROCESS_CHECK = #{auto_process_check},
+        <if test="auto_process_check != true">
+            AUTO_PROCESS_START_DATETIME = #{auto_process_start_datetime} ::timestamp,
+        </if>
+        <if test="auto_process_check != true">
+            AUTO_PROCESS_END_DATETIME = #{auto_process_end_datetime}::timestamp,
+        </if>
+        CHNG_DATETIME = NOW(),
+        AUTO_RECOVERY = #{auto_recovery},
+        EMAIL_CHECK = #{email_check},
+        TICKET_TYPE = #{ticket_type},
+        PROCESS_TYPE = #{process_type}
+    WHERE PROFILE_NUM = #{profile_num}
+</update>
+
+
+
+
+<!-- 조치 프로파일 리스트 삭제 -->
+<delete id="DELETE_PROFILE_LIST" parameterType="hashmap">
+    DELETE FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
+    WHERE PROFILE_NUM = #{profile_num}
+</delete>
+
+
+<!-- 조치 프로파일 티켓 타입 리스트 -->
+    <select id="SELECT_PROFILE_TICKET_TYPE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+    TICKET_TYPE,
+    MIN(TICKET_GB) AS TICKET_GB
+    FROM RCA.TB_RCA_TICKET_TYPE_LIST
+    WHERE 1=1
+    <if test="ticket_gb == '전송'">
+        AND TICKET_GB != 'SWITCH'
+    </if>
+    <if test="ticket_gb == 'IP'">
+        AND TICKET_GB = 'SWITCH'
+    </if>
+    GROUP BY TICKET_TYPE
+</select>
+
+
+<!-- 조치 프로파일 장애 타입 리스트 -->
+<select id="SELECT_PROFILE_ALARM_TYPE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        FAIL_TYPE,
+        TICKET_TYPE
+    FROM RCA.TB_RCA_TICKET_TYPE_LIST
+    WHERE TICKET_TYPE = #{ticket_type}
+</select>
+
+<!-- 조치 프로파일 노드(ID) 리스트  -->
+<select id="SELECT_PROFILE_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT * FROM (
+        SELECT
+            node_nm AS ROOT_CAUSE_SYSNAMEA
+            , 'IP' AS TYPE
+        FROM resource.tb_node_mst
+        UNION
+        SELECT
+            sysname AS ROOT_CAUSE_SYSNAMEA
+            , '전송' AS TYPE
+        FROM nia.tb_equip_mst
+        WHERE model != 'Utrans-6300p-H3'
+    ) AS node
+    ORDER BY ROOT_CAUSE_SYSNAMEA ASC
+</select>
+
+<!-- 프로파일 리커버리 리스트 조회 -->
+<select id="SELECT_PROFILE_RECOVERY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+    <!-- DISTINCT -->
+        PROFILE_NUM,
+        NODE_ID,
+        SERIAL_NUM
+    FROM RESOURCE.TB_FAULT_PROCESS_IF
+    WHERE PROFILE_NUM = #{profile_num}
+</select>
+
+<!-- 프로파일 리커버리 리스트 등록 -->
+<insert id="INSERT_PROFILE_NODE_NAME_LIST" parameterType="java.util.HashMap">
+    INSERT INTO RESOURCE.TB_FAULT_PROCESS_IF
+    (
+        SERIAL_NUM,
+        PROFILE_NUM,
+        NODE_ID,
+        CHNG_DATETIME,
+        REG_DATETIME
+    )
+    VALUES
+    (
+        NEXTVAL('RESOURCE.SEQ_TB_FAULT_PROCESS_IF'),
+        #{profile_num},
+        #{node_id},
+        NOW(),
+        NOW()
+    )
+</insert>
+
+<!-- 프로파일 리커버리 리스트 삭제 -->
+<delete id="DELETE_PROFILE_NODE_NAME_LIST" parameterType="hashmap">
+    DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
+    WHERE PROFILE_NUM = #{profile_num}
+            AND NODE_ID = #{node_id}
+</delete>
+
+<!-- 프로파일 리커버리 리스트 삭제 (프로파일 삭제시) -->
+<delete id="DELETE_PROFILE_NODE_LIST" parameterType="hashmap">
+    DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
+        WHERE PROFILE_NUM = #{profile_num}
+</delete>
+
+<!-- 노드리스트 조회 -->
+<select id="SELECT_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        ROW_NUMBER() OVER (ORDER BY NODE_NUM) AS ROWNUM,
+        node.*
+    FROM (
+        SELECT
+            TNM.NODE_NUM,
+            TNM.NODE_ID,
+            TNM.NODE_NM,
+            TNM.MODEL_NUM,
+            TNM.MODEL_ID,
+            CODE.CODE_NM,
+            TNM.IP_ADDR,
+            TNM.MAC_ADDR,
+            TNM.ADMIN_YN,
+            CASE
+                WHEN ADMIN_YN = 'W' THEN '사용'
+                ELSE '미사용' 
+                    END AS ADMIN_YN_INFO,
+            TNM.PRIMARY_GB,
+            TNM.SNMP_VER,
+            TNM.SNMP_COMMUNITY,
+            TNM.SNMP_PORT,
+            TNM.LATITUDE,
+            TNM.LONGITUDE,
+            TNM.NETCONF_PORT,
+            TNM.NETCONF_ID,
+            TNM.NETCONF_PW,
+            TNM.NETCONF_TYPE,
+            TNM.NODE_DIVISION,
+            TNM.VENDOR,
+            TNM.SFLOW_IP,
+            TO_CHAR(TNM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME
+            FROM RESOURCE.TB_NODE_MST TNM
+            LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)
+            WHERE 1=1
+            <if test="node_nm != null and node_nm != ''">
+                AND tnm.NODE_NM like '%' || #{node_nm} || '%'
+            </if>
+            <if test="model_id != null and model_id != ''">
+                AND code.CODE_NM like '%' || #{model_id} || '%'
+            </if>
+            <if test="ip_addr != null and ip_addr != ''">
+                AND tnm.IP_ADDR like '%' || #{ip_addr} || '%'
+            </if>
+            <if test="admin_yn != null and admin_yn != ''">
+                AND tnm.ADMIN_YN like '%' || #{admin_yn} || '%'
+            </if>
+                <if test="start_date != null">
+                AND CHNG_DATETIME <![CDATA[ >= ]]> #{start_date}::TIMESTAMP
+            </if>
+            <if test="end_date != null">
+                AND CHNG_DATETIME <![CDATA[ <= ]]> #{end_date}::TIMESTAMP
+            </if>
+            ORDER BY CHNG_DATETIME ASC
+    ) AS node
+    ORDER BY NODE_NUM
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 포트리스트 조회 -->
+    <select id="SELECT_PORT_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT
+        ROW_NUMBER() OVER () AS ROWNUM,
+        *
+    FROM (
+            SELECT DISTINCT
+                TPM.NODE_NUM,
+                TPM.NODE_ID,
+                TPM.IF_NUM,
+                TPM.IF_ID,
+                TPM.IF_NM,
+                TPM.IF_INDEX,
+                TPM.IF_TYPE,
+                COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(TPM.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(TPM.IF_SPEED AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS IF_SPEED,
+                TPM.IP_ADDR,
+                TPM.MAC_ADDR,
+                TPM.IF_OPER_STATUS,
+                CASE
+                WHEN IF_OPER_STATUS = 'up' THEN '사용'
+                ELSE '미사용' 
+                    END AS IF_OPER_STATUS_INFO,
+                COALESCE(TPM.IP_PREFIX, ''),
+                TPM.IF_DIVISTION,
+                TO_CHAR(TPM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME
+            FROM RESOURCE.TB_PORT_MST TPM
+            WHERE NODE_ID = #{node_id}
+            ORDER BY IF_OPER_STATUS DESC, CHNG_DATETIME DESC
+    ) AS port
+</select>
+
+<!-- 포트 리스트 수정 -->
+<update id="UPDATE_PORT_LIST">
+    UPDATE RESOURCE.TB_PORT_MST
+    SET
+        IF_TYPE = #{if_type},
+        IF_SPEED = #{if_speed},
+        IP_ADDR = #{ip_addr},
+        IF_OPER_STATUS = #{if_oper_status},
+        DATA_SOURCE = 'web',
+        CHNG_DATETIME = NOW()
+    WHERE 
+        NODE_NUM = #{node_num}
+        AND NODE_ID = #{node_id}
+        AND IF_NM = #{if_nm}
+</update>
+
+<!-- 링크 리스트 조회  -->
+<select id="SELECT_LINK_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT
+        ROW_NUMBER() OVER () AS ROWNUM
+        , *
+    FROM (
+    SELECT DISTINCT
+    BL.SRC_NODE_NUM
+    , BL.SRC_NODE_ID
+    , BL.SRC_IF_NUM
+    , BL.SRC_IF_ID
+    , SP.IF_NM AS SRC_IF_NAME
+    , BL.SRC_IP_ADDR
+    , BL.SRC_MAC_ADDR
+    , BL.DEST_NODE_NUM
+    , BL.DEST_NODE_ID
+    , BL.DEST_IF_NUM
+    , BL.DEST_IF_ID
+    , DP.IF_NM AS DEST_IF_NAME
+    , BL.DEST_IP_ADDR
+    , BL.DEST_MAC_ADDR
+    , BL.PREFIX
+    , BL.BANDWIDTH
+    , BL.CIRCUIT_NUM
+    , BL.LINK_TYPE
+    , BL.VLAN "VLAN"
+    , BL.TAG "TAG"
+    , BL.LINK_DESC
+    , TO_CHAR(BL.CHNG_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS CHNG_DATETIME
+    FROM RESOURCE.TB_BACKBONE_LINK BL
+    LEFT OUTER JOIN RESOURCE.TB_PORT_MST SP ON SP.NODE_ID = BL.SRC_NODE_ID AND SP.IF_ID = BL.SRC_IF_ID
+    LEFT OUTER JOIN RESOURCE.TB_PORT_MST DP ON DP.NODE_ID = BL.DEST_NODE_ID AND DP.IF_ID = BL.DEST_IF_ID
+    WHERE 1=1
+        <if test="src_node_id != null and src_node_id != ''">
+            AND BL.src_node_id LIKE '%' || #{src_node_id} || '%'
+        </if>
+        <if test="src_if_id != null and src_if_id != ''">
+            AND BL.src_if_id LIKE '%' || #{src_if_id} || '%'
+        </if>
+        <if test="dest_node_id != null and dest_node_id != ''">
+            AND BL.dest_node_id LIKE '%' || #{dest_node_id} || '%'
+        </if>
+        <if test="dest_if_id != null and dest_if_id != ''">
+            AND BL.dest_if_id LIKE '%' || #{dest_if_id} || '%'
+        </if>
+        <if test="link_desc != null and link_desc != ''">
+            AND BL.link_desc LIKE '%' || #{link_desc} || '%'
+        </if>
+    ) AS link
+</select>
+
+<!-- 링크 리스트 등록 -->
+    <insert id="INSERT_LINK_LIST" parameterType="java.util.HashMap">
+    INSERT INTO RESOURCE.TB_BACKBONE_LINK
+    (
+        SRC_NODE_NUM,
+        SRC_NODE_ID,
+        SRC_IF_NUM,
+        SRC_IF_ID,
+        DEST_NODE_NUM,
+        DEST_NODE_ID,
+        DEST_IF_NUM,
+        DEST_IF_ID,
+        SRC_IP_ADDR,
+        DEST_IP_ADDR,
+        BANDWIDTH,
+        LINK_DESC,
+        VLAN,
+        TAG,
+        REG_DATETIME,
+        DATA_SOURCE
+    )
+    values
+    (
+        (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+        #{src_node_id},
+        (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+        #{src_if_id},
+        (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+        #{dest_node_id},
+        (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+        #{dest_if_id},
+        #{src_ip_addr},
+        #{dest_ip_addr},
+        #{bandwidth},
+        #{link_desc},
+        #{vlan},
+        #{tag},
+        NOW(),
+        'web'
+    )
+</insert>
+
+<!-- 링크 리스트 삭제 -->
+<delete id="DELETE_LINK_LIST" parameterType="hashmap">
+    DELETE FROM RESOURCE.TB_BACKBONE_LINK
+    WHERE 
+        SRC_NODE_ID = #{src_node_id}
+        AND SRC_IF_ID = #{src_if_id}
+        AND DEST_NODE_ID = #{dest_node_id}
+        AND DEST_IF_ID = #{dest_if_id}
+</delete>
+
+<!-- 링크 리스트 수정 -->
+    <update id="UPDATE_LINK_LIST">
+UPDATE RESOURCE.TB_BACKBONE_LINK
+SET
+    <if test="bandwidth != null and bandwidth != ''">
+        BANDWIDTH = #{bandwidth},
+    </if>
+    <if test="link_desc != null and link_desc != ''">
+        LINK_DESC = #{link_desc},
+    </if>
+    <if test="vlan != null and vlan != ''">
+        VLAN = #{vlan},
+    </if>
+    <if test="tag != null and tag != ''">
+        TAG = #{tag},
+    </if>
+            CHNG_DATETIME = now()
+        WHERE 
+            SRC_NODE_ID = #{src_node_id}
+            AND SRC_IF_ID = #{src_if_id}
+            AND DEST_NODE_ID = #{dest_node_id}
+            AND DEST_IF_ID = #{dest_if_id}
+    </update>
+
+
+<!-- 링크 시작 노드 리스트 조회 -->
+    <select id="SELECT_LINK_START_NODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT DISTINCT PM.NODE_ID
+    FROM RESOURCE.TB_PORT_MST PM
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM RESOURCE.TB_BACKBONE_LINK BL
+        WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID
+            OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID
+        )
+    ORDER BY NODE_ID
+</select>
+
+<!-- 링크 끝 노드 리스트 조회 -->
+<select id="SELECT_LINK_END_NODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT DISTINCT PM.NODE_ID--, PM.INT_NAME
+    FROM RESOURCE.TB_PORT_MST PM
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM RESOURCE.TB_BACKBONE_LINK BL
+        WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID
+            OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID
+        )
+    AND PM.NODE_ID != #{node_id}
+    ORDER BY NODE_ID
+</select>
+
+<select id="SELECT_LINK_IF_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        DISTINCT PM.NODE_ID, 
+        PM.IF_ID ,
+        IP_ADDR , 
+        IF_SPEED
+    FROM RESOURCE.TB_PORT_MST PM
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM RESOURCE.TB_BACKBONE_LINK BL
+        WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID
+            OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID
+        )
+        AND  PM.NODE_ID = #{node_id} 
+        AND IF_OPER_STATUS = 'up'
+    ORDER BY IF_ID
+</select>
+
+<!-- 이용기관 리스트 조회  -->
+    <select id="SELECT_AGENCY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        TUO.NREN_ID,
+        TUO.NREN_NAME,
+        TUO.NODE_ID,
+        TUO.IF_ID,
+        TUO.IF_NM,
+        COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(TUO.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(TUO.BANDWIDTH AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS BANDWIDTH,
+        TUO.CUSTOMER_ID,
+        TUO.EMAIL,
+        ROW_NUMBER() OVER (ORDER BY NREN_ID) AS ROWNUM
+    FROM RESOURCE.TB_USER_ORGAN TUO
+    <!-- LEFT OUTER JOIN (SELECT DISTINCT NODE_ID, IF_ID, IF_NM FROM RESOURCE.TB_PORT_MST) IF ON IF.NODE_ID = TUO.NODE_ID AND IF.IF_ID = TUO.IF_ID -->
+    WHERE 1=1
+    <if test="nren_name != null and nren_name != ''">
+        AND UPPER(TUO.NREN_NAME) LIKE '%' || UPPER(#{nren_name}) || '%'
+    </if>
+    <if test="node_id != null and node_id != ''">
+        AND UPPER(TUO.NODE_ID) LIKE '%' || UPPER(#{node_id}) || '%'
+    </if>
+    <if test="customer_id != null and customer_id != ''">
+        AND UPPER(TUO.CUSTOMER_ID) LIKE '%' || UPPER(#{customer_id}) || '%'
+    </if>
+    ORDER BY NREN_ID
+    <include refid="TotalCountSuffix"/>
+</select>
+
+<!-- 이용기관 인터페이스 IF ID 리스트 조회 -->
+    <select id="SELECT_AGENCY_NODE_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    --         select distinct node_id from resource.tb_user_organ tuo
+    SELECT distinct
+        node_nm AS node_id
+        , 'IP' AS TYPE
+    FROM resource.tb_node_mst
+    ORDER BY node_nm ASC
+</select>
+
+<!-- 이용기관 인터페이스 IF ID 리스트 조회 -->
+<select id="SELECT_AGENCY_IF_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <!-- select distinct if_id from resource.tb_user_organ tuo -->
+    SELECT DISTINCT IF_ID,
+            IF_SPEED
+    FROM RESOURCE.TB_PORT_MST
+    WHERE NODE_ID = #{node_name}
+        AND IF_OPER_STATUS = 'up'
+    ORDER BY IF_ID 
+</select>
+
+
+<!-- 이용기관 IP 리스트  -->
+<select id="SELECT_AGENCY_IP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT
+        NREN_ID,
+        NREN_NAME,
+        NREN_IP
+    FROM RESOURCE.TB_USER_ORGAN_IP
+    <where>
+        <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+            <if test="nren_id != null and nren_name != null">
+                AND NREN_ID = #{nren_id} AND NREN_NAME = #{nren_name}
+            </if>
+            <if test="node_id != null">
+                AND NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = #{node_id})
+            </if>
+        </trim>
+    </where>
+</select>
+
+<!-- 미확인 이용기관 IP 추가  -->
+<insert id="INSERT_AGENCY_IP_LIST" parameterType="java.util.HashMap">
+INSERT INTO RESOURCE.TB_USER_ORGAN_IP
+(
+    NREN_ID, 
+    NREN_NAME,
+    NREN_IP
+)
+VALUES
+(
+    #{nren_id},
+    #{nren_name},
+    #{nren_ip}
+)
+</insert>
+
+<!--미확인 이용기관 IP 수정 -->
+<update id="UPDATE_AGENCY_IP_LIST">
+UPDATE RESOURCE.TB_USER_ORGAN_IP
+<set>
+    NREN_IP = #{update_nren_ip}
+</set>
+<where>
+    AND NREN_ID = #{nren_id} 
+    AND NREN_NAME = #{nren_name}
+    AND NREN_IP = #{nren_ip}
+</where>
+</update>
+
+<!-- 미확인 이용기관 IP 삭제 -->
+<delete id="DELETE_AGENCY_IP_LIST" parameterType="hashmap">
+    DELETE FROM RESOURCE.TB_USER_ORGAN_IP
+    <where>
+        <trim prefixOverrides="AND|OR">
+            <if test="nren_id != null">
+                AND NREN_ID = #{nren_id}
+            </if>
+            <if test="nren_name != null">
+                AND NREN_NAME = #{nren_name}
+            </if>
+            <if test="nren_ip != null">
+                AND NREN_IP = #{nren_ip}
+            </if>
+        </trim>
+    </where>
+</delete>
+
+<!-- 이용기관 리스트 수정 -->
+<update id="UPDATE_AGENCY_DETAIL_LIST">
+    update resource.tb_user_organ
+    <set>
+        CUSTOMER_ID = #{customer_id},
+        EMAIL = #{email}
+    </set>
+    WHERE NREN_ID = #{nren_id}
+</update>
+
+<!-- 데이터 스냅샷 -->
+<select id="SELECT_DATA_SNAPSHOT_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT
+        TITLE
+        , TO_CHAR(START_TIME,  'YYYY-MM-DD HH24:MI:SS') AS START_TIME
+        , TO_CHAR(END_TIME, 'YYYY-MM-DD HH24:MI:SS') AS END_TIME
+        , EVENTNO
+    FROM rca.tb_fault_event
+    WHERE 1=1 
+    <if test="EVENT_GB != null">
+        AND EVENT_GB=#{EVENT_GB}
+    </if>
+    <if test="TITLE != null and TITLE != ''">
+        AND TITLE LIKE '%' || #{TITLE} || '%'
+    </if>
+    <if test="START_DATE != null and START_DATE != ''">
+        AND START_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+    </if>
+    <if test="END_DATE != null and END_DATE != ''">
+        AND END_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+    </if>
+    ORDER BY EVENTNO::INT DESC
+</select>
+
+<!-- 데이터 스냅샷 삭제 -->
+<delete id="DELETE_DATA_SNAPSHOT" parameterType="hashmap">
+    DELETE FROM rca.tb_fault_event
+    WHERE EVENTNO = #{EVENT_NO}
+</delete>
+
+<select id="SELECT_NIA_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
+    WITH sub_ticket_alarm AS
+    ( 
+        SELECT 
+            T.*,
+            AL.ticket_al_id,
+            AL.root_cause_alarm_noa,
+            AL.root_cause_alarm_noz
+        FROM RCA.TB_RCA_TICKET_CURRENT T
+        LEFT JOIN LATERAL (
+            SELECT ticket_al_id, root_cause_alarm_noa, root_cause_alarm_noz
+            FROM RCA.TB_RCA_TICKET_AL_CURRENT AL
+            WHERE AL.TICKET_ID = T.TICKET_ID
+            ORDER BY AL.TICKET_AL_ID DESC
+            FETCH FIRST 1 ROWS ONLY
+        ) AL ON TRUE
+    )
+    SELECT  T.ALARMNO AS ALARMNO,
+            T.CLUSTERNO AS CLUSTERNO,
+            T.TMP_CLUSTER_NO AS TMP_CLUSTER_NO,
+            T.SYSNAME AS SYSNAME,
+            T.EQUIPTYPE AS EQUIPTYPE,
+            T.ALARMTIME AS ALARMTIME,
+            T.RECEIVETIME AS RECEIVETIME,
+            T.ALARMLOC AS ALARMLOC,
+            T.ALARMMSG AS ALARMMSG,
+            T.UNIT AS UNIT,
+            T.ALARMLEVEL AS ALARMLEVEL,
+            T.CLUSTERNO_ORIGINAL AS CLUSTERNO_ORIGINAL,
+            T.CLEARTIME AS CLEARTIME,
+            T.PTPNAME AS PTPNAME,
+            T.SLOT AS SLOT,
+            T.PORT AS PORT,
+            CASE WHEN ta.root_cause_alarm_noa IS NULL AND ta.root_cause_alarm_noz IS NULL THEN true ELSE false
+            END RELATED_ALARM
+    FROM    rca.tb_alarm_cur_mst T
+    LEFT OUTER JOIN sub_ticket_alarm ta ON T.clusterno = ta.cluster_no
+    <where>
+        1=1
+        <if test="CLUSTERNO != null">
+            AND T.CLUSTERNO = #{CLUSTERNO}
+        </if>
+        <if test="ALARMNO != null">
+            AND T.ALARMNO = #{ALARMNO}
+        </if>
+    </where>
+</select>
+
+<select id="SELECT_CURRENT_CHART_DATA" parameterType ="hashmap" resultType="hashmap">
+    SELECT 
+        if_id
+        , tx_bit_rate
+        , rx_bit_rate
+        , tx_pkt_rate
+        , rx_pkt_rate
+        , measured_datetime
+    FROM IP_SDN.TB_LINK_TRAFFIC
+    WHERE MEASURED_DATETIME <![CDATA[ >= ]]> CAST(${FIT_DATE} AS TIMESTAMP)
+        AND if_id = ${IF_ID}
+</select>
+
+<select id="SELECT_AI_CHART_DATA" parameterType ="hashmap" resultType="hashmap">
+    SELECT
+        model.model_id
+        , model.node_num
+        , model.if_num
+        , model.ipsdn_if_id
+        , model.in_threshold_value
+        , model.out_threshold_value
+        , accuracy.in_accuracy_rate
+        , accuracy.out_accuracy_rate
+        , DATE_TRUNC('hour', predict.ds) AS ds  
+        , MAX(pm.if_speed) if_speed
+        , MAX(model.predict_datetime) AS predict_datetime
+        , MAX(model.in_alertyn) AS in_alertyn
+        , MAX(model.in_alert_datetime) AS in_alert_datetime
+        , MAX(model.out_alert_datetime) AS out_alert_datetime
+        , MAX(model.out_alertyn) AS out_alertyn
+        , MAX(model.predictyn) AS predictyn
+        , MAX(model.fit_date) AS fit_date
+        , MAX(model.fit_sttime) AS fit_sttime
+        , MAX(model.fit_endtime) AS fit_endtime
+        , AVG(predict.in_yhat) AS in_yhat
+        , AVG(predict.in_yhat_lower) AS in_yhat_lower
+        , AVG(predict.in_yhat_upper) AS in_yhat_upper
+        , AVG(predict.in_trend) AS in_trend
+        , AVG(predict.in_y) AS in_y
+        , AVG(predict.out_yhat) AS out_yhat
+        , AVG(predict.out_yhat_lower) AS out_yhat_lower
+        , AVG(predict.out_yhat_upper) AS out_yhat_upper
+        , AVG(predict.out_trend) AS out_trend
+        , AVG(predict.out_y) AS out_y
+        , AVG(predict.in_weekly) AS in_weekly
+        , AVG(predict.out_weekly) AS out_weekly
+        , AVG(predict.in_trend) AS in_trend
+        , AVG(predict.out_trend) AS out_trend
+        , MAX(predict.reg_datetime) AS reg_datetime
+    FROM nia.tb_ai_model model
+    LEFT OUTER JOIN nia.tb_ai_model_accuracy accuracy on model.model_id = accuracy.model_id
+    INNER JOIN nia.tb_ai_predict predict ON model.model_id = predict.model_id
+    INNER JOIN resource.tb_port_mst pm on pm.if_num = model.if_num
+    WHERE 1=1
+    <if test="MODEL_ID != null">
+        AND model.model_id = #{MODEL_ID}
+    </if>
+    <if test="NODE_NUM != null">
+        AND model.NODE_NUM = #{NODE_NUM}
+    </if>
+    <if test="IF_NUM != null">
+        AND model.IF_NUM = #{IF_NUM}
+    </if>
+    <if test="ALARM_TIME != null">
+        AND predict.reg_datetime <![CDATA[ >= ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp)
+        AND predict.reg_datetime <![CDATA[ < ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp) + '1 day'::interval
+    </if>
+    GROUP BY
+        model.model_id
+        , model.node_num
+        , model.if_num
+        , model.ipsdn_if_id
+        , accuracy.in_accuracy_rate
+        , accuracy.out_accuracy_rate
+        , DATE_TRUNC('hour', predict.ds)  
+        , model.in_threshold_value
+        , model.out_threshold_value
+    ORDER BY ds ASC
+</select>
+
+<select id="SELECT_REAL_TRAFFIC_DATA" parameterType ="hashmap" resultType="hashmap">
+SELECT 
+    DATE_TRUNC('hour', measured_datetime) AS hour_bucket, <!--  시간대별로 묶기 -->
+    MAX(tx_bit_rate) AS out_y,                          <!--  해당 시간대의 최대 TX -->
+    MAX(rx_bit_rate) AS in_y                           <!--  해당 시간대의 최대 RX -->
+FROM IP_SDN.TB_LINK_TRAFFIC
+WHERE if_id = #{ipSdnIfId}
+    AND measured_datetime <![CDATA[ >= ]]> #{fitDate}::timestamp
+    AND measured_datetime <![CDATA[ < ]]> NOW()
+GROUP BY 1  <!--  첫 번째 컬럼(DATE_TRUNC)을 기준으로 그룹화 -->
+ORDER BY 1 ASC; <!--  시간 순서대로 정렬 -->
+</select>
+
+<select id="SELECT_ATT_AI_TCA_MODEL" parameterType="hashmap" resultType="hashmap">
+    SELECT 
+        id
+        , model_id
+        , node_num
+        , if_num
+        , tca_alert_yn
+        , tca_alert_direction
+        , tca_alert_time
+    FROM nia.tb_att_ai_tca_model
+    WHERE 1=1
+        AND node_num = #{NODE_NUM}
+        AND if_num = #{IF_NUM}
+        AND tca_alert_time <![CDATA[ >= ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp)
+        AND tca_alert_time <![CDATA[ < ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp) + '1 day'::interval
+    limit 1
+</select>
+
+<select id="SELECT_NIA_TOPOLOGY_CABLE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT
+        trtr.routenum,
+        trtr.sysname
+    FROM nia.tb_roadm_trunk_repeater trtr
+    WHERE trunk_id = (SELECT tcat.link_id
+                        FROM rca.tb_cluster_al_topology tcat
+                        WHERE tcat.alarmno = (
+                            SELECT AL.root_cause_alarm_noa
+                            FROM rca.tb_rca_ticket_current T
+                                    LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_id = T.ticket_id
+                                    AND AL.ticket_al_id = (
+                                        SELECT max(ticket_al_id)
+                                        FROM rca.tb_rca_ticket_al_current
+                                        WHERE ticket_id = #{TICKET_ID}
+                                    )
+                            WHERE T.ticket_id = #{TICKET_ID}
+                        )
+    )
+</select>
+
+<select id="SELECT_NIA_PF_TOPOLOGY_CABLE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT sysnamea, sysnamez
+    FROM rca.tb_rca_ticket_cable_mst
+    WHERE ticket_id = #{TICKET_ID}
+</select>
+
+<select id="SELECT_NIA_AGENCY_LIST" parameterType="hashmap" resultType="hashmap">
+    select
+        A.nren_id,
+        A.nren_name,
+        A.node_id,
+        A.if_id as node_int,
+        if.if_nm,
+        coalesce(regexp_replace((reverse((regexp_match(reverse(if.if_nm), E'G[0-9]+'))[1])), 'G', ''), cast(cast(A.bandwidth as bigint) / 1000000000 as bigint)::char) as bandwidth,
+        A.customer_id,
+        A.email,
+        row_number() over (ORDER BY nren_id) rnum,
+        count(1) over () as "AgencyTotalCount"
+    from resource.tb_user_organ A
+    left outer join (select distinct node_id, if_id, if_nm from resource.tb_port_mst) if on if.node_id = A.node_id and if.if_id = A.if_id
+    where 1=1
+    <if test="NREN_NAME != null and NREN_NAME != ''">
+        AND A.nren_name LIKE '%' || #{NREN_NAME} || '%'
+    </if>
+    <if test="NODE_ID != null and NODE_ID != ''">
+        AND A.node_id LIKE '%' || #{NODE_ID} || '%'
+    </if>
+    <if test="CUSTOMER_ID != null and CUSTOMER_ID != ''">
+        AND A.customer_id LIKE '%' || #{CUSTOMER_ID} || '%'
+    </if>
+    ORDER BY nren_id
+    <if test="OFFSET != null">
+        OFFSET #{OFFSET}
+    </if>
+    <if test="LIMIT != null">
+        LIMIT #{LIMIT}
+    </if>
+</select>
+
+<select id="SELECT_TOPOLOGY_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT
+        row_number() over () AS index
+        , node.id
+        , node.device_name
+        , node.ip_addr
+        , node.device_type
+        , node.visible
+        , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as fx
+        , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as x
+        , coalesce(cast (node.fy as integer), 100) as fy
+        , coalesce(cast (node.fy as integer), 100) as y
+    from (
+        SELECT DISTINCT ON (nm.node_id, nm.node_nm, nm.ip_addr)
+            row_number() over () AS index
+            , nm.node_num
+            , nm.node_id AS id
+            , nm.node_nm AS device_name
+            , nm.ip_addr AS ip_addr
+            , '4' as device_type
+            , case when nm.admin_yn = 'W' then true
+                else false end as visible
+            , np.fx as fx  
+            , np.fy  as fy
+        FROM resource.tb_node_mst nm
+        LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = #{TYPE}
+        where np.fx is not null
+        UNION 
+        SELECT distinct on (em.tid, em.sysname, em.model)
+            row_number() over () AS index
+            , null as node_num
+            , em.tid AS id
+            , em.sysname  AS device_name
+            , em.tid AS ip_addr
+            , CASE model
+            WHEN 'Utrans-6300p-H3' THEN '1'
+            WHEN 'Utrans-6300p-V9' THEN '0'
+            ELSE '2'
+            END AS device_type
+            , true as visible
+            , np.fx as fx
+            , np.fy  as fy
+        FROM nia.tb_equip_mst em
+        LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = em.tid AND np.topology_type= #{TYPE}
+        order by node_num
+    ) as node
+</select>
+
+<select id="SELECT_TOPOLOGY_LINK_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  row_number() over () AS id,
+            concat('link_', row_number() over ()) AS element_id,
+            link.*
+    FROM    ( SELECT bl.src_node_id AS source_name,
+                    bl.src_node_id AS source_id,
+                    row_number() over (partition BY bl.src_node_id ORDER BY bl.src_node_id, bl.src_if_id) source_dir,
+                    bl.src_if_id AS source_port_disp,
+                    bl.src_if_id AS source_pau,
+                    bl.dest_node_id AS target_name,
+                    bl.dest_node_id AS target_id,
+                    row_number() over (partition BY bl.dest_node_id ORDER BY bl.dest_node_id, bl.dest_if_id) target_dir,
+                    bl.dest_if_id AS target_port_disp,
+                    bl.dest_if_id AS target_pau,
+                    'UP' AS state,
+                    '' AS equip_type,
+                    '1' AS status
+            FROM    resource.tb_backbone_link bl
+            INNER JOIN resource.tb_node_mst ns ON ns.node_id = bl.src_node_id
+            INNER JOIN resource.tb_node_mst nd ON nd.node_id = bl.dest_node_id
+            WHERE   bl.dest_node_id NOT LIKE '%control%'
+            AND     bl.dest_node_id NOT LIKE '%n9k%'
+            UNION ALL
+            SELECT  es.sysname AS source_name,
+                    es.tid AS source_id,
+                    row_number() over (partition BY tp.sysnamea ORDER BY tp.sysnamea, tp.ptpnamea_bau) source_dir,
+                    tp.ptpnamea_bau AS source_port_disp,
+                    tp.ptpnamea_pau AS source_pau,
+                    et.sysname AS target_name,
+                    et.tid AS target_id,
+                    row_number() over (partition BY tp.sysnamez ORDER BY tp.sysnamez, tp.ptpnamea_bau) target_dir,
+                    tp.ptpnamea_bau AS target_port_disp,
+                    tp.ptpnamea_pau AS target_pau,
+                    'UP' AS state,
+                    tp.equip_type AS equip_type,
+                    '1' AS status
+            FROM    NIA.tb_topology tp
+            INNER JOIN nia.tb_equip_mst es ON REPLACE(tp.sysnamea, '-SH1', '') = es.tid
+            INNER JOIN nia.tb_equip_mst et ON REPLACE(tp.sysnamez, '-SH1', '') = et.tid
+            WHERE   tp.sysnamez NOT LIKE '%control%'
+            AND     tp.sysnamez NOT LIKE '%n9k%'
+            UNION ALL
+            SELECT  e2e.node_ida AS source_name,
+                    e2e.node_ida AS source_id,
+                    1 AS source_dir,
+                    e2e.porta AS source_port_disp,
+                    e2e.porta AS source_pau,
+                    e2e.node_idz AS target_name,
+                    e2e.node_idz AS target_id,
+                    1 AS target_dir,
+                    e2e.portz AS target_port_disp,
+                    e2e.portz AS target_pau,
+                    'UP' AS state,
+                    '' AS equip_type,
+                    '1' AS status
+            FROM    nia.tb_e2e_topology e2e
+            WHERE   e2e.node_idz NOT LIKE '%control%'
+            AND     e2e.node_idz NOT LIKE '%n9k%' ) AS link;
+</select>
+
+<update id="UPDATE_NODE_POSITION" parameterType="java.util.List">
+    <foreach collection="NODES" item="item" separator=";">
+    UPDATE resource.tb_node_position_info
+    SET
+        fx = #{item.fx},
+        fy = #{item.fy}
+    WHERE
+        node_id = #{item.node_id}
+        AND topology_type = #{item.topology_type}
+    </foreach>
+</update>
+
+<select id="SELECT_IPSDN_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT 
+        id
+        , lower(node_name) node_name
+        , loop_back_addr
+        , mgmt_addr
+    FROM ip_sdn.tb_node
+</select>
+
+<select id="SELECT_IPSDN_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT 
+        id
+        , if_name
+        , node_id
+        , ip_addr
+        , hw_if_id
+    FROM ip_sdn.tb_interface
+    WHERE
+        1=1
+        <if test="nodeId != null">
+            and node_id = #{nodeId}
+        </if>
+        <if test="nodeName != null">
+            and node_id in (select node_id from ip_sdn.tb_node where lower(node_name) = #{nodeName})
+        </if>
+</select>
+
+</mapper>
