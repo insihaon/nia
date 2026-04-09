@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.ap.core.repository.primary.mapper.linkage.pm.PmLinkageMapper">
+    <select id="callPmPrepro" parameterType="string">
+        SELECT MBA.FC_SET_PERFORMANCE_PREPROCESSOR(#{ocrTime})
+    </select>
+
+    <insert id="insertPmData" parameterType="java.util.HashMap">
+        <if test="pmDtoList.size != 0">
+            INSERT INTO NIA.TB_PERFORMACE_MST (SYSNAME, PORT, UNIT, TMPER, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN,
+            TXMAX, TXAVE, OCRTIME)
+            VALUES
+            <foreach collection="pmDtoList" item="item" separator=",">
+                (#{item.sysname}, #{item.port}, #{item.unit}, #{item.tmper}, #{item.rxCur}, #{item.rxMin},
+                #{item.rxMax}, #{item.rxAve},
+                #{item.txCur}, #{item.txMin}, #{item.txMax}, #{item.txAve}, #{item.ocrtime})
+            </foreach>
+            -- ON CONFLICT (SYSNAME, PORT, OCRTIME) DO NOTHING
+        </if>
+    </insert>
+</mapper>
+
+
