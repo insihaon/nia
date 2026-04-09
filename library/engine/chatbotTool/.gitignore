@@ -1,0 +1,19 @@
+# ES 및 기타 런타임 데이터/캐시
+elasticsearch/volumes/
+**/logs/
+**/tmp/
+**/.cache/
+
+# 음성모델/대용량 아티팩트 (필요 시 LFS 사용)
+2.stt/models/
+
+# IDE/에디터
+.vscode/
+*.code-workspace
+
+# 파이썬/노드 등 빌드 산출물 예시
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
